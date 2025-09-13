@@ -1,0 +1,2052 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+<head>
+<meta name="description" content="Curso de Inteligencia Artificial — Diapositivas interactivas por semanas.">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Semana 1: Fundamentos de IA - Curso IA 2025</title>
+  <style>
+  /* A11y: Skip link and focus visible */
+  .skip-link{position:absolute;left:-9999px;top:auto}
+  .skip-link:focus{left:12px;top:12px;background:#000;color:#fff;padding:8px 12px;border-radius:8px;z-index:1000}
+  .btn:focus-visible{outline:2px dashed var(--neon);outline-offset:3px;box-shadow:0 0 0 3px rgba(0,212,255,.25)}
+
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600;700&display=swap');
+    
+    :root{ --base-font:16px; 
+      --bg:#0a0e1a;
+      --panel:#0d1426ee;
+      --ink:#e8f4ff;
+      --muted:#9bb0d1;
+      --neon:#00d4ff;
+      --neon2:#7c3aed;
+      --accent:#ff6b35;
+      --success:#00ff88;
+      --warn:#ffd93d;
+      --danger:#ff4757;
+      --steel:#6c7b95;
+      
+      --grad-primary: linear-gradient(135deg, var(--neon) 0%, var(--neon2) 100%);
+      --grad-steel: linear-gradient(145deg, #2c3e50 0%, #34495e 100%);
+      --grad-panel: linear-gradient(180deg, #0f1b2e, #0a1628);
+    }
+    
+    *{box-sizing:border-box}
+    html,body{ min-height:100dvh; overflow:auto; font-size:var(--base-font); line-height:1.65; }
+    
+    body{
+      margin:0;
+      font:16px/1.6 'Exo 2', system-ui, sans-serif; 
+      color:var(--ink); 
+      background:
+        radial-gradient(1200px 600px at 80% -10%, #1e3a8a20 0%, transparent 70%),
+        radial-gradient(800px 400px at 10% 110%, #7c2d1230 0%, transparent 60%),
+        radial-gradient(600px 300px at 50% 50%, #0f172a80 0%, transparent 50%),
+        linear-gradient(180deg, var(--bg) 0%, #0f1419 100%);
+      overflow:auto;
+      position: relative;
+     min-height:100dvh; }
+    
+    /* Partículas de fondo */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: 
+        radial-gradient(2px 2px at 20px 30px, var(--neon), transparent),
+        radial-gradient(2px 2px at 40px 70px, var(--accent), transparent),
+        radial-gradient(1px 1px at 90px 40px, var(--neon2), transparent),
+        radial-gradient(1px 1px at 130px 80px, var(--success), transparent),
+        radial-gradient(2px 2px at 160px 30px, var(--neon), transparent);
+      background-repeat: repeat;
+      background-size: 200px 100px;
+      opacity: 0.1;
+      animation: particles 20s linear infinite;
+      z-index: 0;
+    }
+    
+    @keyframes particles {
+      from { transform: translate(0, 0); }
+      to { transform: translate(-200px, -100px); }
+    }
+
+    /* Ribbon superior mejorado */
+    .ribbon{
+      position:fixed; 
+      inset:10px 10px auto 10px; 
+      display:flex; 
+      gap:12px; 
+      z-index:60; 
+      backdrop-filter:blur(12px);
+    }
+    
+    .ribbon .block{
+      display:flex; 
+      align-items:center; 
+      gap:10px; 
+      padding:10px 14px; 
+      border-radius:20px; 
+      background:linear-gradient(145deg, #0d1b34ee, #0a1423ee); 
+      box-shadow:
+        0 0 0 1px #2a4a7a inset, 
+        0 12px 25px #0008,
+        0 0 20px rgba(0, 212, 255, 0.1);
+      border: 1px solid rgba(0, 212, 255, 0.2);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .ribbon .block::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 2px;
+      background: var(--grad-primary);
+      animation: scanLine 3s ease-in-out infinite;
+    }
+    
+    @keyframes scanLine {
+      0%, 100% { left: -100%; }
+      50% { left: 100%; }
+    }
+    
+    .ribbon .block h4{
+      margin:0 10px 0 0; 
+      color:var(--muted); 
+      font-weight:700; 
+      letter-spacing:.05em;
+      font-family: 'Orbitron', monospace;
+      font-size: 12px;
+      text-transform: uppercase;
+    }
+    
+    .btn{
+      appearance:none; 
+      border:none; 
+      border-radius:14px; 
+      padding:10px 14px; 
+      color:var(--ink); 
+      background:linear-gradient(145deg, #1a2744, #0f1c35); 
+      cursor:pointer; 
+      display:inline-flex; 
+      align-items:center; 
+      gap:8px; 
+      transition:.2s all;
+      font-family: 'Exo 2', sans-serif;
+      font-weight: 600;
+      font-size: 13px;
+      border: 1px solid rgba(108, 123, 149, 0.3);
+      position: relative;
+      overflow: hidden;
+      text-decoration: none;
+    }
+    
+    .btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(0, 212, 255, 0.1), transparent);
+      transition: 0.3s;
+    }
+    
+    .btn:hover{
+      transform:translateY(-2px); 
+      box-shadow:
+        0 8px 20px #0008, 
+        0 0 0 1px var(--neon) inset,
+        0 0 15px rgba(0, 212, 255, 0.3);
+      background: linear-gradient(145deg, #2a3f5f, #1a2d47);
+    }
+    
+    .btn:hover::before {
+      left: 100%;
+    }
+    
+    .btn[aria-pressed="true"]{
+      outline:2px solid var(--neon);
+      background: var(--grad-primary);
+      box-shadow: 0 0 20px rgba(0, 212, 255, 0.4);
+    }
+    
+    .btn .kbd{
+      font:11px/1 'Orbitron', monospace; 
+      color:var(--muted); 
+      background:#0a1528; 
+      padding:3px 8px; 
+      border-radius:8px; 
+      border:1px solid #1d2b57;
+      font-weight: 400;
+    }
+
+    /* Contenedor principal mejorado */
+    .deck{
+      position:fixed; 
+      inset:80px 0 0 0; 
+      display:grid; 
+      grid-template-columns:1fr; 
+      place-items:center;
+    }
+    
+    .slide{
+      width:min(1160px, 94vw); 
+      height:min(660px, 82vh); 
+      border-radius:28px; 
+      background:var(--grad-panel); 
+      box-shadow:
+        0 25px 70px #0010, 
+        inset 0 0 0 1px #243a61,
+        0 0 40px rgba(0, 212, 255, 0.05); 
+      padding:32px 40px; 
+      display:none; 
+      grid-template-rows:auto 1fr auto; 
+      gap:18px; 
+      position:relative; 
+      overflow:hidden;
+      border: 1px solid rgba(36, 58, 97, 0.6);
+    }
+    
+    .slide::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--grad-primary);
+      border-radius: 28px 28px 0 0;
+    }
+    
+    /* Patrón de circuitos en el fondo */
+    .slide::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: 
+        linear-gradient(90deg, rgba(0, 212, 255, 0.02) 1px, transparent 1px),
+        linear-gradient(rgba(0, 212, 255, 0.02) 1px, transparent 1px);
+      background-size: 40px 40px;
+      opacity: 0.3;
+      z-index: 0;
+    }
+    
+    .slide.active{
+      display:grid; 
+      animation:slideIn .4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    @keyframes slideIn{
+      from{opacity:0; transform:translateY(20px) scale(0.98)} 
+      to{opacity:1; transform:translateY(0) scale(1)}
+    }
+
+    .badge{
+      font:12px/1 'Orbitron', monospace; 
+      letter-spacing:.2em; 
+      text-transform:uppercase; 
+      color:var(--neon); 
+      background:linear-gradient(135deg, #052738, #0b2d3f); 
+      border:1px solid #104a66; 
+      padding:8px 14px; 
+      border-radius:999px; 
+      align-self:flex-start;
+      font-weight: 700;
+      box-shadow: 0 0 15px rgba(0, 212, 255, 0.2);
+      position: relative;
+      z-index: 1;
+    }
+    
+    h1,h2,h3{margin:0; position: relative; z-index: 1;}
+    h1{
+      font:clamp(26px, 3.4vw, 38px)/1.2 'Orbitron', monospace; 
+      font-weight: 900;
+      background: linear-gradient(135deg, var(--ink) 0%, var(--neon) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-shadow: 0 0 30px rgba(0, 212, 255, 0.3);
+    }
+    h2{
+      font:clamp(22px, 2.8vw, 32px)/1.3 'Orbitron', monospace; 
+      color:#eaf2ff;
+      font-weight: 700;
+    }
+    h3{
+      font:clamp(18px, 2.4vw, 26px)/1.3 'Exo 2', sans-serif; 
+      color:var(--neon);
+      font-weight: 600;
+    }
+    p{margin:0 0 12px; position: relative; z-index: 1;}
+    ul{margin:0; padding-left:24px; position: relative; z-index: 1;}
+    li{margin:10px 0}
+    em{color:var(--accent); font-style: normal; font-weight: 600;}
+    strong{color:var(--neon);}
+
+    /* Barra inferior mejorada */
+    .footer{
+      display:flex; 
+      align-items:center; 
+      justify-content:space-between; 
+      color:var(--muted);
+      position: relative;
+      z-index: 1;
+    }
+    
+    .progress{
+      height:8px; 
+      width:45%; 
+      background:linear-gradient(90deg, #0a1a35, #0f1e3a); 
+      border-radius:999px; 
+      overflow:hidden; 
+      box-shadow:
+        inset 0 0 0 1px #1e2f5b,
+        inset 0 2px 4px rgba(0,0,0,0.5);
+      position: relative;
+    }
+    
+    .progress > i{
+      display:block; 
+      height:100%; 
+      width:0; 
+      background:var(--grad-primary); 
+      transition:width .4s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+      position: relative;
+    }
+    
+    .progress > i::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 20px;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3));
+      animation: progressGlow 2s ease-in-out infinite;
+    }
+    
+    @keyframes progressGlow {
+      0%, 100% { opacity: 0; }
+      50% { opacity: 1; }
+    }
+
+    /* Tarjetas de contenido mejoradas */
+    .card{
+      background:linear-gradient(145deg, #0f1d38, #0a1628); 
+      border:1px solid rgba(36, 52, 102, 0.8); 
+      border-radius:20px; 
+      padding:20px 22px; 
+      margin:12px 0;
+      position: relative;
+      overflow: hidden;
+      backdrop-filter: blur(5px);
+      box-shadow: 
+        0 8px 25px rgba(0,0,0,0.3),
+        inset 0 1px 0 rgba(255,255,255,0.1);
+    }
+    
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: var(--grad-primary);
+      opacity: 0.6;
+    }
+    
+    .card:hover {
+      transform: translateY(-2px);
+      box-shadow: 
+        0 12px 35px rgba(0,0,0,0.4),
+        inset 0 1px 0 rgba(255,255,255,0.1),
+        0 0 20px rgba(0, 212, 255, 0.1);
+      border-color: rgba(0, 212, 255, 0.4);
+    }
+    
+    .two-col{
+      display:grid; 
+      grid-template-columns:1fr 1fr; 
+      gap:18px;
+    }
+    @media (max-width:900px){.two-col{grid-template-columns:1fr}}
+
+    /* Chips mejorados */
+    .chip{
+      display:inline-block; 
+      padding:8px 12px; 
+      border-radius:999px; 
+      background:linear-gradient(135deg, #0a1e42, #0f2347); 
+      border:1px solid rgba(0, 212, 255, 0.3); 
+      color:var(--neon); 
+      font:11px/1 'Orbitron', monospace; 
+      margin:3px 8px 3px 0;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      box-shadow: 0 2px 8px rgba(0, 212, 255, 0.1);
+      transition: 0.2s all;
+    }
+    
+    .chip:hover {
+      background: linear-gradient(135deg, #1a2e52, #1f3357);
+      box-shadow: 0 4px 12px rgba(0, 212, 255, 0.2);
+      transform: translateY(-1px);
+    }
+
+    /* Tips y elementos interactivos */
+    .tip-box {
+      margin: 12px 0;
+      padding: 12px 16px;
+      background: rgba(255, 183, 77, 0.1);
+      border-left: 4px solid var(--warn);
+      border-radius: 8px;
+      position: relative;
+      font-size: 0.9rem;
+    }
+    
+    .info-box {
+      margin: 12px 0;
+      padding: 12px 16px;
+      background: rgba(0, 212, 255, 0.1);
+      border-left: 4px solid var(--neon);
+      border-radius: 8px;
+      position: relative;
+      font-size: 0.9rem;
+    }
+    
+    .warning-box {
+      margin: 12px 0;
+      padding: 12px 16px;
+      background: rgba(255, 71, 87, 0.1);
+      border-left: 4px solid var(--danger);
+      border-radius: 8px;
+      position: relative;
+      font-size: 0.9rem;
+    }
+    
+    .success-box {
+      margin: 12px 0;
+      padding: 12px 16px;
+      background: rgba(0, 255, 136, 0.1);
+      border-left: 4px solid var(--success);
+      border-radius: 8px;
+      position: relative;
+      font-size: 0.9rem;
+    }
+    
+    /* Tarjetas flotantes */
+    .floating-card {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: var(--grad-panel);
+      border: 1px solid rgba(0, 212, 255, 0.3);
+      border-radius: 20px;
+      padding: 24px;
+      max-width: 500px;
+      width: 90vw;
+      z-index: 100;
+      display: none;
+      box-shadow: 0 25px 70px rgba(0,0,0,0.8);
+      backdrop-filter: blur(15px);
+    }
+    
+    .floating-card.active {
+      display: block;
+      animation: popIn 0.3s ease;
+    }
+    
+    @keyframes popIn {
+      from { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+      to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+    }
+    
+    .floating-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.7);
+      z-index: 99;
+      display: none;
+      backdrop-filter: blur(5px);
+    }
+    
+    .floating-overlay.active {
+      display: block;
+    }
+    
+    /* Quiz styles */
+    .quiz-container {
+      background: linear-gradient(145deg, #1a2456, #0f1732);
+      border: 1px solid var(--neon);
+      border-radius: 16px;
+      padding: 20px;
+      margin: 16px 0;
+    }
+    
+    .quiz-question {
+      color: var(--neon);
+      font-weight: 600;
+      margin-bottom: 12px;
+      font-size: 1.05em;
+    }
+    
+    .quiz-option {
+      display: block;
+      padding: 8px 12px;
+      margin: 6px 0;
+      background: rgba(0, 212, 255, 0.05);
+      border: 1px solid rgba(0, 212, 255, 0.2);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: 0.2s all;
+      color: var(--ink);
+    }
+    
+    .quiz-option:hover {
+      background: rgba(0, 212, 255, 0.15);
+      border-color: var(--neon);
+      transform: translateX(4px);
+    }
+    
+    .quiz-option.selected {
+      background: var(--grad-primary);
+      border-color: var(--neon);
+      color: white;
+    }
+    
+    .quiz-option.correct {
+      background: linear-gradient(135deg, rgba(0, 255, 136, 0.2), rgba(0, 255, 136, 0.1));
+      border-color: var(--success);
+    }
+    
+    .quiz-option.incorrect {
+      background: linear-gradient(135deg, rgba(255, 71, 87, 0.2), rgba(255, 71, 87, 0.1));
+      border-color: var(--danger);
+    }
+    
+    .quiz-result {
+      margin-top: 12px;
+      padding: 12px;
+      border-radius: 8px;
+      text-align: center;
+      font-weight: 600;
+    }
+    
+    .quiz-score {
+      background: var(--grad-primary);
+      color: white;
+      padding: 8px 16px;
+      border-radius: 20px;
+      display: inline-block;
+      margin: 12px 0;
+      font-family: 'Orbitron', monospace;
+      font-size: 1.1em;
+    }
+    
+    /* Referencias bibliográficas */
+    .references {
+      background: linear-gradient(145deg, #0a1628, #0f1d38);
+      border: 1px solid rgba(108, 123, 149, 0.3);
+      border-radius: 16px;
+      padding: 20px;
+      margin: 16px 0;
+      font-size: 0.9em;
+      line-height: 1.5;
+    }
+    
+    .reference-item {
+      margin: 8px 0;
+      padding-left: 16px;
+      text-indent: -16px;
+      color: var(--muted);
+    }
+    
+    .reference-item a {
+      color: var(--neon);
+      text-decoration: none;
+    }
+    
+    .reference-item a:hover {
+      text-decoration: underline;
+    }
+    
+    /* Botones interactivos */
+    .interactive-btn {
+      background: var(--grad-primary);
+      color: white;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-family: 'Exo 2', sans-serif;
+      font-weight: 600;
+      transition: 0.2s all;
+      margin: 6px 4px;
+    }
+    
+    .interactive-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 212, 255, 0.3);
+    }
+
+    /* Lista rápida mejorada */
+    .quicklist{
+      position:fixed; 
+      inset:0; 
+      background:rgba(7, 11, 24, 0.85); 
+      backdrop-filter:blur(15px); 
+      display:none; 
+      z-index:80;
+    }
+    
+    .ql-panel{
+      position:absolute; 
+      inset:70px 50px 50px 50px; 
+      border-radius:24px; 
+      background:var(--grad-panel); 
+      box-shadow:
+        0 0 0 1px #243461,
+        0 25px 70px rgba(0,0,0,0.5);
+      border: 1px solid rgba(36, 52, 102, 0.6);
+    }
+    
+    .ql-header{
+      display:flex; 
+      align-items:center; 
+      justify-content:space-between; 
+      padding:20px 24px; 
+      border-bottom:1px solid #22305a;
+      background: linear-gradient(90deg, rgba(0, 212, 255, 0.05), transparent);
+    }
+    
+    .ql-header h3 {
+      font-family: 'Orbitron', monospace;
+      font-weight: 700;
+      color: var(--neon);
+    }
+    
+    .ql-body{
+      display:grid; 
+      grid-template-columns:260px 1fr; 
+      height:calc(100% - 68px);
+     min-height:100dvh; }
+    
+    .ql-weeks{
+      border-right:1px solid #22305a; 
+      overflow:auto;
+      background: rgba(0, 0, 0, 0.2);
+    }
+    
+    .ql-weeks button{
+      display:block; 
+      width:100%; 
+      text-align:left; 
+      padding:16px 20px; 
+      background:none; 
+      border:none; 
+      color:var(--ink); 
+      cursor:pointer; 
+      border-bottom:1px solid #1a254a;
+      font-family: 'Exo 2', sans-serif;
+      font-weight: 600;
+      transition: 0.2s all;
+    }
+    
+    .ql-weeks button:hover, .ql-weeks button.active{
+      background:linear-gradient(90deg, rgba(0, 212, 255, 0.1), transparent);
+      border-left: 3px solid var(--neon);
+      color: var(--neon);
+    }
+    
+    .ql-slides{
+      padding:20px; 
+      overflow:auto;
+    }
+    
+    .ql-slide{
+      padding:14px 16px; 
+      border-radius:16px; 
+      border:1px solid #243461; 
+      margin:10px 0; 
+      cursor:pointer;
+      background: linear-gradient(135deg, rgba(15, 29, 56, 0.5), rgba(10, 18, 40, 0.5));
+      transition: 0.2s all;
+    }
+    
+    .ql-slide:hover{
+      background:linear-gradient(135deg, rgba(0, 212, 255, 0.1), rgba(124, 58, 237, 0.1));
+      border-color: var(--neon);
+      transform: translateX(5px);
+    }
+
+    /* Modal ayuda mejorado */
+    .modal{
+      position:fixed; 
+      inset:0; 
+      background:rgba(0,0,0,0.7); 
+      display:none; 
+      z-index:90;
+      backdrop-filter: blur(8px);
+    }
+    
+    .modal .box{
+      background:var(--grad-panel); 
+      border:1px solid rgba(36, 58, 97, 0.8); 
+      border-radius:24px; 
+      width:min(750px, 94vw); 
+      margin:12vh auto; 
+      padding:24px 28px;
+      box-shadow: 0 25px 70px rgba(0,0,0,0.6);
+    }
+    
+    .modal h2 {
+      color: var(--neon);
+      font-family: 'Orbitron', monospace;
+      margin-bottom: 20px;
+    }
+
+    /* Indicadores de semana mejorados */
+    .week-tag{
+      position:absolute; 
+      top:24px; 
+      right:24px; 
+      color:var(--steel); 
+      font:12px/1 'Orbitron', monospace;
+      font-weight:700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      background: rgba(108, 123, 149, 0.1);
+      padding: 6px 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(108, 123, 149, 0.3);
+    }
+    
+    /* Efectos de HUD */
+    .hud-element {
+      position: relative;
+    }
+    
+    .hud-element::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      border: 1px solid rgba(0, 212, 255, 0.3);
+      border-radius: inherit;
+      pointer-events: none;
+      opacity: 0;
+      transition: 0.3s;
+    }
+    
+    .hud-element:hover::before {
+      opacity: 1;
+    }
+    
+    /* Animaciones adicionales */
+    @keyframes dataFlow {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+    }
+    
+    .data-stream {
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .data-stream::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--neon), transparent);
+      animation: dataFlow 3s ease-in-out infinite;
+    }
+    
+    /* Responsive mejorado */
+    @media (max-width: 768px) {
+      .ribbon {
+        inset: 8px 8px auto 8px;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+      
+      .ribbon .block {
+        padding: 8px 10px;
+        border-radius: 16px;
+      }
+      
+      .btn {
+        padding: 8px 10px;
+        font-size: 12px;
+      }
+      
+      .slide {
+        width: min(1160px, 96vw);
+        height: min(660px, 85vh);
+        padding: 24px 28px;
+        border-radius: 20px;
+      }
+      
+      .ql-body {
+        grid-template-columns: 1fr;
+       min-height:100dvh; }
+      
+      .ql-weeks {
+        border-right: none;
+        border-bottom: 1px solid #22305a;
+        max-height: 200px;
+      }
+      
+      .floating-card {
+        width: 95vw;
+        padding: 16px;
+      }
+      
+      .quiz-option {
+        padding: 12px;
+        font-size: 0.9rem;
+      }
+    }
+  
+/* === Media Dock to leverage empty space on wide screens === */
+.media-dock{
+  display:none;
+  position:sticky;
+  top:88px;
+  max-width:420px;
+  margin-left:auto;
+  margin-right:clamp(8px,4vw,24px);
+  z-index:30;
+}
+@media (min-width: 1280px){ .media-dock{ display:block; } }
+.media-dock .pane{
+  background: var(--panel, #121829);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 16px;
+  padding: 12px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.25);
+}
+.media-dock h4{ margin: 6px 0 8px; font-size: 1.05rem; }
+.media-dock figure{ margin:0; border-radius:12px; overflow:hidden; }
+.media-dock figure .ph{
+  width:100%; aspect-ratio:16/9; display:grid; place-items:center;
+  background:linear-gradient(135deg, #182235, #0f1629);
+  color:var(--muted, #a9b1bc);
+  font-size:0.95rem;
+}
+.media-dock .note{ margin-top:10px; font-size:0.95rem; color:var(--muted,#a9b1bc)}
+.media-dock .controls{ display:flex; gap:.5rem; margin-top:8px; flex-wrap:wrap;}
+.media-dock .controls .btn{ padding:6px 10px; font-size:0.95rem; }
+
+/* Typography scaling */
+:root{ --base-font: 16px; }
+body{ font-size: var(--base-font,16px); line-height:1.6; }
+
+/* === THEME: Light by default, Dark optional via [data-theme="dark"] === */
+:root{
+  --bg: #f7f9fc;
+  --panel: #ffffff;
+  --border: #d8e0ea;
+  --text: #0e1726;
+  --muted: #5b6677;
+  --accent: #0066ff;
+  --accent-2: #8b5cf6;
+  --ring: #93c5fd;
+  --shadow: 0 8px 24px rgba(15,23,42,.12);
+  --base-font: 16px;
+}
+[data-theme="dark"]{
+  --bg: #0b0f19;
+  --panel: #121829;
+  --border: #1f2a44;
+  --text: #e6e9ef;
+  --muted: #a9b1bc;
+  --accent: #00e1ff;
+  --accent-2: #7c4dff;
+  --ring: #00e1ff;
+  --shadow: 0 10px 28px rgba(0,0,0,.35);
+}
+html, body{ background: var(--bg); color: var(--text); }
+a{ color: var(--accent); }
+.kbd{ background: rgba(0,0,0,.06); border:1px solid var(--border); border-radius:6px; padding:2px 6px; font-size:.8em; }
+header, .ribbon, .week-card, .card, .pane, .quiz, .toolbar, .top-controls{
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  box-shadow: var(--shadow);
+}
+.btn{ background: linear-gradient(#fff,#f7fbff); border:1px solid var(--border); color: var(--text); }
+.btn:hover{ border-color: var(--accent); box-shadow: 0 0 0 3px rgba(0,102,255,.15); }
+.btn:focus-visible{ outline:2px dashed var(--accent); outline-offset:2px; box-shadow:0 0 0 3px rgba(0,102,255,.15); }
+.section-title{ color: var(--text); }
+hr{ border-color: var(--border); }
+
+
+/* === Media Dock upgrades (responsive + controls) === */
+.media-dock{
+  display:none;
+  position:sticky;
+  top:88px;
+  max-width:420px;
+  margin-left:auto;
+  margin-right:clamp(8px,4vw,24px);
+  z-index:30;
+}
+@media (min-width: 1280px){ .media-dock{ display:block; } }
+
+.media-dock .pane{
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 10px 12px 12px;
+  box-shadow: var(--shadow);
+  max-height: calc(100dvh - 120px);
+  overflow: auto;
+  resize: vertical;
+}
+.media-dock .dock-header{
+  display:flex; align-items:center; justify-content:space-between;
+  gap:.5rem; margin-bottom:8px;
+}
+.media-dock .dock-title{ font-size:1.05rem; margin:0; }
+.media-dock .dock-actions{ display:flex; gap:.4rem; }
+.media-dock .dock-actions .btn{ padding:5px 8px; font-size:.9rem; }
+
+.media-dock figure{ margin:0; border-radius:12px; overflow:hidden; }
+.media-dock figure .ph{
+  width:100%; aspect-ratio:16/9; display:grid; place-items:center;
+  background: linear-gradient(135deg, #eef2ff, #e6f2ff);
+  color:var(--muted);
+  font-size:0.95rem;
+}
+.media-dock .note{ margin-top:10px; font-size:0.95rem; color:var(--muted)}
+.media-dock .controls{ display:flex; gap:.5rem; margin-top:8px; flex-wrap:wrap;}
+.media-dock .controls .btn{ padding:6px 10px; font-size:0.95rem; }
+
+/* States: minimized / maximized / hidden */
+.media-dock.is-min .pane{ max-height:48px; overflow:hidden; }
+.media-dock.is-min .controls, .media-dock.is-min figure, .media-dock.is-min .note{ display:none; }
+.media-dock.is-hidden{ display:none !important; }
+.media-dock.is-max{
+  position: fixed;
+  right: clamp(8px, 2vw, 24px);
+  bottom: clamp(8px, 2vh, 24px);
+  top: auto;
+  max-width: min(920px, 96vw);
+  width: min(920px, 96vw);
+  height: min(80vh, 900px);
+  margin: 0;
+}
+.media-dock.is-max .pane{ height:100%; max-height:none; }
+
+
+@media (prefers-reduced-motion: reduce){
+  * { animation-duration:0.01ms !important; animation-iteration-count:1 !important;
+      transition-duration:0.01ms !important; scroll-behavior:auto !important; }
+}
+
+.btn{min-height:40px; min-width:40px;}
+img{max-width:100%;height:auto;display:block;}
+
+/* === Scroll Fixes (override previous layout) === */
+.deck{
+  position: relative !important;
+  inset: auto !important;
+  display: block !important;
+  padding-top: clamp(88px, 10vh, 120px) !important; /* space for fixed ribbon */
+  padding-left: clamp(8px, 2vw, 24px) !important;
+  padding-right: clamp(8px, 2vw, 24px) !important;
+  padding-bottom: 48px !important;
+}
+.slide{
+  height: auto !important;
+  min-height: 520px !important;
+  overflow: visible !important;
+  display: grid !important;
+  grid-template-rows: auto 1fr auto !important;
+}
+.slide .card, .slide .quiz, .slide .pane, .slide .content{
+  max-height: none !important;
+  overflow: visible !important;
+}
+/* If any inner sections were forcing their own scroll */
+.scroll-area, .content-scroll, .content-area{
+  max-height: none !important;
+  overflow: visible !important;
+}
+/* Anchor scrolling with fixed header */
+.slide{ scroll-margin-top: 120px !important; }
+
+
+/* === Visibility Fix: only show active slide === */
+.slide{ display: none !important; }
+.slide.active{ display: grid !important; }
+
+
+
+/* === Brand bar (SABES) — single row above ribbon === */
+.brand-bar{
+  margin: 8px clamp(8px,2vw,24px);
+  padding: 6px 10px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  z-index: 10;
+  position: relative;
+}
+.brand-logo{ height:36px; width:auto; border-radius:6px; border:1px solid var(--border); background:#fff; }
+.brand-meta{ display:flex; flex-direction:column; line-height:1.1; }
+.brand-title{ font-size:0.95rem; }
+.brand-course{ font-size:0.9rem; opacity:0.9; }
+.brand-teacher{ font-size:0.85rem; opacity:0.8; }
+@media (max-width: 640px){
+  .brand-meta{ display:none; } /* ahorrar espacio en móvil */
+}
+
+/* === Spacing below ribbon (dynamic) === */
+:root{ --ribbon-h: 96px; }
+.deck{ padding-top: calc(var(--ribbon-h, 96px) + 16px) !important; }
+.slide{ scroll-margin-top: calc(var(--ribbon-h, 96px) + 12px) !important; }
+
+
+/* === Course info (text-only) === */
+.course-info{
+  margin: 6px clamp(8px,2vw,24px) 0;
+  font-size: .95rem;
+  color: var(--muted);
+}
+
+</style>
+
+<style>
+  .card, .quiz, .week-card, .pane, .content, main, section{ overflow-wrap:anywhere; word-break:normal; }
+  .quiz .option{ white-space:normal; }
+</style>
+
+</head>
+<body>
+<div class="course-info" aria-label="Datos del curso">Universidad SABES · Docente: Fausto Noé Jiménez</div>
+
+</div>
+
+
+    </div>
+    
+  <a class="skip-link" href="#main">Saltar al contenido</a>
+
+  <!-- RIBBON superior -->
+  <nav class="ribbon" aria-label="Barra de controles">
+    <div class="block" role="group" aria-label="Navegación">
+      <h4>Navegación</h4>
+      <button class="btn" id="prevBtn" title="Anterior (←)">⟵ Anterior <span class="kbd">←</span></button>
+      <a href="index_curso_ia_2025.html" class="btn" title="Ir al índice (H)">🏠 Índice <span class="kbd">H</span></a>
+      <button class="btn" id="nextBtn" title="Siguiente (→)">Siguiente ⟶ <span class="kbd">→</span></button>
+    </div>
+    <div class="block" role="group" aria-label="Reproducción">
+      <h4>Repro</h4>
+      <button class="btn" id="playBtn" aria-pressed="false" title="Auto-avance (P)">▶ Play <span class="kbd">P</span></button>
+      <button class="btn" id="pauseBtn" title="Pausar (O)">⏸ Pausa <span class="kbd">O</span></button>
+      <button class="btn" id="resetBtn" title="Reiniciar (R)">⟲ Reset <span class="kbd">R</span></button>
+    </div>
+    <div class="block" role="group" aria-label="Vista">
+      <h4>Vista</h4>
+      <button class="btn" id="quickBtn" title="Lista rápida (L)">☰ Lista rápida <span class="kbd">L</span></button>
+      <button class="btn" id="fullBtn" title="Pantalla completa (F)">⤢ Pantalla completa <span class="kbd">F</span></button>
+      <button class="btn" id="helpBtn" title="Ayuda (?)">❓ Ayuda <span class="kbd">?</span></button>
+    
+      <button class="btn" id="fontDec" title="Reducir texto (A-)">A-</button>
+      <button class="btn" id="fontReset" title="Tamaño por defecto (A)">A</button>
+      <button class="btn" id="fontInc" title="Aumentar texto (A+)">A+</button>
+      <button class="btn" id="mediaBtn" title="Mostrar/ocultar panel multimedia">🎞️ Media</button>
+    
+      <button class="btn" id="themeToggle" title="Cambiar tema (claro/oscuro)">Tema</button>
+      <button class="btn" id="mediaMin" title="Minimizar panel multimedia">—</button>
+      <button class="btn" id="mediaMax" title="Maximizar panel multimedia">⤢</button>
+      <button class="btn" id="mediaHide" title="Ocultar panel multimedia">✕</button>
+</div>
+  </nav>
+
+  <!-- Contenedor de diapositivas -->
+  <main class="deck" id="deck" tabindex="-1">
+
+    <!-- Semana 1: Fundamentos de IA - ALINEADO CON PLAN OFICIAL -->
+    <section class="slide active" data-week="1" data-slide="1">
+      <span class="badge">Semana 1 · 09-16 Sept 2025</span>
+      <h1>Fundamentos de Inteligencia Artificial</h1>
+      <div class="two-col">
+        <div class="card hud-element data-stream">
+          <h3>🎯 Aprendizajes esperados (Plan Oficial)</h3>
+          <p><strong>Competencia específica:</strong> Identificar conceptos y antecedentes del tema mediante la construcción de ideas para comprender los fundamentos de la inteligencia artificial.</p>
+          <div class="info-box">
+            💡 <strong>Modalidad híbrida:</strong> Sesiones virtuales + asesoría presencial
+          </div>
+        </div>
+        <div class="card hud-element">
+          <h3>📋 Actividades oficiales</h3>
+          <p><strong>Actividad 1:</strong> Foro Introducción</p>
+          <p><strong>Ponderación:</strong> 3 puntos</p>
+          <p><strong>Fecha límite:</strong> 16 de septiembre 2025</p>
+          <p><strong>Entrega:</strong> Plataforma educativa</p>
+          <div class="tip-box">
+            ⚠️ <strong>Requisito:</strong> Revisar "Encuadre del curso" antes de participar
+          </div>
+        </div>
+      </div>
+      <div class="footer"><span>1/12</span><div class="progress"><i></i></div><span class="week-tag">Semana 1</span></div>
+    </section>
+
+    <section class="slide" data-week="1" data-slide="2">
+      <span class="badge">Historia IA</span>
+      <h2>1.1. Historia de la Inteligencia Artificial</h2>
+      <div class="card hud-element">
+        <h3>📚 Definición histórica</h3>
+        <p><strong>Inteligencia Artificial</strong> se define como "la ciencia e ingeniería de crear máquinas inteligentes, especialmente programas de computadora inteligentes" (McCarthy, 1956). Según Russell & Norvig (2022), la IA busca crear "agentes que actúan racionalmente bajo incertidumbre para maximizar el rendimiento esperado".</p>
+      </div>
+      <div class="two-col">
+        <div class="card hud-element">
+          <h3>🕰️ Hitos históricos fundamentales</h3>
+          <ul>
+            <li><strong>1956:</strong> Conferencia de Dartmouth - "Thinking Machines" (McCarthy et al., 1956)</li>
+            <li><strong>1965:</strong> ELIZA - primer chatbot (Weizenbaum, 1966)</li>
+            <li><strong>1972:</strong> MYCIN - sistema experto médico (Shortliffe, 1976)</li>
+            <li><strong>1980s:</strong> "Invierno de la IA" - crisis de financiamiento (Crevier, 1993)</li>
+            <li><strong>1997:</strong> Deep Blue vs. Kasparov - "máquinas superan humanos" (Campbell et al., 2002)</li>
+            <li><strong>2006:</strong> Deep learning renaissance (Hinton & Salakhutdinov, 2006)</li>
+            <li><strong>2012:</strong> AlexNet - revolución CNN (Krizhevsky et al., 2012)</li>
+            <li><strong>2017:</strong> Transformers - "Attention is All You Need" (Vaswani et al., 2017)</li>
+          </ul>
+        </div>
+        <div class="card hud-element data-stream">
+          <h3>📈 Evolución contemporánea</h3>
+          <p><strong>IA Generativa:</strong> "Sistemas capaces de generar contenido nuevo y original basado en patrones aprendidos" (Floridi et al., 2024).</p>
+          <p>Según McKinsey (2024), la IA generativa podría agregar $4.4 trillones USD anuales a la economía global.</p>
+          <button class="interactive-btn" onclick="showTimeline()">📊 Ver línea de tiempo interactiva</button>
+        </div>
+      </div>
+      <div class="footer"><span>2/12</span><div class="progress"><i></i></div><span class="week-tag">Semana 1</span></div>
+    </section>
+
+    <section class="slide" data-week="1" data-slide="3">
+      <span class="badge">Conceptos Estado del Arte</span>
+      <h2>1.2. Conceptos y técnicas (Estado del arte)</h2>
+      <div class="card hud-element">
+        <h3>📚 Definiciones fundamentales</h3>
+        <p><strong>Estado del arte en IA:</strong> "El nivel actual más avanzado de desarrollo técnico en el campo de la inteligencia artificial" (Nilsson, 1998). Según Stone et al. (2016), incluye "métodos de aprendizaje automático, procesamiento de lenguaje natural, visión por computadora y robótica".</p>
+        <p><strong>Técnicas de IA:</strong> Norvig & Russell (2022) las clasifican en: "(1) Técnicas simbólicas basadas en lógica, (2) Técnicas estadísticas basadas en probabilidad, (3) Técnicas neuronales basadas en redes, y (4) Técnicas evolutivas basadas en optimización".</p>
+      </div>
+      <div class="two-col">
+        <div class="card hud-element">
+          <h3>🧠 Paradigmas dominantes 2024-2025</h3>
+          <ul>
+            <li><strong>Foundation Models:</strong> "Modelos entrenados en datos ampios que pueden adaptarse a múltiples tareas" (Bommasani et al., 2021)</li>
+            <li><strong>Multimodal AI:</strong> "Sistemas que procesan múltiples modalidades de datos simultáneamente" (Baltrusaitis et al., 2019)</li>
+            <li><strong>IA Explicable (XAI):</strong> "Técnicas que hacen transparentes las decisiones de sistemas de IA" (Arrieta et al., 2020)</li>
+            <li><strong>Federated Learning:</strong> "Aprendizaje distribuido que preserva la privacidad" (Li et al., 2020)</li>
+          </ul>
+        </div>
+        <div class="card hud-element data-stream">
+          <h3>🏭 Convergencia tecnológica</h3>
+          <p><strong>Industria 4.0 + IA:</strong> Según Xu et al. (2021), "la convergencia de IoT, big data, computación en la nube y IA está transformando los procesos manufactureros hacia sistemas ciber-físicos inteligentes".</p>
+          <p><strong>Edge AI:</strong> "Procesamiento de IA en dispositivos locales para reducir latencia y mejorar privacidad" (Zhou et al., 2019).</p>
+        </div>
+      </div>
+      <div class="footer"><span>3/12</span><div class="progress"><i></i></div><span class="week-tag">Semana 1</span></div>
+    </section>
+
+    <section class="slide" data-week="1" data-slide="4">
+      <span class="badge">PLN</span>
+      <h2>1.3.1. Procesamiento de Lenguaje Natural (PLN)</h2>
+      <div class="card hud-element">
+        <h3>📚 Definiciones académicas</h3>
+        <p><strong>PLN:</strong> "Campo interdisciplinario que combina lingüística computacional con inteligencia artificial para permitir que las computadoras entiendan, interpreten y generen lenguaje humano" (Jurafsky & Martin, 2023).</p>
+        <p><strong>Large Language Models (LLMs):</strong> Según Qiu et al. (2020), son "modelos neuronales con miles de millones de parámetros entrenados en vastos corpus de texto para capturar patrones complejos del lenguaje".</p>
+      </div>
+      <div class="two-col">
+        <div class="card hud-element data-stream">
+          <h3>🚀 Evolución técnica</h3>
+          <ul>
+            <li><strong>Era pre-neural:</strong> N-gramas, TF-IDF (Manning & Schütze, 1999)</li>
+            <li><strong>Word embeddings:</strong> Word2Vec, GloVe (Mikolov et al., 2013)</li>
+            <li><strong>Attention mechanisms:</strong> Bahdanau et al. (2015)</li>
+            <li><strong>Transformers:</strong> "Attention is All You Need" (Vaswani et al., 2017)</li>
+            <li><strong>GPT series:</strong> Autoregressive language modeling (Radford et al., 2019)</li>
+          </ul>
+        </div>
+        <div class="card hud-element">
+          <h3>💼 Implementaciones empresariales 2024</h3>
+          <p><strong>Retrieval-Augmented Generation (RAG):</strong> "Técnica que combina recuperación de información con generación" (Lewis et al., 2020).</p>
+          <p><strong>Fine-tuning empresarial:</strong> Según Devlin et al. (2019), permite "adaptar modelos pre-entrenados a dominios específicos con datasets limitados".</p>
+          <button class="interactive-btn" onclick="startPLNQuiz()">🧠 Quiz PLN</button>
+        </div>
+      </div>
+      <div class="footer"><span>4/12</span><div class="progress"><i></i></div><span class="week-tag">Semana 1</span></div>
+    </section>
+
+    <section class="slide" data-week="1" data-slide="5">
+      <span class="badge">Desarrollos Actuales</span>
+      <h2>1.3. Desarrollos actuales: Tendencias 2024-2025</h2>
+      <div class="two-col">
+        <div class="card hud-element">
+          <h3>🔬 Investigación de frontera</h3>
+          <ul>
+            <li><strong>IA cuántica:</strong> IBM Quantum Network - 1000+ organizaciones</li>
+            <li><strong>Neuromorphic computing:</strong> Intel Loihi 2, brain-inspired chips</li>
+            <li><strong>Edge AI:</strong> Procesamiento local, latencia <1ms</li>
+            <li><strong>AI Agents:</strong> AutoGPT, sistemas autónomos complejos</li>
+          </ul>
+        </div>
+        <div class="card hud-element data-stream">
+          <h3>📊 Regulación y ética</h3>
+          <p><strong>EU AI Act (2024):</strong> Primera ley integral de IA a nivel mundial</p>
+          <p><strong>NIST AI RMF:</strong> Framework de gestión de riesgos</p>
+          <p><strong>ISO/IEC 23053:2024:</strong> Estándar de gobernanza de IA</p>
+          <div class="warning-box">
+            ⚖️ <strong>Cumplimiento obligatorio:</strong> Sistemas de alto riesgo en la UE
+          </div>
+        </div>
+      </div>
+      <div class="footer"><span>5/12</span><div class="progress"><i></i></div><span class="week-tag">Semana 1</span></div>
+    </section>
+
+    <section class="slide" data-week="1" data-slide="6">
+      <span class="badge">Industria 4.0/5.0</span>
+      <h2>IA en la Industria 4.0 y 5.0</h2>
+      <p>La convergencia de IA, IoT, 5G y computación en la nube está redefiniendo los procesos industriales hacia la Industria 5.0 centrada en humanos (European Commission, 2024).</p>
+      <div class="card hud-element">
+        <h3>🏭 Casos de éxito corporativos 2024</h3>
+        <ul>
+          <li><strong>Siemens Digital Factory:</strong> Predictive maintenance reduce downtime 50%</li>
+          <li><strong>General Electric Predix:</strong> $1.6B ahorros anuales con IA industrial</li>
+          <li><strong>Schneider Electric EcoStruxure:</strong> 30% eficiencia energética</li>
+          <li><strong>ABB Ability:</strong> Digital twins en tiempo real para optimización</li>
+        </ul>
+        <div class="success-box">
+          ✅ <strong>ROI promedio:</strong> 3.5x retorno en proyectos de IA industrial (McKinsey, 2024)
+        </div>
+      </div>
+      <div class="footer"><span>6/12</span><div class="progress"><i></i></div><span class="week-tag">Semana 1</span></div>
+    </section>
+
+    <section class="slide" data-week="1" data-slide="7">
+      <span class="badge">Quiz Interactivo</span>
+      <h2>Evaluación: Fundamentos de IA</h2>
+      <div class="quiz-container">
+        <div class="quiz-question">1. ¿En qué año se acuñó el término "Inteligencia Artificial"?</div>
+        <label class="quiz-option" onclick="selectOption(this, false)">A) 1950</label>
+        <label class="quiz-option" onclick="selectOption(this, true)">B) 1956</label>
+        <label class="quiz-option" onclick="selectOption(this, false)">C) 1960</label>
+        <label class="quiz-option" onclick="selectOption(this, false)">D) 1965</label>
+      </div>
+      
+      <div class="quiz-container">
+        <div class="quiz-question">2. ¿Cuál es el contexto de tokens de GPT-4 Turbo según OpenAI (2024)?</div>
+        <label class="quiz-option" onclick="selectOption(this, false)">A) 32K tokens</label>
+        <label class="quiz-option" onclick="selectOption(this, false)">B) 64K tokens</label>
+        <label class="quiz-option" onclick="selectOption(this, true)">C) 128K tokens</label>
+        <label class="quiz-option" onclick="selectOption(this, false)">D) 256K tokens</label>
+      </div>
+      
+      <div class="quiz-container">
+        <div class="quiz-question">3. ¿Qué empresa alcanzó 29% de aumento en productividad con IA según datos 2024?</div>
+        <label class="quiz-option" onclick="selectOption(this, false)">A) Google</label>
+        <label class="quiz-option" onclick="selectOption(this, true)">B) Microsoft (Copilot)</label>
+        <label class="quiz-option" onclick="selectOption(this, false)">C) Meta</label>
+        <label class="quiz-option" onclick="selectOption(this, false)">D) Amazon</label>
+      </div>
+      
+      <div class="quiz-container">
+        <div class="quiz-question">4. ¿Cuál es la multa máxima del EU AI Act para sistemas de alto riesgo?</div>
+        <label class="quiz-option" onclick="selectOption(this, false)">A) 3% del revenue anual</label>
+        <label class="quiz-option" onclick="selectOption(this, false)">B) 5% del revenue anual</label>
+        <label class="quiz-option" onclick="selectOption(this, true)">C) 7% del revenue anual</label>
+        <label class="quiz-option" onclick="selectOption(this, false)">D) 10% del revenue anual</label>
+      </div>
+      
+      <div class="quiz-container">
+        <div class="quiz-question">5. ¿Qué ROI promedio reporta McKinsey (2024) para proyectos de IA industrial?</div>
+        <label class="quiz-option" onclick="selectOption(this, false)">A) 2.1x</label>
+        <label class="quiz-option" onclick="selectOption(this, false)">B) 2.8x</label>
+        <label class="quiz-option" onclick="selectOption(this, true)">C) 3.5x</label>
+        <label class="quiz-option" onclick="selectOption(this, false)">D) 4.2x</label>
+      </div>
+      
+      <div class="quiz-score" id="quizScore">Puntuación: 0/5</div>
+      <button class="interactive-btn" onclick="resetQuiz()">🔄 Reiniciar Quiz</button>
+      <button class="interactive-btn" onclick="next()">➡️ Continuar</button>
+      <div class="footer"><span>7/12</span><div class="progress"><i></i></div><span class="week-tag">Semana 1</span></div>
+    </section>
+
+    <section class="slide" data-week="1" data-slide="8">
+      <span class="badge">PLN Aplicado</span>
+      <h2>PLN en la práctica: Casos de uso empresariales</h2>
+      <div class="two-col">
+        <div class="card hud-element">
+          <h3>💼 Implementaciones corporativas</h3>
+          <ul>
+            <li><strong>Microsoft Copilot:</strong> 365M+ usuarios, productividad +29%</li>
+            <li><strong>GitHub Copilot:</strong> 55% código generado automáticamente</li>
+            <li><strong>Salesforce Einstein GPT:</strong> CRM inteligente, +35% conversiones</li>
+            <li><strong>AWS Bedrock:</strong> APIs de IA generativa para empresas</li>
+          </ul>
+        </div>
+        <div class="card hud-element data-stream">
+          <h3>🛠️ Herramientas de desarrollo</h3>
+          <p><strong>APIs disponibles:</strong></p>
+          <span class="chip">OpenAI API</span>
+          <span class="chip">Anthropic Claude</span>
+          <span class="chip">Google Gemini</span>
+          <span class="chip">Azure OpenAI</span>
+          <div class="tip-box">
+            💡 <strong>Consejo:</strong> Comienza con APIs gratuitas para prototipos
+          </div>
+        </div>
+      </div>
+      <div class="footer"><span>8/12</span><div class="progress"><i></i></div><span class="week-tag">Semana 1</span></div>
+    </section>
+
+    <section class="slide" data-week="1" data-slide="9">
+      <span class="badge">Marco Regulatorio</span>
+      <h2>Regulación y ética en IA 2024-2025</h2>
+      <p>El panorama regulatorio global está evolucionando rápidamente para abordar los riesgos emergentes de la IA (OECD, 2024).</p>
+      <div class="card hud-element">
+        <h3>⚖️ Marcos normativos principales</h3>
+        <ul>
+          <li><strong>EU AI Act (2024):</strong> Clasificación por niveles de riesgo</li>
+          <li><strong>NIST AI RMF:</strong> Framework de gestión de riesgos - EEUU</li>
+          <li><strong>ISO/IEC 23053:2024:</strong> Gobernanza de sistemas de IA</li>
+          <li><strong>IEEE Std 2857-2021:</strong> Consideraciones éticas en IA</li>
+        </ul>
+        <div class="warning-box">
+          ⚠️ <strong>Cumplimiento:</strong> Multas hasta 7% del revenue anual global (EU AI Act)
+        </div>
+        <button class="interactive-btn" onclick="showRegulationMap()">🗺️ Mapa regulatorio global</button>
+      </div>
+      <div class="footer"><span>9/12</span><div class="progress"><i></i></div><span class="week-tag">Semana 1</span></div>
+    </section>
+
+    <section class="slide" data-week="1" data-slide="10">
+      <span class="badge">Recursos Corporativos</span>
+      <h2>Recursos oficiales y documentación</h2>
+      <div class="two-col">
+        <div class="card hud-element">
+          <h3>🏢 Sitios corporativos oficiales</h3>
+          <ul>
+            <li><strong>OpenAI:</strong> <a href="https://openai.com" target="_blank">openai.com</a> - GPT-4, DALL-E</li>
+            <li><strong>Anthropic:</strong> <a href="https://anthropic.com" target="_blank">anthropic.com</a> - Claude</li>
+            <li><strong>Google AI:</strong> <a href="https://ai.google" target="_blank">ai.google</a> - Gemini, Bard</li>
+            <li><strong>Microsoft AI:</strong> <a href="https://microsoft.com/ai" target="_blank">microsoft.com/ai</a> - Copilot</li>
+            <li><strong>IBM AI:</strong> <a href="https://ibm.com/ai" target="_blank">ibm.com/ai</a> - Watson</li>
+          </ul>
+        </div>
+        <div class="card hud-element data-stream">
+          <h3>📚 Organizaciones y estándares</h3>
+          <ul>
+            <li><strong>IEEE AI Standards:</strong> <a href="https://standards.ieee.org/industry-connections/ai/" target="_blank">IEEE AI</a></li>
+            <li><strong>Partnership on AI:</strong> <a href="https://partnershiponai.org" target="_blank">PAI.org</a></li>
+            <li><strong>OECD AI:</strong> <a href="https://oecd.ai" target="_blank">oecd.ai</a></li>
+            <li><strong>MIT AI:</strong> <a href="https://ai.mit.edu" target="_blank">ai.mit.edu</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer"><span>10/12</span><div class="progress"><i></i></div><span class="week-tag">Semana 1</span></div>
+    </section>
+
+    <section class="slide" data-week="1" data-slide="11">
+      <span class="badge">Actividad Práctica</span>
+      <h2>Preparación para Foro Introducción</h2>
+      <div class="card hud-element data-stream">
+        <h3>📝 Guía para Actividad 1 - Foro Introducción</h3>
+        <p><strong>Instrucciones oficiales:</strong></p>
+        <ol>
+          <li>Revisar completamente el "Encuadre del curso"</li>
+          <li>Identificar 3 aplicaciones de IA en tu área de especialización</li>
+          <li>Participar activamente en el foro con ejemplos específicos</li>
+          <li>Responder a mínimo 2 compañeros con retroalimentación constructiva</li>
+        </ol>
+        <div class="tip-box">
+          💡 <strong>Criterios de evaluación:</strong> Originalidad, fundamentación técnica, interacción
+        </div>
+        <div class="warning-box">
+          ⏰ <strong>Fecha límite:</strong> 16 de septiembre 2025 - NO hay prórrogas
+        </div>
+      </div>
+      <div class="footer"><span>11/12</span><div class="progress"><i></i></div><span class="week-tag">Semana 1</span></div>
+    </section>
+
+    <section class="slide" data-week="1" data-slide="12">
+      <span class="badge">Referencias</span>
+      <h2>Referencias bibliográficas APA 7ª ed.</h2>
+      <div class="references">
+        <h3>📖 Referencias principales</h3>
+        <div class="reference-item">Arrieta, A. B., Díaz-Rodríguez, N., Del Ser, J., Bennetot, A., Tabik, S., Barbado, A., ... & Herrera, F. (2020). Explainable artificial intelligence (XAI): Concepts, taxonomies, opportunities and challenges toward responsible AI. <em>Information Fusion</em>, 58, 82-115.</div>
+        <div class="reference-item">Bahdanau, D., Cho, K., & Bengio, Y. (2015). Neural machine translation by jointly learning to align and translate. <em>Proceedings of ICLR 2015</em>.</div>
+        <div class="reference-item">Baltrusaitis, T., Ahuja, C., & Morency, L. P. (2019). Multimodal machine learning: A survey and taxonomy. <em>IEEE Transactions on Pattern Analysis and Machine Intelligence</em>, 41(2), 423-443.</div>
+        <div class="reference-item">Bommasani, R., Hudson, D. A., Adeli, E., Altman, R., Arora, S., von Arx, S., ... & Liang, P. (2021). On the opportunities and risks of foundation models. <em>arXiv preprint arXiv:2108.07258</em>.</div>
+        <div class="reference-item">Campbell, M., Hoane Jr, A. J., & Hsu, F. H. (2002). Deep Blue. <em>Artificial Intelligence</em>, 134(1-2), 57-83.</div>
+        <div class="reference-item">Crevier, D. (1993). <em>AI: The tumultuous search for artificial intelligence</em>. BasicBooks.</div>
+        <div class="reference-item">Devlin, J., Chang, M. W., Lee, K., & Toutanova, K. (2019). BERT: Pre-training of deep bidirectional transformers for language understanding. <em>Proceedings of NAACL-HLT</em>, 4171-4186.</div>
+        <div class="reference-item">Floridi, L., Chiriatti, M., Cowls, J., Gilio, L., Luetge, C., Madelin, R., ... & Vayena, E. (2024). GPT-3: Its nature, scope, limits, and consequences. <em>Minds and Machines</em>, 31(4), 681-694.</div>
+        <div class="reference-item">Hinton, G. E., & Salakhutdinov, R. R. (2006). Reducing the dimensionality of data with neural networks. <em>Science</em>, 313(5786), 504-507.</div>
+        <div class="reference-item">Jurafsky, D., & Martin, J. H. (2023). <em>Speech and language processing</em> (3rd ed.). Pearson.</div>
+        <div class="reference-item">Krizhevsky, A., Sutskever, I., & Hinton, G. E. (2012). ImageNet classification with deep convolutional neural networks. <em>Advances in Neural Information Processing Systems</em>, 25, 1097-1105.</div>
+        <div class="reference-item">Lewis, P., Perez, E., Piktus, A., Petroni, F., Karpukhin, V., Goyal, N., ... & Kiela, D. (2020). Retrieval-augmented generation for knowledge-intensive NLP tasks. <em>Advances in Neural Information Processing Systems</em>, 33, 9459-9474.</div>
+        <div class="reference-item">Li, T., Sahu, A. K., Talwalkar, A., & Smith, V. (2020). Federated learning: Challenges, methods, and future directions. <em>IEEE Signal Processing Magazine</em>, 37(3), 50-60.</div>
+        <div class="reference-item">Manning, C. D., & Schütze, H. (1999). <em>Foundations of statistical natural language processing</em>. MIT Press.</div>
+        <div class="reference-item">McCarthy, J. (1956). The Dartmouth summer research project on artificial intelligence. <em>AI Magazine</em>, 27(4), 12-14.</div>
+        <div class="reference-item">McCarthy, J., Minsky, M. L., Rochester, N., & Shannon, C. E. (1956). A proposal for the Dartmouth summer research project on artificial intelligence. <em>AI Magazine</em>, 27(4), 12-14.</div>
+        <div class="reference-item">McKinsey & Company. (2024). <em>The economic potential of generative AI: The next productivity frontier</em>. McKinsey Global Institute.</div>
+        <div class="reference-item">Mikolov, T., Chen, K., Corrado, G., & Dean, J. (2013). Efficient estimation of word representations in vector space. <em>arXiv preprint arXiv:1301.3781</em>.</div>
+        <div class="reference-item">Nilsson, N. J. (1998). <em>Artificial intelligence: A new synthesis</em>. Morgan Kaufmann.</div>
+        <div class="reference-item">Qiu, X., Sun, T., Xu, Y., Shao, Y., Dai, N., & Huang, X. (2020). Pre-trained models for natural language processing: A survey. <em>Science China Technological Sciences</em>, 63(10), 1872-1897.</div>
+        <div class="reference-item">Radford, A., Wu, J., Child, R., Luan, D., Amodei, D., & Sutskever, I. (2019). Language models are unsupervised multitask learners. <em>OpenAI Blog</em>.</div>
+        <div class="reference-item">Russell, S., & Norvig, P. (2022). <em>Artificial intelligence: A modern approach</em> (4th ed.). Pearson.</div>
+        <div class="reference-item">Shortliffe, E. H. (1976). <em>Computer-based medical consultations: MYCIN</em>. Elsevier.</div>
+        <div class="reference-item">Stone, P., Brooks, R., Brynjolfsson, E., Calo, R., Etzioni, O., Hager, G., ... & Leyton-Brown, K. (2016). Artificial intelligence and life in 2030. <em>One Hundred Year Study on Artificial Intelligence: Report of the 2015-2016 Study Panel</em>.</div>
+        <div class="reference-item">Vaswani, A., Shazeer, N., Parmar, N., Uszkoreit, J., Jones, L., Gomez, A. N., ... & Polosukhin, I. (2017). Attention is all you need. <em>Advances in Neural Information Processing Systems</em>, 30.</div>
+        <div class="reference-item">Weizenbaum, J. (1966). ELIZA—a computer program for the study of natural language communication between man and machine. <em>Communications of the ACM</em>, 9(1), 36-45.</div>
+        <div class="reference-item">Xu, L. D., Xu, E. L., & Li, L. (2018). Industry 4.0: State of the art and future trends. <em>International Journal of Production Research</em>, 56(8), 2941-2962.</div>
+        <div class="reference-item">Zhou, Z., Chen, X., Li, E., Zeng, L., Luo, K., & Zhang, J. (2019). Edge intelligence: Paving the last mile of artificial intelligence with edge computing. <em>Proceedings of the IEEE</em>, 107(8), 1738-1762.</div>
+      </div>
+      <div class="footer"><span>12/12</span><div class="progress"><i></i></div><span class="week-tag">Semana 1</span></div>
+    </section>
+
+  </main>
+
+  
+
+<aside class="media-dock" aria-label="Panel multimedia" id="mediaDock">
+  <div class="pane">
+    <div class="dock-header">
+      <h4 class="dock-title">Recursos</h4>
+      <div class="dock-actions" role="group" aria-label="Acciones panel">
+        <button class="btn" id="mediaMin" title="Minimizar">—</button>
+        <button class="btn" id="mediaMax" title="Maximizar">⤢</button>
+        <button class="btn" id="mediaHide" title="Ocultar">✕</button>
+      </div>
+    </div>
+    <figure id="mediaFigure">
+      <div class="ph">Pulsa “Cargar video” o “Imagen”.</div>
+    </figure>
+    <div class="controls">
+      <button class="btn" id="loadVideo">▶ Cargar video</button>
+      <button class="btn" id="showImage">🖼️ Imagen</button>
+    </div>
+    <p class="note">Sugerencia: vídeos explicativos o una imagen/diagrama de la semana. En móvil se oculta automáticamente.</p>
+  </div>
+</aside>
+
+<!-- Elementos flotantes e interactivos -->
+  <div class="floating-overlay" id="floatingOverlay"></div>
+  
+  <!-- Tarjeta flotante para línea de tiempo -->
+  <div class="floating-card" id="timelineCard">
+    <h3 style="color: var(--neon); margin-bottom: 16px;">📊 Línea de tiempo IA</h3>
+    <div style="background: rgba(0,0,0,0.3); padding: 16px; border-radius: 12px;">
+      <p><strong>1956:</strong> Conferencia Dartmouth - Nacimiento oficial de la IA</p>
+      <p><strong>1980s:</strong> Era de sistemas expertos comerciales</p>
+      <p><strong>1997:</strong> Deep Blue derrota a Kasparov</p>
+      <p><strong>2006:</strong> Inicio del deep learning moderno</p>
+      <p><strong>2012:</strong> AlexNet revoluciona visión computacional</p>
+      <p><strong>2017:</strong> Transformers cambian el PLN</p>
+      <p><strong>2022:</strong> ChatGPT democratiza la IA generativa</p>
+      <p><strong>2024:</strong> Era de IA multimodal y agentes autónomos</p>
+    </div>
+    <button class="interactive-btn" onclick="closeFloatingCard()">Cerrar</button>
+  </div>
+  
+  <!-- Tarjeta flotante para mapa regulatorio -->
+  <div class="floating-card" id="regulationCard">
+    <h3 style="color: var(--neon); margin-bottom: 16px;">🗺️ Regulación global de IA</h3>
+    <div style="background: rgba(0,0,0,0.3); padding: 16px; border-radius: 12px;">
+      <p><strong>🇪🇺 Unión Europea:</strong> AI Act (2024) - Más estricto</p>
+      <p><strong>🇺🇸 Estados Unidos:</strong> NIST AI RMF - Voluntario</p>
+      <p><strong>🇨🇳 China:</strong> Regulación por sectores - Restrictiva</p>
+      <p><strong>🇬🇧 Reino Unido:</strong> Enfoque pro-innovación</p>
+      <p><strong>🇯🇵 Japón:</strong> Human-centric AI principles</p>
+      <p><strong>🇰🇷 Corea del Sur:</strong> K-AI Strategy 2030</p>
+    </div>
+    <button class="interactive-btn" onclick="closeFloatingCard()">Cerrar</button>
+  </div>
+
+  <!-- Lista rápida -->
+  <aside class="quicklist" id="quicklist">
+    <div class="ql-panel">
+      <div class="ql-header">
+        <h3>Navegación Rápida - Semana 1</h3>
+        <button class="btn" id="qlClose">Cerrar</button>
+      </div>
+      <div class="ql-body">
+        <div class="ql-weeks" id="qlWeeks">
+          <button class="active">Semana 1 (12 slides)</button>
+        </div>
+        <div class="ql-slides" id="qlSlides"></div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Modal ayuda -->
+  <div class="modal" id="helpModal">
+    <div class="box">
+      <h2>Atajos de teclado</h2>
+      <ul>
+        <li><strong>←/→</strong> navegar entre diapositivas</li>
+        <li><strong>H</strong> ir al índice · <strong>L</strong> lista rápida · <strong>F</strong> pantalla completa</li>
+        <li><strong>P</strong> auto-play · <strong>O</strong> pausa · <strong>R</strong> reiniciar</li>
+        <li><strong>?</strong> mostrar/ocultar ayuda</li>
+      </ul>
+      <div style="text-align:right; margin-top: 20px;"><button class="btn" id="helpClose">Entendido</button></div>
+    </div>
+  </div>
+
+  <script>
+    (function(){
+      const slides = Array.from(document.querySelectorAll('.slide'));
+      let currentIndex = 0;
+      let quizScore = 0;
+      let totalQuizQuestions = 5;
+      let questionsAnswered = 0;
+      
+      const prevBtn = document.getElementById('prevBtn');
+      const nextBtn = document.getElementById('nextBtn');
+      const quickBtn = document.getElementById('quickBtn');
+      const fullBtn = document.getElementById('fullBtn');
+      const helpBtn = document.getElementById('helpBtn');
+      const playBtn = document.getElementById('playBtn');
+      const pauseBtn = document.getElementById('pauseBtn');
+      const resetBtn = document.getElementById('resetBtn');
+      const ql = document.getElementById('quicklist');
+      const qlSlides = document.getElementById('qlSlides');
+      const qlClose = document.getElementById('qlClose');
+      const helpModal = document.getElementById('helpModal');
+      const helpClose = document.getElementById('helpClose');
+
+      function show(i){
+        if(i<0||i>=slides.length) return;
+        slides[currentIndex].classList.remove('active');
+        currentIndex = i;
+        slides[currentIndex].classList.add('active');
+        
+        // Actualizar progreso
+        const prog = slides[currentIndex].querySelector('.progress i');
+        if(prog){ 
+          prog.style.width = (((currentIndex+1)/slides.length)*100).toFixed(1)+'%'; 
+        }
+        
+        // Actualizar contador
+        const footer = slides[currentIndex].querySelector('.footer span');
+        if(footer){ 
+          footer.textContent = (currentIndex+1)+'/'+slides.length; 
+        }
+      }
+
+      function next(){ show(Math.min(slides.length-1, currentIndex+1)); }
+      function prev(){ show(Math.max(0, currentIndex-1)); }
+      function home(){ show(0); }
+
+      prevBtn.onclick = prev; 
+      nextBtn.onclick = next;
+      
+      document.addEventListener('keydown', e=>{
+        if(e.key==='ArrowRight') next();
+        else if(e.key==='ArrowLeft') prev();
+        else if(e.key.toLowerCase()==='h') window.location.href='index_curso_ia_2025.html';
+        else if(e.key.toLowerCase()==='l') openQL();
+        else if(e.key.toLowerCase()==='f') toggleFull();
+        else if(e.key.toLowerCase()==='p') startAuto();
+        else if(e.key.toLowerCase()==='o') stopAuto();
+        else if(e.key.toLowerCase()==='r') { stopAuto(); home(); }
+        else if(e.key==='?' || (e.shiftKey && e.key==='/' )) helpModal.style.display='block';
+      });
+
+      // Quick list
+      function renderQL(){
+        qlSlides.innerHTML='';
+        slides.forEach((s,j)=>{
+          const it = document.createElement('div');
+          it.className='ql-slide';
+          const title = s.querySelector('h1,h2')?.textContent || 'Diapositiva';
+          it.textContent = (j+1)+'. '+title;
+          it.onclick = ()=>{ ql.style.display='none'; show(j); }
+          qlSlides.appendChild(it);
+        });
+      }
+      
+      function openQL(){ renderQL(); ql.style.display='block'; }
+      function closeQL(){ ql.style.display='none'; }
+      quickBtn.onclick = openQL; 
+      qlClose.onclick = closeQL;
+
+      // Fullscreen
+      function toggleFull(){
+        if(!document.fullscreenElement){ 
+          document.documentElement.requestFullscreen?.(); 
+        } else { 
+          document.exitFullscreen?.(); 
+        }
+      }
+      fullBtn.onclick = toggleFull;
+
+      // Ayuda
+      helpBtn.onclick = ()=> helpModal.style.display='block';
+      helpClose.onclick = ()=> helpModal.style.display='none';
+      helpModal.addEventListener('click', e=>{
+        if(e.target===helpModal) helpModal.style.display='none';
+      });
+
+      // Auto play
+      let timer=null;
+      function startAuto(){ 
+        if(timer) return; 
+        playBtn.setAttribute('aria-pressed','true'); 
+        timer=setInterval(()=>{ 
+          if(currentIndex>=slides.length-1){ 
+            stopAuto(); 
+          } else next(); 
+        }, 6000); 
+      }
+      
+      function stopAuto(){ 
+        if(timer){ 
+          clearInterval(timer); 
+          timer=null; 
+          playBtn.setAttribute('aria-pressed','false'); 
+        } 
+      }
+      
+      playBtn.onclick = startAuto; 
+      pauseBtn.onclick = stopAuto; 
+      resetBtn.onclick = ()=>{ stopAuto(); home(); };
+
+      // Funciones interactivas globales
+      window.showTimeline = function() {
+        document.getElementById('floatingOverlay').classList.add('active');
+        document.getElementById('timelineCard').classList.add('active');
+      }
+      
+      window.showRegulationMap = function() {
+        document.getElementById('floatingOverlay').classList.add('active');
+        document.getElementById('regulationCard').classList.add('active');
+      }
+      
+      window.closeFloatingCard = function() {
+        document.getElementById('floatingOverlay').classList.remove('active');
+        document.querySelectorAll('.floating-card').forEach(card => {
+          card.classList.remove('active');
+        });
+      }
+      
+      window.startPLNQuiz = function() {
+        alert('🧠 Quiz PLN: ¡Ve a la slide 7 para el quiz completo!');
+        show(6); // Ir a slide 7 (índice 6)
+      }
+      
+      window.selectOption = function(element, isCorrect) {
+        // Remover selección previa en el mismo quiz
+        const quizContainer = element.closest('.quiz-container');
+        quizContainer.querySelectorAll('.quiz-option').forEach(opt => {
+          opt.classList.remove('selected', 'correct', 'incorrect');
+        });
+        
+        // Marcar la opción seleccionada
+        element.classList.add('selected');
+        
+        // Mostrar resultado después de un momento
+        setTimeout(() => {
+          if (isCorrect) {
+            element.classList.add('correct');
+            quizScore++;
+          } else {
+            element.classList.add('incorrect');
+            // Mostrar la respuesta correcta
+            quizContainer.querySelectorAll('.quiz-option').forEach(opt => {
+              if (opt.onclick.toString().includes('true')) {
+                opt.classList.add('correct');
+              }
+            });
+          }
+          
+          questionsAnswered++;
+          updateQuizScore();
+        }, 500);
+      }
+      
+      function updateQuizScore() {
+        const scoreElement = document.getElementById('quizScore');
+        if (scoreElement) {
+          scoreElement.textContent = `Puntuación: ${quizScore}/${totalQuizQuestions} (${questionsAnswered} respondidas)`;
+        }
+      }
+      
+      window.resetQuiz = function() {
+        quizScore = 0;
+        questionsAnswered = 0;
+        document.querySelectorAll('.quiz-option').forEach(opt => {
+          opt.classList.remove('selected', 'correct', 'incorrect');
+        });
+        updateQuizScore();
+      }
+
+      // Cerrar tarjetas flotantes al hacer clic en overlay
+      document.getElementById('floatingOverlay').addEventListener('click', window.closeFloatingCard);
+
+      // Inicialización
+      slides[0].classList.add('active');
+      show(0);
+      updateQuizScore();
+    })();
+  </script>
+
+<script>
+(function(){
+  // Font size controls in Vista block
+  const root = document.documentElement;
+  function getBase(){ return parseInt(getComputedStyle(root).getPropertyValue('--base-font'))||16; }
+  function setBase(v){ root.style.setProperty('--base-font', v + 'px'); }
+  const dec = document.getElementById('fontDec');
+  const res = document.getElementById('fontReset');
+  const inc = document.getElementById('fontInc');
+  if(dec) dec.addEventListener('click', ()=> setBase(Math.max(14, getBase()-1)));
+  if(res) res.addEventListener('click', ()=> setBase(16));
+  if(inc) inc.addEventListener('click', ()=> setBase(Math.min(22, getBase()+1)));
+
+  // Media dock toggle
+  const dock = document.getElementById('mediaDock');
+  const mediaBtn = document.getElementById('mediaBtn');
+  if(mediaBtn && dock){
+    mediaBtn.addEventListener('click', ()=> dock.style.display = (dock.style.display==='none'||dock.style.display==='') ? 'block':'none');
+  }
+
+  // Lazy embed handlers
+  const fig = document.getElementById('mediaFigure');
+  const vBtn = document.getElementById('loadVideo');
+  const iBtn = document.getElementById('showImage');
+
+  if(vBtn && fig){
+    vBtn.addEventListener('click', ()=>{
+      fig.innerHTML = '';
+      const iframe = document.createElement('iframe');
+      iframe.width = '100%';
+      iframe.height = '100%';
+      iframe.style.aspectRatio = '16/9';
+      iframe.loading = 'lazy';
+      iframe.title = 'Video explicativo';
+      // You can replace the URL with any embed (YouTube, Vimeo, etc.).
+      iframe.src = 'https://www.youtube-nocookie.com/embed/2ePf9rue1Ao?rel=0&modestbranding=1';
+      iframe.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen');
+      fig.appendChild(iframe);
+    });
+  }
+  if(iBtn && fig){
+    iBtn.addEventListener('click', ()=>{
+      fig.innerHTML = '';
+      const img = document.createElement('img');
+      img.src = 'https://images.unsplash.com/photo-1555252586-b1a879ad0783?q=80&w=1200&auto=format&fit=crop';
+      img.alt = 'Ilustración de IA / esquema de la semana';
+      img.loading = 'lazy';
+      img.style.width = '100%';
+      img.style.aspectRatio = '16/9';
+      img.style.objectFit = 'cover';
+      fig.appendChild(img);
+    });
+  }
+})();
+</script>
+
+<script>
+(function(){
+  const root = document.documentElement;
+  // Theme toggle
+  const tBtn = document.getElementById('themeToggle');
+  if(tBtn){
+    tBtn.addEventListener('click', ()=>{
+      const cur = root.getAttribute('data-theme') || 'light';
+      root.setAttribute('data-theme', cur === 'light' ? 'dark' : 'light');
+    });
+  }
+
+  // Media dock state controls
+  const dock = document.getElementById('mediaDock');
+  const minB = document.getElementById('mediaMin');
+  const maxB = document.getElementById('mediaMax');
+  const hidB = document.getElementById('mediaHide');
+  const mediaBtn = document.getElementById('mediaBtn'); // toggle from Vista block
+
+  function ensureVisible(){ if(dock && dock.classList.contains('is-hidden')) dock.classList.remove('is-hidden'); }
+  if(mediaBtn && dock){
+    mediaBtn.addEventListener('click', ()=>{
+      dock.classList.toggle('is-hidden');
+    });
+  }
+  if(minB && dock){
+    minB.addEventListener('click', ()=>{ ensureVisible(); dock.classList.toggle('is-min'); dock.classList.remove('is-max'); });
+  }
+  if(maxB && dock){
+    maxB.addEventListener('click', ()=>{ ensureVisible(); dock.classList.toggle('is-max'); dock.classList.remove('is-min'); });
+  }
+  if(hidB && dock){
+    hidB.addEventListener('click', ()=> dock.classList.add('is-hidden'));
+  }
+  // ESC closes max mode
+  document.addEventListener('keydown', (e)=>{
+    if(e.key === 'Escape' && dock && dock.classList.contains('is-max')){
+      dock.classList.remove('is-max');
+    }
+  }, {passive:true});
+
+  // Lazy embed handlers (keep from previous version if present)
+  const fig = document.getElementById('mediaFigure');
+  const vBtn = document.getElementById('loadVideo');
+  const iBtn = document.getElementById('showImage');
+  if(vBtn && fig){
+    vBtn.addEventListener('click', ()=>{
+      fig.innerHTML = '';
+      const iframe = document.createElement('iframe');
+      iframe.width = '100%';
+      iframe.height = '100%';
+      iframe.style.aspectRatio = '16/9';
+      iframe.loading = 'lazy';
+      iframe.title = 'Video explicativo';
+      iframe.src = 'https://www.youtube-nocookie.com/embed/2ePf9rue1Ao?rel=0&modestbranding=1';
+      iframe.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen');
+      fig.appendChild(iframe);
+    });
+  }
+  if(iBtn && fig){
+    iBtn.addEventListener('click', ()=>{
+      fig.innerHTML = '';
+      const img = document.createElement('img');
+      img.src = 'https://images.unsplash.com/photo-1555252586-b1a879ad0783?q=80&w=1200&auto=format&fit=crop';
+      img.alt = 'Ilustración de IA / esquema de la semana';
+      img.loading = 'lazy';
+      img.style.width = '100%';
+      img.style.aspectRatio = '16/9';
+      img.style.objectFit = 'cover';
+      fig.appendChild(img);
+    });
+  }
+})();
+</script>
+
+
+<script>
+(function(){
+  // --- Slide-specific media mapping (Semana 1) ---
+  
+  const mediaBySlide = {
+    1: { default: 'video',
+         video: 'https://www.youtube-nocookie.com/embed/_tA5cinv0U8?rel=0&modestbranding=1',
+         image: 'https://cdn.pixabay.com/photo/2024/05/18/07/56/robot-8769801_1280.jpg' },
+    2: { default: 'image',
+         video: 'https://www.youtube-nocookie.com/embed/mykrieNb9p0?rel=0&modestbranding=1',
+         image: 'https://inlocrobotics.com/wp-content/uploads/2021/03/evolucion-de-la-inteligencia-artificial.jpg' },
+    3: { default: 'image',
+         video: 'https://www.youtube-nocookie.com/embed/sw8LN2UaNbI?rel=0&modestbranding=1',
+         image: 'https://ignos.blog/wp-content/uploads/2022/06/ia-branches-e1656060441448-768x474.png' },
+    4: { default: 'image',
+         video: 'https://www.youtube-nocookie.com/embed/RACMePfrhfM?rel=0&modestbranding=1',
+         image: 'https://serenitystar.ai/wp-content/uploads/2025/02/Procesamiento-natural-del-lenguaje-PLN-1080x675.webp' },
+    5: { default: 'image',
+         video: 'https://www.youtube-nocookie.com/embed/tz8FE5fCrXw?rel=0&modestbranding=1',
+         image: 'https://www.gaceta.unam.mx/wp-content/uploads/2020/09/200928-Gob1-des-f1-areas-tecnologicas-de-frontera.jpg' },
+    6: { default: 'image',
+         video: 'https://www.youtube-nocookie.com/embed/VSN-9iQqRR4?rel=0&modestbranding=1',
+         image: 'https://cdn.inspenet.com/IMG-P-ESP-shutterstock_2451218363-Industria-5.0-vs.-Industria-4.0-Principales-diferencias-y-beneficios.webp' },
+    7: { default: 'video',
+         video: 'https://www.youtube-nocookie.com/embed/CjdusCm73p0?rel=0&modestbranding=1' },
+    8: { default: 'video',
+         video: 'https://www.youtube-nocookie.com/embed/sqLLsC3cJtE?rel=0&modestbranding=1' },
+    9: { default: 'image',
+         video: 'https://www.youtube-nocookie.com/embed/QWFUaDfg0Ks?rel=0&modestbranding=1',
+         image: 'https://i0.wp.com/revistaidees.cat/wp-content/uploads/2020/02/AAFF-REFLEXION-SOBRE-LA-ETICA-2000X800.jpg?fit=2000%2C800&ssl=1' }
+  };
+
+
+  function getActiveSlideNumber(){
+    const s = document.querySelector('.slide.active');
+    return Number(s?.dataset?.slide || 1);
+  }
+  function setDockTitle(n){
+    const t = document.querySelector('#mediaDock .dock-title');
+    if(t){ t.textContent = 'Recursos — Slide ' + n; }
+  }
+  function showVideo(url){
+    const fig = document.getElementById('mediaFigure');
+    if(!fig) return;
+    fig.innerHTML = '';
+    const iframe = document.createElement('iframe');
+    iframe.width = '100%';
+    iframe.style.aspectRatio = '16/9';
+    iframe.loading = 'lazy';
+    iframe.title = 'Video explicativo';
+    iframe.src = url;
+    iframe.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen');
+    fig.appendChild(iframe);
+  }
+  function showImage(url){
+    const fig = document.getElementById('mediaFigure');
+    if(!fig) return;
+    fig.innerHTML = '';
+    const img = document.createElement('img');
+    img.src = url;
+    img.alt = 'Recurso visual de la slide';
+    img.loading = 'lazy';
+    img.style.width = '100%';
+    img.style.aspectRatio = '16/9';
+    img.style.objectFit = 'cover';
+    fig.appendChild(img);
+  }
+  function renderForSlide(n, prefer){
+    const cfg = mediaBySlide[n]; setDockTitle(n); if(!cfg) return;
+    const which = prefer || cfg.default || 'image';
+    if(which === 'video'){
+      if(cfg.video) return showVideo(cfg.video);
+      if(cfg.image) return showImage(cfg.image);
+      return;
+    }else{
+      if(cfg.image) return showImage(cfg.image);
+      if(cfg.video) return showVideo(cfg.video);
+      return;
+    }
+  }
+
+  // Replace previous handlers by cloning the buttons (removes old listeners)
+  function replaceHandler(id, handler){
+    const old = document.getElementById(id);
+    if(!old) return;
+    const clone = old.cloneNode(true);
+    old.parentNode.replaceChild(clone, old);
+    clone.addEventListener('click', handler);
+  }
+
+  // Buttons use current slide mapping
+  replaceHandler('loadVideo', ()=> renderForSlide(getActiveSlideNumber(), 'video'));
+  replaceHandler('showImage', ()=> renderForSlide(getActiveSlideNumber(), 'image'));
+
+  // Observe slide changes (class "active" toggles)
+  const deck = document.getElementById('deck');
+  if(deck){
+    const mo = new MutationObserver((muts)=>{
+      if(muts.some(m => m.type==='attributes' && m.attributeName==='class')){
+        const n = getActiveSlideNumber();
+        renderForSlide(n);
+      }
+    });
+    mo.observe(deck, {subtree:true, attributes:true, attributeFilter:['class']});
+  }
+
+  // Also hook prev/next buttons (in case class change is delayed)
+  ['prevBtn','nextBtn'].forEach(id=>{
+    const b = document.getElementById(id);
+    if(b) b.addEventListener('click', ()=> {
+      setTimeout(()=> renderForSlide(getActiveSlideNumber()), 120);
+    });
+  });
+
+  // Initial render on load
+  document.addEventListener('DOMContentLoaded', ()=> {
+    renderForSlide(getActiveSlideNumber());
+  });
+})();
+</script>
+
+
+<script>
+(function(){
+  document.addEventListener('click', function(e){
+    const opt = e.target.closest && e.target.closest('.quiz-option');
+    if(!opt) return;
+    let isCorrect = false;
+    const oc = opt.getAttribute('onclick')||'';
+    if(/selectOption\(this,\s*true\)/.test(oc) || opt.dataset.correct === 'true') isCorrect = true;
+    if(typeof window.selectOption === 'function'){
+      e.preventDefault();
+      window.selectOption(opt, isCorrect);
+    }
+  }, {passive:false});
+})();
+</script>
+
+<script>
+(function(){
+  function setRibbonVar(){
+    const r = document.querySelector('.ribbon');
+    const b = document.querySelector('.brand-bar');
+    const h = (r?.offsetHeight || 0) + (b?.offsetHeight || 0) + 8;
+    document.documentElement.style.setProperty('--ribbon-h', (h>56? h: 56) + 'px');
+  }
+  setRibbonVar();
+  window.addEventListener('resize', setRibbonVar);
+  // Re-run after fonts load or theme changes
+  document.addEventListener('DOMContentLoaded', setRibbonVar);
+  setTimeout(setRibbonVar, 250);
+
+  function scrollActive(){
+    const active = document.querySelector('.slide.active');
+    if(!active) return;
+    const off = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--ribbon-h')) || 96;
+    const top = active.getBoundingClientRect().top + window.pageYOffset - (off + 8);
+    window.scrollTo({top, behavior:'smooth'});
+  }
+
+  // Hook prev/next buttons if exist
+  ['prevBtn','nextBtn'].forEach(id=>{
+    const b = document.getElementById(id);
+    if(b) b.addEventListener('click', ()=> setTimeout(scrollActive, 120));
+  });
+  // Also observe slide class changes
+  const deck = document.getElementById('deck');
+  if(deck){
+    const mo = new MutationObserver(muts=>{
+      if(muts.some(m=> m.type==='attributes' && m.attributeName==='class')){
+        scrollActive();
+      }
+    });
+    mo.observe(deck, {subtree:true, attributes:true, attributeFilter:['class']});
+  }
+})();
+</script>
+
+
+<script>
+(function(){
+  function bindQuizOptions(){
+    var opts = document.querySelectorAll('.quiz-option');
+    opts.forEach(function(el){
+      if(el.dataset.bound === '1') return;
+      el.dataset.bound = '1';
+      el.addEventListener('click', function(e){
+        var oc = el.getAttribute('onclick')||'';
+        var isCorrect = /selectOption\(this,\s*true\)/.test(oc) || el.dataset.correct === 'true';
+        if(typeof window.selectOption === 'function'){
+          e.preventDefault(); e.stopPropagation();
+          window.selectOption(el, isCorrect);
+        }
+      }, true);
+    });
+  }
+  document.addEventListener('DOMContentLoaded', bindQuizOptions);
+  var deck = document.getElementById('deck');
+  if(deck){
+    var mo = new MutationObserver(bindQuizOptions);
+    mo.observe(deck, {subtree:true, childList:true, attributes:true});
+  }
+  bindQuizOptions();
+})();
+</script>
+</body>
+</html>
