@@ -1,0 +1,1449 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>🧠 Quiz IA Semana 2 - Modo Kahoot Futurista</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600;700&display=swap');
+    
+    :root {
+      --bg: #0a0e1a;
+      --panel: #0d1426ee;
+      --ink: #e8f4ff;
+      --muted: #9bb0d1;
+      --neon: #00d4ff;
+      --neon2: #7c3aed;
+      --accent: #ff6b35;
+      --success: #00ff88;
+      --warn: #ffd93d;
+      --danger: #ff4757;
+      --steel: #6c7b95;
+      --grad-primary: linear-gradient(135deg, var(--neon) 0%, var(--neon2) 100%);
+      --grad-panel: linear-gradient(180deg, #0f1b2e, #0a1628);
+    }
+    
+    * { box-sizing: border-box; }
+    
+    body {
+      margin: 0;
+      font: 16px/1.6 'Exo 2', system-ui, sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(1200px 600px at 80% -10%, #1e3a8a20 0%, transparent 70%),
+        radial-gradient(800px 400px at 10% 110%, #7c2d1230 0%, transparent 60%),
+        radial-gradient(600px 300px at 50% 50%, #0f172a80 0%, transparent 50%),
+        linear-gradient(180deg, var(--bg) 0%, #0f1419 100%);
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+    }
+    
+    /* Partículas animadas */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: 
+        radial-gradient(2px 2px at 20px 30px, var(--neon), transparent),
+        radial-gradient(2px 2px at 40px 70px, var(--accent), transparent),
+        radial-gradient(1px 1px at 90px 40px, var(--neon2), transparent),
+        radial-gradient(1px 1px at 130px 80px, var(--success), transparent);
+      background-repeat: repeat;
+      background-size: 200px 100px;
+      opacity: 0.1;
+      animation: particles 20s linear infinite;
+      z-index: 0;
+    }
+    
+    @keyframes particles {
+      from { transform: translate(0, 0); }
+      to { transform: translate(-200px, -100px); }
+    }
+    
+    /* Contenedor principal */
+    .quiz-container {
+      position: relative;
+      z-index: 1;
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 20px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    
+    /* Header del quiz */
+    .quiz-header {
+      text-align: center;
+      margin-bottom: 30px;
+      padding: 30px;
+      background: var(--grad-panel);
+      border: 1px solid rgba(36, 58, 97, 0.6);
+      border-radius: 28px;
+      box-shadow: 0 25px 70px #0010, inset 0 0 0 1px #243a61;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .quiz-header::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--grad-primary);
+      border-radius: 28px 28px 0 0;
+    }
+    
+    .quiz-title {
+      font: 900 clamp(2rem, 6vw, 3.5rem)/1.1 'Orbitron', monospace;
+      background: var(--grad-primary);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 15px;
+      animation: titleGlow 3s ease-in-out infinite alternate;
+    }
+    
+    @keyframes titleGlow {
+      from { filter: drop-shadow(0 0 20px rgba(0, 212, 255, 0.3)); }
+      to { filter: drop-shadow(0 0 30px rgba(124, 58, 237, 0.4)); }
+    }
+    
+    .quiz-subtitle {
+      font: 600 1.3rem 'Exo 2', sans-serif;
+      color: var(--muted);
+      margin-bottom: 20px;
+    }
+    
+    /* Stats del quiz */
+    .quiz-stats {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      margin: 20px 0;
+      flex-wrap: wrap;
+    }
+    
+    .stat-box {
+      background: linear-gradient(145deg, #0f1d38, #0a1628);
+      border: 1px solid rgba(0, 212, 255, 0.3);
+      border-radius: 16px;
+      padding: 15px 20px;
+      text-align: center;
+      min-width: 120px;
+    }
+    
+    .stat-number {
+      font: 700 1.8rem 'Orbitron', monospace;
+      color: var(--neon);
+      display: block;
+      text-shadow: 0 0 15px rgba(0, 212, 255, 0.5);
+    }
+    
+    .stat-label {
+      font-size: 0.9rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+    
+    /* Pantalla de pregunta */
+    .question-screen {
+      display: none;
+      background: var(--grad-panel);
+      border: 1px solid rgba(36, 58, 97, 0.6);
+      border-radius: 28px;
+      padding: 40px;
+      box-shadow: 0 25px 70px #0010;
+      position: relative;
+      overflow: hidden;
+      animation: slideIn 0.5s ease;
+    }
+    
+    .question-screen.active {
+      display: block;
+    }
+    
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(30px) scale(0.95); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    
+    .question-screen::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--grad-primary);
+      border-radius: 28px 28px 0 0;
+    }
+    
+    /* Barra de progreso */
+    .progress-bar {
+      background: linear-gradient(90deg, #0a1a35, #0f1e3a);
+      border-radius: 999px;
+      height: 12px;
+      margin-bottom: 30px;
+      overflow: hidden;
+      border: 1px solid #1e2f5b;
+    }
+    
+    .progress-fill {
+      height: 100%;
+      background: var(--grad-primary);
+      width: 0;
+      transition: width 0.5s ease;
+      border-radius: inherit;
+      position: relative;
+    }
+    
+    .progress-fill::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: -20px;
+      width: 20px;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3));
+      animation: progressGlow 2s ease-in-out infinite;
+    }
+    
+    @keyframes progressGlow {
+      0%, 100% { opacity: 0; }
+      50% { opacity: 1; }
+    }
+    
+    /* Información de la pregunta */
+    .question-info {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 25px;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+    
+    .question-number {
+      font: 700 1.1rem 'Orbitron', monospace;
+      color: var(--neon);
+      background: rgba(0, 212, 255, 0.1);
+      padding: 8px 16px;
+      border-radius: 20px;
+      border: 1px solid rgba(0, 212, 255, 0.3);
+    }
+    
+    .topic-badge {
+      font: 600 0.9rem 'Orbitron', monospace;
+      color: var(--accent);
+      background: rgba(255, 107, 53, 0.1);
+      padding: 6px 12px;
+      border-radius: 15px;
+      border: 1px solid rgba(255, 107, 53, 0.3);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    
+    .timer {
+      font: 700 1.2rem 'Orbitron', monospace;
+      color: var(--warn);
+      background: rgba(255, 217, 61, 0.1);
+      padding: 8px 16px;
+      border-radius: 20px;
+      border: 1px solid rgba(255, 217, 61, 0.3);
+      animation: timerPulse 1s ease-in-out infinite;
+    }
+    
+    @keyframes timerPulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+    
+    /* Pregunta */
+    .question-text {
+      font: 600 clamp(1.3rem, 3vw, 1.8rem)/1.4 'Exo 2', sans-serif;
+      color: var(--ink);
+      text-align: center;
+      margin-bottom: 35px;
+      padding: 20px;
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 16px;
+      border-left: 4px solid var(--neon);
+    }
+    
+    /* Opciones de respuesta */
+    .options-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+    
+    .option {
+      background: linear-gradient(145deg, #1a2456, #0f1732);
+      border: 2px solid rgba(0, 212, 255, 0.3);
+      border-radius: 16px;
+      padding: 20px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      text-align: center;
+      font: 600 1.1rem 'Exo 2', sans-serif;
+      min-height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .option::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(0, 212, 255, 0.1), transparent);
+      transition: 0.5s;
+    }
+    
+    .option:hover {
+      transform: translateY(-5px) scale(1.02);
+      border-color: var(--neon);
+      box-shadow: 0 15px 40px rgba(0, 212, 255, 0.3);
+      background: linear-gradient(145deg, #2a3f6f, #1a2d47);
+    }
+    
+    .option:hover::before {
+      left: 100%;
+    }
+    
+    .option.selected {
+      border-color: var(--warn);
+      background: linear-gradient(145deg, #3d3620, #2d2615);
+      animation: optionSelected 0.5s ease;
+    }
+    
+    .option.correct {
+      border-color: var(--success);
+      background: linear-gradient(145deg, #1a3d2e, #0f2519);
+      animation: correctAnswer 0.6s ease;
+    }
+    
+    .option.incorrect {
+      border-color: var(--danger);
+      background: linear-gradient(145deg, #3d1a2e, #2d0f19);
+      animation: incorrectAnswer 0.6s ease;
+    }
+    
+    @keyframes optionSelected {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+    
+    @keyframes correctAnswer {
+      0% { transform: scale(1); }
+      25% { transform: scale(1.1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+    
+    @keyframes incorrectAnswer {
+      0% { transform: translateX(0); }
+      25% { transform: translateX(-10px); }
+      50% { transform: translateX(10px); }
+      75% { transform: translateX(-5px); }
+      100% { transform: translateX(0); }
+    }
+    
+    /* Colores específicos para opciones tipo Kahoot */
+    .option.option-a { background: linear-gradient(145deg, #e21b3c, #c41e3a); }
+    .option.option-b { background: linear-gradient(145deg, #1368ce, #0f4c81); }
+    .option.option-c { background: linear-gradient(145deg, #ffa602, #cc8500); }
+    .option.option-d { background: linear-gradient(145deg, #26890c, #1e6b0a); }
+    
+    .option.option-a:hover { background: linear-gradient(145deg, #ff4757, #e21b3c); }
+    .option.option-b:hover { background: linear-gradient(145deg, #3742fa, #1368ce); }
+    .option.option-c:hover { background: linear-gradient(145deg, #ffa502, #ffa602); }
+    .option.option-d:hover { background: linear-gradient(145deg, #2ed573, #26890c); }
+    
+    /* Feedback */
+    .feedback {
+      background: linear-gradient(145deg, #0f1d38, #0a1628);
+      border: 1px solid rgba(36, 52, 102, 0.8);
+      border-radius: 16px;
+      padding: 20px;
+      margin: 20px 0;
+      text-align: center;
+      display: none;
+      animation: feedbackSlide 0.5s ease;
+    }
+    
+    .feedback.show {
+      display: block;
+    }
+    
+    @keyframes feedbackSlide {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .feedback.correct {
+      border-color: var(--success);
+      background: linear-gradient(145deg, rgba(0, 255, 136, 0.1), rgba(0, 255, 136, 0.05));
+    }
+    
+    .feedback.incorrect {
+      border-color: var(--danger);
+      background: linear-gradient(145deg, rgba(255, 71, 87, 0.1), rgba(255, 71, 87, 0.05));
+    }
+    
+    .feedback-emoji {
+      font-size: 3rem;
+      margin-bottom: 10px;
+      display: block;
+      animation: bounce 0.6s ease;
+    }
+    
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+    
+    .feedback-text {
+      font: 600 1.2rem 'Exo 2', sans-serif;
+      margin-bottom: 10px;
+    }
+    
+    .feedback-explanation {
+      font-size: 1rem;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+    
+    /* Botones */
+    .btn {
+      background: var(--grad-primary);
+      color: white;
+      border: none;
+      padding: 15px 30px;
+      border-radius: 25px;
+      font: 600 1.1rem 'Exo 2', sans-serif;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      box-shadow: 0 10px 30px rgba(0, 212, 255, 0.3);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: 0.5s;
+    }
+    
+    .btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 15px 40px rgba(0, 212, 255, 0.4);
+    }
+    
+    .btn:hover::before {
+      left: 100%;
+    }
+    
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+    
+    .btn-secondary {
+      background: linear-gradient(145deg, #6c7b95, #5a6b85);
+      box-shadow: 0 10px 30px rgba(108, 123, 149, 0.3);
+    }
+    
+    .btn-secondary:hover {
+      box-shadow: 0 15px 40px rgba(108, 123, 149, 0.4);
+    }
+    
+    /* Pantalla de resultados */
+    .results-screen {
+      display: none;
+      text-align: center;
+      background: var(--grad-panel);
+      border: 1px solid rgba(36, 58, 97, 0.6);
+      border-radius: 28px;
+      padding: 40px;
+      box-shadow: 0 25px 70px #0010;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .results-screen.active {
+      display: block;
+      animation: slideIn 0.5s ease;
+    }
+    
+    .results-screen::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--grad-primary);
+      border-radius: 28px 28px 0 0;
+    }
+    
+    .final-score {
+      font: 900 4rem 'Orbitron', monospace;
+      background: var(--grad-primary);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin: 20px 0;
+      animation: scoreGlow 2s ease-in-out infinite alternate;
+    }
+    
+    @keyframes scoreGlow {
+      from { filter: drop-shadow(0 0 20px rgba(0, 212, 255, 0.5)); }
+      to { filter: drop-shadow(0 0 40px rgba(124, 58, 237, 0.7)); }
+    }
+    
+    .results-message {
+      font: 600 1.5rem 'Exo 2', sans-serif;
+      color: var(--ink);
+      margin: 20px 0;
+    }
+    
+    .results-details {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      margin: 30px 0;
+    }
+    
+    /* Botones de acción */
+    .action-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-top: 30px;
+      flex-wrap: wrap;
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+      .quiz-container {
+        padding: 10px;
+      }
+      
+      .quiz-header, .question-screen, .results-screen {
+        padding: 20px;
+        border-radius: 20px;
+      }
+      
+      .options-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+      }
+      
+      .option {
+        padding: 15px;
+        min-height: 60px;
+        font-size: 1rem;
+      }
+      
+      .quiz-stats {
+        gap: 15px;
+      }
+      
+      .stat-box {
+        min-width: 100px;
+        padding: 10px 15px;
+      }
+      
+      .question-info {
+        justify-content: center;
+        text-align: center;
+      }
+      
+      .action-buttons {
+        flex-direction: column;
+        align-items: center;
+      }
+      
+      .btn {
+        width: 100%;
+        max-width: 300px;
+      }
+    }
+    
+    /* Animaciones adicionales */
+    .floating-particles {
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      background: var(--neon);
+      border-radius: 50%;
+      animation: float 3s ease-in-out infinite;
+      opacity: 0.6;
+    }
+    
+    @keyframes float {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-20px) rotate(180deg); }
+    }
+    
+    /* Efectos de sonido visual */
+    .sound-wave {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 100px;
+      height: 100px;
+      border: 2px solid var(--neon);
+      border-radius: 50%;
+      animation: soundWave 1s ease-out;
+      pointer-events: none;
+    }
+    
+    @keyframes soundWave {
+      0% {
+        transform: translate(-50%, -50%) scale(0);
+        opacity: 1;
+      }
+      100% {
+        transform: translate(-50%, -50%) scale(3);
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="quiz-container">
+    <!-- Pantalla de inicio -->
+    <div class="quiz-header" id="startScreen">
+      <h1 class="quiz-title">🧠 IA Quiz Futurista</h1>
+      <p class="quiz-subtitle">Semana 2: Sistemas Inteligentes & Lógica Difusa</p>
+      
+      <div class="quiz-stats">
+        <div class="stat-box">
+          <span class="stat-number">18</span>
+          <div class="stat-label">Preguntas</div>
+        </div>
+        <div class="stat-box">
+          <span class="stat-number">6</span>
+          <div class="stat-label">Temas</div>
+        </div>
+        <div class="stat-box">
+          <span class="stat-number">30s</span>
+          <div class="stat-label">Por pregunta</div>
+        </div>
+        <div class="stat-box">
+          <span class="stat-number">∞</span>
+          <div class="stat-label">Diversión</div>
+        </div>
+      </div>
+      
+      <div style="margin: 30px 0;">
+        <p style="color: var(--muted); font-size: 1.1rem; margin-bottom: 20px;">
+          ¿Estás listo para demostrar que eres más inteligente que un sistema experto mal programado? 🤖
+        </p>
+        <p style="color: var(--steel); font-size: 0.95rem;">
+          <strong>Temas:</strong> Reconocimiento de patrones • Robótica • Sistemas Expertos • Lógica Difusa • Agentes • Heurística
+        </p>
+      </div>
+      
+      <div class="action-buttons">
+        <button class="btn" onclick="startQuiz()">🚀 Iniciar Quiz</button>
+        <button class="btn btn-secondary" onclick="showInstructions()">📋 Instrucciones</button>
+      </div>
+    </div>
+    
+    <!-- Pantalla de pregunta -->
+    <div class="question-screen" id="questionScreen">
+      <div class="progress-bar">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+      
+      <div class="question-info">
+        <div class="question-number" id="questionNumber">Pregunta 1/18</div>
+        <div class="topic-badge" id="topicBadge">Reconocimiento</div>
+        <div class="timer" id="timer">30s</div>
+      </div>
+      
+      <div class="question-text" id="questionText">
+        ¿Cuál es la principal diferencia entre un humano reconociendo patrones y una IA?
+      </div>
+      
+      <div class="options-grid" id="optionsGrid">
+        <div class="option option-a" onclick="selectOption(0)">
+          El humano usa café, la IA usa electricidad ⚡
+        </div>
+        <div class="option option-b" onclick="selectOption(1)">
+          La IA nunca se confunde con su ex 💔
+        </div>
+        <div class="option option-c" onclick="selectOption(2)">
+          El humano procesa información contextual y emocional 🧠
+        </div>
+        <div class="option option-d" onclick="selectOption(3)">
+          No hay diferencia, ambos fallan los CAPTCHA 🤖
+        </div>
+      </div>
+      
+      <div class="feedback" id="feedback">
+        <span class="feedback-emoji">🎉</span>
+        <div class="feedback-text">¡Correcto!</div>
+        <div class="feedback-explanation">Exacto, los humanos integran contexto emocional y experiencias previas de manera única.</div>
+      </div>
+      
+      <div class="action-buttons">
+        <button class="btn" id="nextBtn" onclick="nextQuestion()" disabled>Siguiente Pregunta</button>
+      </div>
+    </div>
+    
+    <!-- Pantalla de resultados -->
+    <div class="results-screen" id="resultsScreen">
+      <h2 style="color: var(--neon); font-family: 'Orbitron', monospace; margin-bottom: 20px;">
+        🏆 ¡Quiz Completado!
+      </h2>
+      
+      <div class="final-score" id="finalScore">15/18</div>
+      
+      <div class="results-message" id="resultsMessage">
+        ¡Impresionante! Eres más inteligente que un chatbot básico 🤓
+      </div>
+      
+      <div class="results-details">
+        <div class="stat-box">
+          <span class="stat-number" id="correctAnswers">15</span>
+          <div class="stat-label">Correctas</div>
+        </div>
+        <div class="stat-box">
+          <span class="stat-number" id="incorrectAnswers">3</span>
+          <div class="stat-label">Incorrectas</div>
+        </div>
+        <div class="stat-box">
+          <span class="stat-number" id="accuracy">83%</span>
+          <div class="stat-label">Precisión</div>
+        </div>
+        <div class="stat-box">
+          <span class="stat-number" id="ranking">Experto</span>
+          <div class="stat-label">Nivel</div>
+        </div>
+      </div>
+      
+      <div style="margin: 30px 0; padding: 20px; background: rgba(0, 212, 255, 0.1); border-radius: 16px; border: 1px solid rgba(0, 212, 255, 0.3);">
+        <div id="personalizedMessage"></div>
+      </div>
+      
+      <div class="action-buttons">
+        <button class="btn" onclick="restartQuiz()">🔄 Reintentar</button>
+        <button class="btn btn-secondary" onclick="reviewAnswers()">📊 Revisar Respuestas</button>
+        <button class="btn btn-secondary" onclick="shareResults()">📤 Compartir</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Base de datos de preguntas
+    const questions = [
+      // Reconocimiento de patrones (3 preguntas)
+      {
+        topic: "Reconocimiento",
+        question: "¿Cuál es la principal diferencia entre reconocimiento de patrones humano y de IA?",
+        options: [
+          "El humano usa café, la IA usa electricidad ⚡",
+          "La IA nunca se confunde con su ex 💔", 
+          "El humano procesa información contextual y emocional 🧠",
+          "No hay diferencia, ambos fallan los CAPTCHA 🤖"
+        ],
+        correct: 2,
+        explanation: "¡Exacto! Los humanos integran contexto emocional, experiencias previas y conocimiento del mundo de manera única.",
+        funnyWrong: ["Aunque el café ayuda mucho 😄", "La IA no tiene ex... todavía 🤖", "Los CAPTCHA son el némesis universal 😅"]
+      },
+      {
+        topic: "Reconocimiento", 
+        question: "¿Qué técnica NO es común en reconocimiento de patrones moderno?",
+        options: [
+          "Redes neuronales convolucionales (CNN) 🧠",
+          "Máquinas de vectores de soporte (SVM) 📊",
+          "Lectura de hojas de té ☕",
+          "Algoritmos de bosques aleatorios 🌲"
+        ],
+        correct: 2,
+        explanation: "Las hojas de té son efectivas para predecir el futuro, pero la ciencia aún no las acepta como método válido 😄",
+        funnyWrong: ["Las CNN ven mejor que nosotros", "SVM separa datos como un ninja", "Los bosques aleatorios son muy zen 🧘"]
+      },
+      {
+        topic: "Reconocimiento",
+        question: "¿Cuál es la métrica MÁS importante para evaluar un clasificador?",
+        options: [
+          "Qué tan rápido puede procesar memes 😂",
+          "La precisión (accuracy) siempre 💯",
+          "Depende del problema y el costo de errores ⚖️",
+          "El número de likes en GitHub ⭐"
+        ],
+        correct: 2,
+        explanation: "¡Correcto! En medicina prefieres alta sensibilidad (recall), en spam prefieres alta precisión. ¡Context matters!",
+        funnyWrong: ["Los memes son importantes pero no métrica 😅", "La precisión puede engañar con datos desbalanceados", "Los likes no mejoran F1-score... aún 🤔"]
+      },
+      
+      // Robótica (3 preguntas)
+      {
+        topic: "Robótica",
+        question: "¿Cuál es la diferencia principal entre un robot industrial tradicional y un cobot?",
+        options: [
+          "El cobot usa inteligencia artificial, el tradicional no 🤖",
+          "El cobot puede trabajar seguramente junto a humanos 🤝", 
+          "El cobot es más barato de mantener 💰",
+          "El cobot puede hacer café decente ☕"
+        ],
+        correct: 1,
+        explanation: "¡Exacto! Los cobots están diseñados para colaborar seguramente con humanos mediante sensores de fuerza y limitaciones de potencia.",
+        funnyWrong: ["Los robots tradicionales también pueden usar IA", "Los cobots no son necesariamente más baratos", "Ningún robot hace café como los humanos... aún 😔"]
+      },
+      {
+        topic: "Robótica",
+        question: "¿Qué significa SLAM en robótica?",
+        options: [
+          "Super Loud Automated Machine 🔊",
+          "Simultaneous Localization and Mapping 🗺️",
+          "Systematic Learning And Memory 🧠",
+          "Smart Linear Actuator Movement 🦾"
+        ],
+        correct: 1,
+        explanation: "¡Correcto! SLAM permite a los robots crear mapas mientras se localizan en ellos. Es como GPS pero para robots perdidos 🤖",
+        funnyWrong: ["Los robots ruidosos existen pero no son SLAM", "La memoria sistemática suena cool pero no es", "Los actuadores lineales son geniales pero no SLAM"]
+      },
+      {
+        topic: "Robótica",
+        question: "¿Cuál NO es un tipo común de robot industrial por configuración?",
+        options: [
+          "Robot cartesiano (X-Y-Z) 📐",
+          "Robot SCARA (brazo selectivo) 🦾",
+          "Robot spherical/polar ⚽",
+          "Robot emocional (llora cuando falla) 😭"
+        ],
+        correct: 3,
+        explanation: "Los robots emocionales serían geniales para terapia, pero por ahora nos conformamos con que no fallen tanto 😅",
+        funnyWrong: ["Los cartesianos piensan, luego se mueven", "SCARA significa Selective Compliance Assembly Robot Arm", "Los robots polares están en las coordenadas correctas"]
+      },
+      
+      // Sistemas Expertos (3 preguntas)
+      {
+        topic: "Sistemas Expertos",
+        question: "¿Cuál es el componente MÁS importante de un sistema experto?",
+        options: [
+          "La interfaz de usuario bonita 💄",
+          "La base de conocimientos con reglas 📚",
+          "El motor de inferencia que razona 🧠",
+          "El manual de usuario que nadie lee 📖"
+        ],
+        correct: 1,
+        explanation: "¡Correcto! Sin conocimiento experto, tendrías un motor que razona sobre nada. Como filosofar sin café ☕",
+        funnyWrong: ["Las interfaces bonitas ayudan pero no son lo crucial", "El motor es importante pero necesita qué procesar", "Los manuales son universalmente ignorados 😄"]
+      },
+      {
+        topic: "Sistemas Expertos",
+        question: "¿Qué diferencia el 'forward chaining' del 'backward chaining'?",
+        options: [
+          "Uno va hacia adelante, otro hacia atrás (obviamente) 🔄",
+          "Forward es dirigido por datos, backward por objetivos 🎯",
+          "Forward es más rápido que backward ⚡",
+          "Son sinónimos, solo suenan diferentes 🤷"
+        ],
+        correct: 1,
+        explanation: "¡Exacto! Forward chaining: 'Tengo estos datos, ¿qué puedo concluir?' Backward: 'Quiero este objetivo, ¿qué necesito?'",
+        funnyWrong: ["La dirección es obvia pero no lo explica todo 😅", "La velocidad depende del problema", "Definitivamente NO son sinónimos"]
+      },
+      {
+        topic: "Sistemas Expertos",
+        question: "¿Cuál fue uno de los primeros sistemas expertos exitosos?",
+        options: [
+          "SIRI (Sistema Inteligente de Respuestas Irrelevantes) 📱",
+          "MYCIN (diagnóstico médico) 🏥",
+          "ALEXA (Asistente Loco Extremadamente Xerófilo) 🗣️",
+          "GOOGLE (Generador Omnisciente de Googolplejos) 🔍"
+        ],
+        correct: 1,
+        explanation: "¡Correcto! MYCIN (1970s) diagnosticaba infecciones bacterianas. Los otros nombres son creativos pero incorrectos 😄",
+        funnyWrong: ["SIRI vino mucho después", "ALEXA no es xerófila que sepamos", "Google es omnisciente pero no es sistema experto clásico"]
+      },
+      
+      // Lógica Difusa (3 preguntas)
+      {
+        topic: "Lógica Difusa",
+        question: "¿Qué permite la lógica difusa que la lógica clásica no?",
+        options: [
+          "Usar emojis en las reglas 😊",
+          "Grados de pertenencia entre 0 y 1 📊",
+          "Procesar más rápido que la lógica normal ⚡",
+          "Confundir más a los estudiantes 🤯"
+        ],
+        correct: 1,
+        explanation: "¡Correcto! La lógica difusa maneja la incertidumbre con grados de pertenencia, como 'medianamente alto' = 0.7",
+        funnyWrong: ["Los emojis harían la programación más divertida", "No es necesariamente más rápida", "Aunque sí puede confundir al principio 😅"]
+      },
+      {
+        topic: "Lógica Difusa",
+        question: "¿Cuál es un ejemplo típico de variable lingüística en control difuso?",
+        options: [
+          "IF meme_quality IS dank THEN share 📤",
+          "IF temperatura IS alta THEN ventilador_rápido 🌪️",
+          "IF café IS agotado THEN pánico_total ☕",
+          "IF deadline IS cerca THEN procrastinar_más ⏰"
+        ],
+        correct: 1,
+        explanation: "¡Exacto! Las variables como 'alta', 'media', 'baja' modelan conceptos humanos imprecisos pero útiles.",
+        funnyWrong: ["Los memes dank merecen sistemas expertos propios", "El pánico por café es real pero no es control típico", "La procrastinación desafía toda lógica, difusa o no 😄"]
+      },
+      {
+        topic: "Lógica Difusa",
+        question: "¿Qué proceso convierte conjuntos difusos de salida en valores numéricos?",
+        options: [
+          "Fuzzificación (hacer difuso) 🌫️",
+          "Defuzzificación (hacer nítido) ✨",
+          "Confusificación (hacer confuso) 🤔",
+          "Simplificación (hacer simple) 📏"
+        ],
+        correct: 1,
+        explanation: "¡Correcto! La defuzzificación convierte resultados difusos en valores concretos, como 'ventilador al 75%'",
+        funnyWrong: ["Fuzzificación va en dirección opuesta", "Confusificación no es término técnico... aún", "Simplificación no es proceso de lógica difusa"]
+      },
+      
+      // Agentes Inteligentes (3 preguntas)
+      {
+        topic: "Agentes",
+        question: "¿Qué define a un agente inteligente según Russell & Norvig?",
+        options: [
+          "Que tenga Wi-Fi y Bluetooth 📶",
+          "Percibe entorno y actúa para maximizar rendimiento 🎯",
+          "Que sepa resolver sudokus 🧩",
+          "Que pase el test de Turing 🤖"
+        ],
+        correct: 1,
+        explanation: "¡Exacto! Un agente percibe mediante sensores y actúa mediante actuadores para maximizar su función de rendimiento.",
+        funnyWrong: ["Wi-Fi ayuda pero no define inteligencia", "Los sudokus son difíciles pero no definen agentes", "El test de Turing es más específico"]
+      },
+      {
+        topic: "Agentes",
+        question: "¿Cuál es la diferencia entre agente reactivo y agente basado en objetivos?",
+        options: [
+          "Uno reacciona, otro piensa (como yo antes del café) ☕",
+          "Reactivo usa reglas IF-THEN, objetivos planifica hacia metas 🎯",
+          "Los reactivos son más baratos 💰",
+          "No hay diferencia real 🤷"
+        ],
+        correct: 1,
+        explanation: "¡Correcto! Los reactivos responden directamente a percepciones, los basados en objetivos planifican secuencias de acciones.",
+        funnyWrong: ["El café definitivamente ayuda con el pensamiento", "El costo depende de la implementación", "Sí hay diferencias importantes en arquitectura"]
+      },
+      {
+        topic: "Agentes", 
+        question: "¿Qué caracteriza a un sistema multi-agente?",
+        options: [
+          "Muchos robots peleando por WiFi 📶",
+          "Agentes coordinándose para objetivos comunes 🤝",
+          "Un agente con múltiples personalidades 🎭",
+          "Agentes que se multiplican solos 🤖➡️🤖🤖"
+        ],
+        correct: 1,
+        explanation: "¡Exacto! Los sistemas multi-agente involucran coordinación, comunicación y a veces negociación entre agentes autónomos.",
+        funnyWrong: ["La pelea por WiFi es real pero no define multi-agente", "Un agente con múltiples personalidades necesita terapia", "La auto-replicación sería aterradora 😱"]
+      },
+      
+      // Heurística (3 preguntas)
+      {
+        topic: "Heurística",
+        question: "¿Qué son las heurísticas en IA?",
+        options: [
+          "Reglas mágicas que siempre funcionan ✨",
+          "Técnicas prácticas para soluciones aproximadas ⚡",
+          "Algoritmos que siempre encuentran la solución óptima 🎯",
+          "Trucos para confundir a otros programadores 🤔"
+        ],
+        correct: 1,
+        explanation: "¡Correcto! Las heurísticas sacrifican optimalidad por eficiencia, encontrando soluciones 'suficientemente buenas' rápidamente.",
+        funnyWrong: ["No hay magia en programación... solo mucho café", "Si fuera óptima no sería heurística", "Confundir programadores es efecto secundario, no objetivo 😄"]
+      },
+      {
+        topic: "Heurística",
+        question: "¿Cuál es un ejemplo clásico de problema que requiere heurísticas?",
+        options: [
+          "Ordenar una lista de 10 números 📋",
+          "El problema del vendedor viajero (TSP) 🧳",
+          "Sumar 2 + 2 🧮",
+          "Encontrar el control remoto perdido 📺"
+        ],
+        correct: 1,
+        explanation: "¡Exacto! TSP con muchas ciudades es NP-hard. Las heurísticas encuentran rutas buenas sin probar todas las posibilidades.",
+        funnyWrong: ["Ordenar 10 números es fácil para algoritmos exactos", "2 + 2 no necesita heurísticas... esperemos", "El control remoto desafía toda lógica conocida 😅"]
+      },
+      {
+        topic: "Heurística",
+        question: "¿Qué es una metaheurística?",
+        options: [
+          "Una heurística que se burla de otras heurísticas 😏",
+          "Una heurística sobre heurísticas (inception) 🌀",
+          "Marco general para guiar heurísticas específicas 🗺️",
+          "Heurística que usa metadatos 📊"
+        ],
+        correct: 2,
+        explanation: "¡Correcto! Las metaheurísticas como algoritmos genéticos o simulated annealing guían la búsqueda de soluciones.",
+        funnyWrong: ["Las heurísticas no se burlan... que sepamos", "Inception pero para algoritmos", "Los metadatos están de moda pero no es eso"]
+      }
+    ];
+
+    // Variables del quiz
+    let currentQuestionIndex = 0;
+    let score = 0;
+    let selectedAnswer = -1;
+    let timeLeft = 30;
+    let timer = null;
+    let userAnswers = [];
+    
+    // Elementos del DOM
+    const startScreen = document.getElementById('startScreen');
+    const questionScreen = document.getElementById('questionScreen');
+    const resultsScreen = document.getElementById('resultsScreen');
+    const progressFill = document.getElementById('progressFill');
+    const questionNumber = document.getElementById('questionNumber');
+    const topicBadge = document.getElementById('topicBadge');
+    const timerDisplay = document.getElementById('timer');
+    const questionText = document.getElementById('questionText');
+    const optionsGrid = document.getElementById('optionsGrid');
+    const feedback = document.getElementById('feedback');
+    const nextBtn = document.getElementById('nextBtn');
+
+    // Iniciar quiz
+    function startQuiz() {
+      startScreen.style.display = 'none';
+      questionScreen.classList.add('active');
+      loadQuestion();
+      startTimer();
+    }
+
+    // Cargar pregunta actual
+    function loadQuestion() {
+      const question = questions[currentQuestionIndex];
+      
+      // Actualizar información
+      questionNumber.textContent = `Pregunta ${currentQuestionIndex + 1}/${questions.length}`;
+      topicBadge.textContent = question.topic;
+      questionText.textContent = question.question;
+      
+      // Actualizar progreso
+      const progress = ((currentQuestionIndex + 1) / questions.length) * 100;
+      progressFill.style.width = `${progress}%`;
+      
+      // Cargar opciones
+      optionsGrid.innerHTML = '';
+      question.options.forEach((option, index) => {
+        const optionElement = document.createElement('div');
+        optionElement.className = `option option-${String.fromCharCode(97 + index)}`;
+        optionElement.textContent = option;
+        optionElement.onclick = () => selectOption(index);
+        optionsGrid.appendChild(optionElement);
+      });
+      
+      // Reset estado
+      selectedAnswer = -1;
+      feedback.classList.remove('show', 'correct', 'incorrect');
+      nextBtn.disabled = true;
+      timeLeft = 30;
+      
+      // Agregar partículas flotantes
+      addFloatingParticles();
+    }
+
+    // Seleccionar opción
+    function selectOption(index) {
+      if (selectedAnswer !== -1) return; // Ya seleccionó
+      
+      selectedAnswer = index;
+      const question = questions[currentQuestionIndex];
+      const options = optionsGrid.children;
+      
+      // Detener timer
+      clearInterval(timer);
+      
+      // Marcar opción seleccionada
+      options[index].classList.add('selected');
+      
+      // Crear efecto de sonido visual
+      createSoundWave(options[index]);
+      
+      setTimeout(() => {
+        // Mostrar respuesta correcta/incorrecta
+        const isCorrect = index === question.correct;
+        
+        if (isCorrect) {
+          options[index].classList.add('correct');
+          score++;
+          showFeedback(true, question.explanation);
+        } else {
+          options[index].classList.add('incorrect');
+          options[question.correct].classList.add('correct');
+          const funnyMsg = question.funnyWrong[index] || "¡Ups! Esa no era 😅";
+          showFeedback(false, funnyMsg + " " + question.explanation);
+        }
+        
+        userAnswers.push({
+          question: question.question,
+          selectedIndex: index,
+          correctIndex: question.correct,
+          isCorrect: isCorrect
+        });
+        
+        nextBtn.disabled = false;
+      }, 1000);
+    }
+
+    // Mostrar feedback
+    function showFeedback(isCorrect, message) {
+      const feedbackEmoji = feedback.querySelector('.feedback-emoji');
+      const feedbackText = feedback.querySelector('.feedback-text');
+      const feedbackExplanation = feedback.querySelector('.feedback-explanation');
+      
+      if (isCorrect) {
+        feedback.className = 'feedback show correct';
+        feedbackEmoji.textContent = ['🎉', '🚀', '🧠', '⭐', '🔥'][Math.floor(Math.random() * 5)];
+        feedbackText.textContent = ['¡Correcto!', '¡Excelente!', '¡Genial!', '¡Perfecto!'][Math.floor(Math.random() * 4)];
+      } else {
+        feedback.className = 'feedback show incorrect';
+        feedbackEmoji.textContent = ['😅', '🤔', '😬', '💭', '🎯'][Math.floor(Math.random() * 5)];
+        feedbackText.textContent = ['¡Ups!', '¡Casi!', '¡Interesante elección!', '¡Buen intento!'][Math.floor(Math.random() * 4)];
+      }
+      
+      feedbackExplanation.textContent = message;
+    }
+
+    // Siguiente pregunta
+    function nextQuestion() {
+      currentQuestionIndex++;
+      
+      if (currentQuestionIndex >= questions.length) {
+        showResults();
+      } else {
+        loadQuestion();
+        startTimer();
+      }
+    }
+
+    // Timer
+    function startTimer() {
+      timerDisplay.textContent = `${timeLeft}s`;
+      
+      timer = setInterval(() => {
+        timeLeft--;
+        timerDisplay.textContent = `${timeLeft}s`;
+        
+        if (timeLeft <= 5) {
+          timerDisplay.style.color = 'var(--danger)';
+          timerDisplay.style.animation = 'timerPulse 0.5s ease-in-out infinite';
+        }
+        
+        if (timeLeft <= 0) {
+          clearInterval(timer);
+          if (selectedAnswer === -1) {
+            // Tiempo agotado, seleccionar automáticamente respuesta incorrecta
+            selectOption(-1);
+          }
+        }
+      }, 1000);
+    }
+
+    // Mostrar resultados
+    function showResults() {
+      questionScreen.classList.remove('active');
+      resultsScreen.classList.add('active');
+      
+      const accuracy = Math.round((score / questions.length) * 100);
+      const incorrect = questions.length - score;
+      
+      document.getElementById('finalScore').textContent = `${score}/${questions.length}`;
+      document.getElementById('correctAnswers').textContent = score;
+      document.getElementById('incorrectAnswers').textContent = incorrect;
+      document.getElementById('accuracy').textContent = `${accuracy}%`;
+      
+      // Determinar nivel y mensaje
+      let level, message;
+      if (accuracy >= 90) {
+        level = "🧠 Genio IA";
+        message = "¡Increíble! Podrías programar sistemas expertos con los ojos cerrados. Los robots te tienen miedo 🤖😱";
+      } else if (accuracy >= 80) {
+        level = "🚀 Experto";
+        message = "¡Excelente! Entiendes la IA mejor que algunos chatbots. Tu futuro es prometedor 🌟";
+      } else if (accuracy >= 70) {
+        level = "🎯 Avanzado";
+        message = "¡Muy bien! Solo necesitas un poco más de práctica. Los sistemas difusos te aprobarían 😊";
+      } else if (accuracy >= 60) {
+        level = "🤖 Intermedio";
+        message = "¡Buen trabajo! Estás en el camino correcto. Sigue estudiando y conquistarás la IA 📚";
+      } else {
+        level = "📚 Principiante";
+        message = "¡No te preocupes! Todos empezamos así. Incluso los mejores algoritmos necesitan entrenamiento 💪";
+      }
+      
+      document.getElementById('ranking').textContent = level;
+      document.getElementById('resultsMessage').textContent = message;
+      
+      // Mensaje personalizado
+      const personalizedMsg = generatePersonalizedMessage(accuracy);
+      document.getElementById('personalizedMessage').innerHTML = personalizedMsg;
+    }
+
+    // Generar mensaje personalizado
+    function generatePersonalizedMessage(accuracy) {
+      const topicStats = {};
+      questions.forEach((q, i) => {
+        if (!topicStats[q.topic]) {
+          topicStats[q.topic] = { correct: 0, total: 0 };
+        }
+        topicStats[q.topic].total++;
+        if (userAnswers[i] && userAnswers[i].isCorrect) {
+          topicStats[q.topic].correct++;
+        }
+      });
+      
+      let message = '<h4 style="color: var(--neon); margin-bottom: 15px;">📊 Análisis Personalizado</h4>';
+      
+      // Mejor tema
+      let bestTopic = '', bestScore = 0;
+      let worstTopic = '', worstScore = 100;
+      
+      for (const [topic, stats] of Object.entries(topicStats)) {
+        const percentage = (stats.correct / stats.total) * 100;
+        if (percentage > bestScore) {
+          bestScore = percentage;
+          bestTopic = topic;
+        }
+        if (percentage < worstScore) {
+          worstScore = percentage;
+          worstTopic = topic;
+        }
+      }
+      
+      if (bestScore === 100) {
+        message += `<p>🏆 <strong>Dominas completamente:</strong> ${bestTopic}. ¡Podrías enseñar este tema!</p>`;
+      } else if (bestScore >= 75) {
+        message += `<p>⭐ <strong>Tu fuerte es:</strong> ${bestTopic} (${bestScore.toFixed(0)}%). ¡Sigue así!</p>`;
+      }
+      
+      if (worstScore < 50 && worstTopic !== bestTopic) {
+        message += `<p>📚 <strong>Área de mejora:</strong> ${worstTopic}. ¡Un poco más de estudio y lo tendrás!</p>`;
+      }
+      
+      // Comentarios específicos por temas
+      Object.entries(topicStats).forEach(([topic, stats]) => {
+        const percentage = (stats.correct / stats.total) * 100;
+        const topicComments = {
+          'Reconocimiento': {
+            high: 'Reconoces patrones como un detective digital 🕵️',
+            low: 'Los patrones se te escapan, pero practice makes perfect 🎯'
+          },
+          'Robótica': {
+            high: 'Los robots te obedecerían sin chistar 🤖',
+            low: 'Los robots están confundidos, pero tú puedes guiarlos 🔧'
+          },
+          'Sistemas Expertos': {
+            high: 'Eres un experto en sistemas expertos 🧠',
+            low: 'Los sistemas expertos necesitan más datos sobre ti 📊'
+          },
+          'Lógica Difusa': {
+            high: 'Tu comprensión de lógica difusa es cristalina ✨',
+            low: 'La lógica difusa está... difusa para ti 🌫️'
+          },
+          'Agentes': {
+            high: 'Los agentes inteligentes te elegirían como líder 👑',
+            low: 'Los agentes están negociando tus respuestas 🤝'
+          },
+          'Heurística': {
+            high: 'Tus heurísticas son mejores que algoritmos exactos ⚡',
+            low: 'Necesitas mejores reglas heurísticas 🎲'
+          }
+        };
+        
+        if (topicComments[topic]) {
+          const comment = percentage >= 66 ? topicComments[topic].high : topicComments[topic].low;
+          message += `<p style="font-size: 0.9rem; opacity: 0.8;">• ${comment}</p>`;
+        }
+      });
+      
+      return message;
+    }
+
+    // Efectos visuales
+    function createSoundWave(element) {
+      const wave = document.createElement('div');
+      wave.className = 'sound-wave';
+      element.style.position = 'relative';
+      element.appendChild(wave);
+      
+      setTimeout(() => {
+        if (wave.parentNode) {
+          wave.parentNode.removeChild(wave);
+        }
+      }, 1000);
+    }
+
+    function addFloatingParticles() {
+      for (let i = 0; i < 3; i++) {
+        setTimeout(() => {
+          const particle = document.createElement('div');
+          particle.className = 'floating-particles';
+          particle.style.left = Math.random() * 100 + '%';
+          particle.style.animationDelay = Math.random() * 2 + 's';
+          questionScreen.appendChild(particle);
+          
+          setTimeout(() => {
+            if (particle.parentNode) {
+              particle.parentNode.removeChild(particle);
+            }
+          }, 3000);
+        }, i * 1000);
+      }
+    }
+
+    // Funciones adicionales
+    function restartQuiz() {
+      currentQuestionIndex = 0;
+      score = 0;
+      userAnswers = [];
+      resultsScreen.classList.remove('active');
+      startScreen.style.display = 'block';
+    }
+
+    function showInstructions() {
+      alert(`🎯 INSTRUCCIONES DEL QUIZ:
+
+📋 18 preguntas sobre 6 temas de IA
+⏰ 30 segundos por pregunta
+🎨 Colores tipo Kahoot para las opciones
+🎉 Feedback divertido y educativo
+📊 Análisis personalizado al final
+
+🧠 TEMAS:
+• Reconocimiento de patrones
+• Robótica e inteligencia artificial  
+• Sistemas expertos
+• Lógica difusa (Fuzzy Logic)
+• Modelos de agentes inteligentes
+• Heurística y metaheurísticas
+
+¡Demuestra que eres más inteligente que un chatbot básico! 🤖`);
+    }
+
+    function reviewAnswers() {
+      let review = "📊 REVISIÓN DE RESPUESTAS:\n\n";
+      userAnswers.forEach((answer, index) => {
+        const question = questions[index];
+        const status = answer.isCorrect ? "✅" : "❌";
+        review += `${status} P${index + 1}: ${question.topic}\n`;
+        review += `Tu respuesta: ${question.options[answer.selectedIndex]}\n`;
+        if (!answer.isCorrect) {
+          review += `Correcta: ${question.options[answer.correctIndex]}\n`;
+        }
+        review += "\n";
+      });
+      
+      // Crear modal personalizado para mejor visualización
+      const modal = document.createElement('div');
+      modal.style.cssText = `
+        position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+        background: rgba(0,0,0,0.8); display: flex; align-items: center;
+        justify-content: center; z-index: 1000; padding: 20px;
+      `;
+      
+      modal.innerHTML = `
+        <div style="background: var(--grad-panel); border: 1px solid var(--neon);
+                    border-radius: 20px; padding: 30px; max-width: 600px;
+                    max-height: 80vh; overflow-y: auto; color: var(--ink);">
+          <h3 style="color: var(--neon); margin-bottom: 20px;">📊 Revisión Detallada</h3>
+          <pre style="white-space: pre-wrap; font-family: 'Exo 2', sans-serif;
+                      line-height: 1.6;">${review}</pre>
+          <button onclick="this.parentNode.parentNode.remove()" 
+                  style="background: var(--grad-primary); color: white; border: none;
+                         padding: 10px 20px; border-radius: 15px; cursor: pointer;
+                         margin-top: 20px;">Cerrar</button>
+        </div>
+      `;
+      
+      document.body.appendChild(modal);
+    }
+
+    function shareResults() {
+      const accuracy = Math.round((score / questions.length) * 100);
+      const text = `🧠 ¡Completé el Quiz de IA Futurista!
+      
+📊 Resultado: ${score}/${questions.length} (${accuracy}%)
+🎯 Temas: Reconocimiento de patrones, Robótica, Sistemas Expertos, Lógica Difusa, Agentes, Heurística
+
+${accuracy >= 80 ? '🚀 ¡Soy un experto en IA!' : '📚 ¡Aprendiendo IA como un campeón!'}
+
+#InteligenciaArtificial #Quiz #IA #TechEducation`;
+
+      if (navigator.share) {
+        navigator.share({
+          title: 'Quiz IA Futurista - Resultados',
+          text: text
+        });
+      } else {
+        navigator.clipboard.writeText(text).then(() => {
+          alert('📋 ¡Resultados copiados al portapapeles! Compártelos en tus redes sociales 🚀');
+        });
+      }
+    }
+
+    // Keyboard shortcuts
+    document.addEventListener('keydown', (e) => {
+      if (questionScreen.classList.contains('active')) {
+        if (e.key >= '1' && e.key <= '4') {
+          const index = parseInt(e.key) - 1;
+          if (index < optionsGrid.children.length) {
+            selectOption(index);
+          }
+        } else if (e.key === 'Enter' && !nextBtn.disabled) {
+          nextQuestion();
+        }
+      }
+    });
+
+    // Inicialization
+    document.addEventListener('DOMContentLoaded', () => {
+      // Easter egg: Konami code
+      let konamiCode = [];
+      const konami = [38, 38, 40, 40, 37, 39, 37, 39, 66, 65];
+      
+      document.addEventListener('keydown', (e) => {
+        konamiCode.push(e.keyCode);
+        if (konamiCode.length > konami.length) {
+          konamiCode.shift();
+        }
+        
+        if (konamiCode.toString() === konami.toString()) {
+          alert('🎉 ¡Código Konami activado! Eres oficialmente un hacker de IA 🤖💻');
+          score += 5; // Bonus points
+        }
+      });
+    });
+  </script>
+</body>
+</html>
