@@ -4,9 +4,9 @@
 
 ----------
 
-# 📚 PARTE 1: FUNDAMENTOS TEÓRICOS
+# PARTE 1: FUNDAMENTOS TEÓRICOS
 
-## 1️⃣ ROBÓTICA - ¿POR QUÉ ESTE PROYECTO ES ROBÓTICO?
+## 1. ROBÓTICA - ¿POR QUÉ ESTE PROYECTO ES ROBÓTICO?
 
 ### Definición de Robótica
 
@@ -38,7 +38,7 @@ Buzzer (alarma), LED RGB (visual), Telegram (notificación)
 
 ----------
 
-## 2️⃣ REDES NEURONALES (ACTIVIDAD 8)
+## 2. REDES NEURONALES (ACTIVIDAD 8)
 
 ### ¿Qué es una Red Neuronal?
 
@@ -47,26 +47,29 @@ Modelo computacional inspirado en el cerebro humano que **aprende patrones** a p
 ### Arquitectura de Nuestra Red
 
 ```
-ENTRADA (4 neuronas)          CAPA OCULTA 1 (32 neuronas)    CAPA OCULTA 2 (16 neuronas)    SALIDA (4 neuronas)
-┌─────────────────┐           ┌──────────────────────┐         ┌──────────────────┐           ┌─────────────────┐
-│ Movimiento PIR  │──────────▶│     ReLU Activation  │────────▶│  ReLU Activation │──────────▶│  NORMAL (0)     │
-│ Nivel de Luz    │           │     + Dropout 30%    │         │                  │           │  ALERTA BAJA (1)│
-│ Nivel de Ruido  │           └──────────────────────┘         └──────────────────┘           │  ALERTA MEDIA(2)│
-│ Hora del Día    │                                                                            │  ALERTA ALTA (3)│
-└─────────────────┘                                                                            └─────────────────┘
-                                                                                                  (Softmax)
+ENTRADA (4)  →  OCULTA 1 (32)  →  OCULTA 2 (16)  →  SALIDA (4)
+                    ReLU              ReLU           Softmax
+                  Dropout 30%
 
 ```
+
+**Capas:**
+
+1.  **Entrada**: 4 neuronas (movimiento, luz, ruido, hora)
+2.  **Oculta 1**: 32 neuronas con ReLU + Dropout 30%
+3.  **Oculta 2**: 16 neuronas con ReLU
+4.  **Salida**: 4 neuronas con Softmax (Normal, Baja, Media, Alta)
 
 ### Componentes Clave
 
 #### a) Neurona Artificial
 
+Una neurona recibe entradas, las multiplica por pesos, suma un bias y aplica una función de activación.
+
 ```
-Entrada1 ───▶ [Peso1] ─┐
-Entrada2 ───▶ [Peso2] ─┼──▶ Σ ──▶ [Activación] ──▶ Salida
-Entrada3 ───▶ [Peso3] ─┘
-              [Bias] ───┘
+Entrada1 × Peso1 ─┐
+Entrada2 × Peso2 ─┼─→ Suma + Bias → Activación → Salida
+Entrada3 × Peso3 ─┘
 
 ```
 
@@ -74,12 +77,6 @@ Entrada3 ───▶ [Peso3] ─┘
 
 ```
 ReLU(x) = max(0, x)
-
-     │     ╱
-     │   ╱
-     │ ╱
-─────┼─────────
-     │
 
 ```
 
@@ -95,13 +92,10 @@ Durante el entrenamiento, apaga aleatoriamente el 30% de las neuronas para evita
 
 Convierte valores en probabilidades que suman 1.0:
 
-```
-Ejemplo:
-Valores crudos: [2.3, 1.5, 0.8, 0.2]
-Softmax:        [0.65, 0.24, 0.09, 0.02]  ← Suma = 1.0
-                  ↑ Clase más probable
+**Ejemplo:**
 
-```
+-   Valores crudos: [2.3, 1.5, 0.8, 0.2]
+-   Softmax: [0.65, 0.24, 0.09, 0.02] ← Suma = 1.0
 
 ### Proceso de Entrenamiento
 
@@ -122,7 +116,7 @@ La red aprende relaciones no lineales entre variables:
 
 ----------
 
-## 3️⃣ LÓGICA DIFUSA (ACTIVIDAD 9)
+## 3. LÓGICA DIFUSA (ACTIVIDAD 9)
 
 ### ¿Qué es Lógica Difusa?
 
@@ -146,16 +140,9 @@ Transición suave: 750=0.3, 800=0.5, 850=0.7
 
 #### Para Nivel de Luz (0-4095 ADC)
 
-```
-    Membresía
-    1.0 │  MuyOscuro   Oscuro        Claro
-        │      ╱╲        ╱╲           ╱
-    0.5 │     ╱  ╲      ╱  ╲         ╱
-        │    ╱    ╲    ╱    ╲       ╱
-    0.0 │___╱______╲__╱______╲_____╱_______
-        0   500   800  1000  1500  2000  ADC
-
-```
+-   **muyOscuro**: Máximo en 0-500, decrece hasta 800
+-   **oscuro**: Triángulo entre 500-1000-1500
+-   **claro**: Máximo después de 1500
 
 **Ejemplo**: Si luz = 750 ADC
 
@@ -165,24 +152,17 @@ Transición suave: 750=0.3, 800=0.5, 850=0.7
 
 #### Para Nivel de Ruido (0-4095 ADC)
 
-```
-    Membresía
-    1.0 │  Silencio    Normal      Ruidoso
-        │     ╱╲         ╱╲          ╱
-    0.5 │    ╱  ╲       ╱  ╲        ╱
-        │   ╱    ╲     ╱    ╲      ╱
-    0.0 │__╱______╲___╱______╲____╱_____
-        0   1000   1500  2000  2500   ADC
-
-```
+-   **silencio**: Máximo en 0-1000, decrece hasta 1500
+-   **normal**: Triángulo entre 1000-2000-2500
+-   **ruidoso**: Máximo después de 1800
 
 ### Reglas Difusas (SI-ENTONCES)
 
 ```
-Regla 1: SI luz es "muy_oscuro" Y ruido es "ruidoso"     → Intensidad ALTA (90%)
-Regla 2: SI luz es "muy_oscuro" Y ruido es "normal"      → Intensidad MEDIA (60%)
-Regla 3: SI luz es "oscuro"     Y ruido es "normal"      → Intensidad BAJA (30%)
-Regla 4: SI NO hay movimiento                            → Intensidad 0%
+Regla 1: SI luz es "muy_oscuro" Y ruido es "ruidoso"  → Intensidad ALTA (90%)
+Regla 2: SI luz es "muy_oscuro" Y ruido es "normal"   → Intensidad MEDIA (60%)
+Regla 3: SI luz es "oscuro" Y ruido es "normal"       → Intensidad BAJA (30%)
+Regla 4: SI NO hay movimiento                         → Intensidad 0%
 
 ```
 
@@ -225,21 +205,14 @@ Intensidad Final = 63 / 1.0 = 63%
 
 ----------
 
-## 4️⃣ INTEGRACIÓN RED NEURONAL + LÓGICA DIFUSA
+## 4. INTEGRACIÓN RED NEURONAL + LÓGICA DIFUSA
 
 ### Arquitectura Híbrida
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                   SISTEMA DE ALARMA HÍBRIDO                  │
-├─────────────────────────────────────────────────────────────┤
-│                                                               │
-│  SENSORES → RED NEURONAL → LÓGICA DIFUSA → ACTUADORES       │
-│                                                               │
-│  PIR, LDR → Clasificación  → Control de    → Buzzer, LED     │
-│  Micrófono  (Nivel Alerta)   Intensidad      Telegram        │
-│                                                               │
-└─────────────────────────────────────────────────────────────┘
+SENSORES → RED NEURONAL → LÓGICA DIFUSA → ACTUADORES
+PIR, LDR → Clasificación → Control de    → Buzzer, LED
+Micrófono  (Nivel Alerta)  Intensidad      Telegram
 
 ```
 
@@ -278,7 +251,7 @@ Suaviza transiciones
 
 ----------
 
-## 5️⃣ COMPARACIÓN CON SISTEMAS TRADICIONALES
+## 5. COMPARACIÓN CON SISTEMAS TRADICIONALES
 
 ### Sistema Tradicional (Sin IA)
 
@@ -288,7 +261,7 @@ if movimiento:
 
 ```
 
-**Problemas**:
+**Problemas:**
 
 -   ❌ Falsas alarmas constantes (gatos, sombras)
 -   ❌ No aprende patrones
@@ -304,7 +277,7 @@ alarma_inteligente(intensidad)
 
 ```
 
-**Ventajas**:
+**Ventajas:**
 
 -   ✅ Aprende contexto temporal
 -   ✅ Reduce falsas alarmas 70%
@@ -313,7 +286,7 @@ alarma_inteligente(intensidad)
 
 ----------
 
-## 📊 MÉTRICAS DE EVALUACIÓN
+## 6. MÉTRICAS DE EVALUACIÓN
 
 ### Red Neuronal
 
@@ -329,7 +302,7 @@ alarma_inteligente(intensidad)
 
 ----------
 
-## 🎯 APLICACIONES REALES
+## 7. APLICACIONES REALES
 
 ### Industria
 
@@ -351,7 +324,7 @@ alarma_inteligente(intensidad)
 
 ----------
 
-# 🛒 PARTE 2: LISTA DE MATERIALES
+# PARTE 2: LISTA DE MATERIALES
 
 ## Componentes Necesarios
 
@@ -455,51 +428,7 @@ Alimentación y programación
 
 ----------
 
-# 🔌 PARTE 3: DIAGRAMA DE CONEXIONES DETALLADO
-
-## Esquema Visual
-
-```
-                    ╔═══════════════════════════╗
-                    ║         ESP32             ║
-                    ║                           ║
-   SENSOR PIR       ║  GPIO13 ←─────────────┐   ║
-   ┌──────┐         ║                       │   ║
-   │ VCC  ├─────────╫─ 3.3V                 │   ║
-   │ GND  ├─────────╫─ GND         ┌────────┤   ║
-   │ OUT  ├─────────╫─ GPIO13      │ OUT    │   ║
-   └──────┘         ║               └────────┘   ║
-                    ║                           ║
-   LDR + 10kΩ       ║  GPIO34 (ADC) ←───────┐   ║
-   ┌──────┐         ║                       │   ║
-   │      ├─────────╫─ 3.3V        ┌────────┤   ║
-   │ LDR  ├────┬────╫─ GPIO34      │        │   ║
-   │      │    │    ║               │  LDR   │   ║
-   └──────┘   [10k]─╫─ GND         └────────┘   ║
-                    ║                           ║
-   MICRÓFONO        ║  GPIO35 (ADC) ←───────┐   ║
-   ┌──────┐         ║                       │   ║
-   │ VCC  ├─────────╫─ 3.3V        ┌────────┤   ║
-   │ GND  ├─────────╫─ GND         │ OUT    │   ║
-   │ OUT  ├─────────╫─ GPIO35      └────────┘   ║
-   └──────┘         ║                           ║
-                    ║                           ║
-   BUZZER           ║  GPIO12 ←─────────────┐   ║
-   ┌──────┐         ║                       │   ║
-   │  +   ├─────────╫─ GPIO12      ┌────────┤   ║
-   │  -   ├─────────╫─ GND         │  +     │   ║
-   └──────┘         ║               └────────┘   ║
-                    ║                           ║
-   LED RGB          ║  GPIO18/19/21 ←───────┐   ║
-   ┌──────┐         ║                       │   ║
-   │  R   ├─[220Ω]──╫─ GPIO18      ┌────────┤   ║
-   │  G   ├─[220Ω]──╫─ GPIO19      │  RGB   │   ║
-   │  B   ├─[220Ω]──╫─ GPIO21      │  LED   │   ║
-   │ GND  ├─────────╫─ GND         └────────┘   ║
-   └──────┘         ║                           ║
-                    ╚═══════════════════════════╝
-
-```
+# PARTE 3: DIAGRAMA DE CONEXIONES DETALLADO
 
 ## Tabla de Conexiones
 
@@ -605,9 +534,27 @@ GND
 
 Si es cátodo común
 
+## Diagrama ASCII
+
+```
+          ESP32
+    ┌──────────────┐
+    │   3.3V       │──── PIR VCC
+    │   GND        │──── PIR GND, Buzzer -, LED GND
+    │   GPIO13     │──── PIR OUT
+    │   GPIO34     │──── LDR (con 10kΩ a GND)
+    │   GPIO35     │──── Micrófono OUT
+    │   GPIO12     │──── Buzzer +
+    │   GPIO18     │──── LED R (con 220Ω)
+    │   GPIO19     │──── LED G (con 220Ω)
+    │   GPIO21     │──── LED B (con 220Ω)
+    └──────────────┘
+
+```
+
 ----------
 
-# 🔧 PARTE 4: MANUAL DE ENSAMBLAJE PASO A PASO
+# PARTE 4: MANUAL DE ENSAMBLAJE PASO A PASO
 
 ## Paso 1: Preparación del Espacio de Trabajo
 
@@ -679,69 +626,64 @@ Si es cátodo común
 
 ----------
 
-# 💻 PARTE 5: CÓDIGO COMENTADO LÍNEA POR LÍNEA
+# PARTE 5: CÓDIGO DE PRUEBA DE SENSORES
 
-## Código de Prueba de Sensores (Cargar primero)
+## Cargar Este Código Primero (Verificación)
 
 ```cpp
 // ============================================
 // PRUEBA INDIVIDUAL DE SENSORES
-// Objetivo: Verificar que cada sensor funciona correctamente
+// Objetivo: Verificar que cada sensor funciona
 // ============================================
 
 void setup() {
-  // Iniciar comunicación serial a 115200 baudios
   Serial.begin(115200);
   
-  // Configurar pines como entrada o salida
-  pinMode(13, INPUT);   // PIR como entrada
-  pinMode(12, OUTPUT);  // Buzzer como salida
+  pinMode(13, INPUT);   // PIR
+  pinMode(12, OUTPUT);  // Buzzer
   pinMode(18, OUTPUT);  // LED Rojo
   pinMode(19, OUTPUT);  // LED Verde
   pinMode(21, OUTPUT);  // LED Azul
   
-  Serial.println("🔧 Iniciando pruebas de sensores...");
-  delay(2000); // Esperar 2 segundos para estabilización
+  Serial.println("Iniciando pruebas...");
+  delay(2000);
 }
 
 void loop() {
-  // ===== PRUEBA 1: SENSOR PIR =====
+  // PRUEBA 1: PIR
   int movimiento = digitalRead(13);
-  Serial.print("📍 PIR (Movimiento): ");
-  Serial.println(movimiento);  // 1 = detecta movimiento, 0 = no detecta
+  Serial.print("PIR: ");
+  Serial.println(movimiento);
   
-  // ===== PRUEBA 2: LDR (LUZ) =====
-  int luz = analogRead(34);  // Lee valor analógico (0-4095)
-  Serial.print("💡 LDR (Luz): ");
+  // PRUEBA 2: LDR
+  int luz = analogRead(34);
+  Serial.print("Luz: ");
   Serial.print(luz);
-  Serial.print(" → ");
-  if (luz < 800) Serial.println("OSCURO");
-  else if (luz < 1500) Serial.println("MEDIO");
-  else Serial.println("CLARO");
+  if (luz < 800) Serial.println(" OSCURO");
+  else if (luz < 1500) Serial.println(" MEDIO");
+  else Serial.println(" CLARO");
   
-  // ===== PRUEBA 3: MICRÓFONO =====
+  // PRUEBA 3: MICRÓFONO
   int ruido = analogRead(35);
-  Serial.print("🔊 Micrófono (Ruido): ");
+  Serial.print("Ruido: ");
   Serial.print(ruido);
-  Serial.print(" → ");
-  if (ruido < 1500) Serial.println("SILENCIO");
-  else if (ruido < 2000) Serial.println("NORMAL");
-  else Serial.println("RUIDOSO");
+  if (ruido < 1500) Serial.println(" SILENCIO");
+  else if (ruido < 2000) Serial.println(" NORMAL");
+  else Serial.println(" RUIDOSO");
   
-  // ===== PRUEBA 4: BUZZER =====
+  // PRUEBA 4: BUZZER
   if (movimiento == 1) {
-    tone(12, 1000, 200);  // Tono de 1000Hz por 200ms
-    Serial.println("🔔 Buzzer: ACTIVADO");
+    tone(12, 1000, 200);
+    Serial.println("Buzzer: ACTIVADO");
   }
   
-  // ===== PRUEBA 5: LED RGB =====
-  // Prueba de colores en secuencia
-  digitalWrite(18, HIGH); delay(300); digitalWrite(18, LOW);  // Rojo
-  digitalWrite(19, HIGH); delay(300); digitalWrite(19, LOW);  // Verde
-  digitalWrite(21, HIGH); delay(300); digitalWrite(21, LOW);  // Azul
+  // PRUEBA 5: LED RGB
+  digitalWrite(18, HIGH); delay(300); digitalWrite(18, LOW);
+  digitalWrite(19, HIGH); delay(300); digitalWrite(19, LOW);
+  digitalWrite(21, HIGH); delay(300); digitalWrite(21, LOW);
   
-  Serial.println("─────────────────────────────");
-  delay(1000);  // Repetir cada segundo
+  Serial.println("--------------------");
+  delay(1000);
 }
 
 ```
@@ -749,7 +691,7 @@ void loop() {
 ### ¿Cómo Probar?
 
 1.  Cargar código en ESP32
-2.  Abrir Monitor Serial (Herramientas → Monitor Serial → 115200 baud)
+2.  Abrir Monitor Serial (115200 baud)
 3.  **Pruebas**:
     -   Mover mano frente al PIR → Debe mostrar "1"
     -   Cubrir LDR con mano → Valor debe bajar
@@ -758,7 +700,9 @@ void loop() {
 
 ----------
 
-## Código Principal con Red Neuronal Simulada
+# PARTE 6: CÓDIGO PRINCIPAL CON IA
+
+## Código Completo del Sistema de Alarma
 
 ```cpp
 // ============================================
@@ -769,53 +713,48 @@ void loop() {
 #include <WiFi.h>
 #include <HTTPClient.h>
 
-// ===== CONFIGURACIÓN DE PINES =====
-const int pirPin = 13;      // Sensor de movimiento
-const int ldrPin = 34;      // Sensor de luz (ADC)
-const int micPin = 35;      // Sensor de ruido (ADC)
-const int buzzerPin = 12;   // Buzzer activo
-const int ledR = 18;        // LED Rojo
-const int ledG = 19;        // LED Verde
-const int ledB = 21;        // LED Azul
+// PINES
+const int pirPin = 13;
+const int ldrPin = 34;
+const int micPin = 35;
+const int buzzerPin = 12;
+const int ledR = 18;
+const int ledG = 19;
+const int ledB = 21;
 
-// ===== VARIABLES GLOBALES =====
+// VARIABLES GLOBALES
 int movimiento, luz, ruido;
-int horaActual = 14;  // Hora simulada (14:00). Cambiar para probar
+int horaActual = 14;  // Hora simulada (cambiar para probar)
 
-// Estados de alerta de la red neuronal
 const String estados[4] = {
-  "🟢 NORMAL",
-  "🟡 ALERTA BAJA",
-  "🟠 ALERTA MEDIA",
-  "🔴 ALERTA ALTA"
+  "NORMAL",
+  "ALERTA BAJA",
+  "ALERTA MEDIA",
+  "ALERTA ALTA"
 };
 
-// ===== CLASE LÓGICA DIFUSA =====
-// Implementa funciones de membresía y reglas difusas
+// ============================================
+// CLASE LÓGICA DIFUSA
+// ============================================
 class AlarmaDifusa {
 public:
-    // --- Funciones de Membresía para LUZ ---
-    
-    // muyOscuro: Máximo en 0, decrece hasta 800
+    // Funciones de membresía para LUZ
     float muyOscuro(float x) { 
       return max(0.0f, min(1.0f, (800 - x) / 500.0f)); 
     }
     
-    // oscuro: Triángulo entre 500-1000-1500
     float oscuro(float x) { 
         if (x <= 500) return 0;
-        if (x > 500 && x <= 1000) return (x - 500) / 500.0f;  // Subida
-        if (x > 1000 && x <= 1500) return (1500 - x) / 500.0f;  // Bajada
+        if (x > 500 && x <= 1000) return (x - 500) / 500.0f;
+        if (x > 1000 && x <= 1500) return (1500 - x) / 500.0f;
         return 0;
     }
     
-    // claro: Máximo después de 1500
     float claro(float x) { 
       return max(0.0f, min(1.0f, (x - 1000) / 500.0f)); 
     }
     
-    // --- Funciones de Membresía para RUIDO ---
-    
+    // Funciones de membresía para RUIDO
     float silencio(float x) { 
       return max(0.0f, min(1.0f, (1500 - x) / 800.0f)); 
     }
@@ -831,119 +770,107 @@ public:
       return max(0.0f, min(1.0f, (x - 1800) / 700.0f)); 
     }
     
-    // --- Inferencia Difusa ---
-    // Retorna intensidad de alarma entre 0-100
+    // INFERENCIA DIFUSA
     float calcularIntensidad(float luz, float ruido, int movimiento) {
-        if (!movimiento) return 0;  // Sin movimiento = sin alarma
+        if (!movimiento) return 0;
         
-        // REGLAS DIFUSAS (operador MIN para AND)
+        // REGLAS DIFUSAS
         float intensidadBaja  = min(oscuro(luz), normal(ruido));
         float intensidadMedia = min(muyOscuro(luz), normal(ruido));
         float intensidadAlta  = min(muyOscuro(luz), ruidoso(ruido));
         
-        // DEFUZZIFICACIÓN (Centro de gravedad)
+        // DEFUZZIFICACIÓN
         float numerador = (intensidadBaja * 30) + 
                          (intensidadMedia * 60) + 
                          (intensidadAlta * 90);
         float denominador = intensidadBaja + intensidadMedia + intensidadAlta;
         
-        // Evitar división por cero
         return (denominador == 0) ? 0 : numerador / denominador;
     }
 };
 
-// Crear instancia de lógica difusa
 AlarmaDifusa fuzzy;
 
 // ============================================
-// SETUP: Configuración Inicial
+// SETUP
 // ============================================
 void setup() {
   Serial.begin(115200);
   
-  // Configurar pines
   pinMode(pirPin, INPUT);
   pinMode(buzzerPin, OUTPUT);
   pinMode(ledR, OUTPUT);
   pinMode(ledG, OUTPUT);
   pinMode(ledB, OUTPUT);
   
-  // Iniciar en estado seguro (LED Verde)
-  setLED(0, 255, 0);
+  setLED(0, 255, 0);  // Verde = seguro
   
-  Serial.println("╔═══════════════════════════════════════╗");
-  Serial.println("║ 🚨 SISTEMA DE ALARMA INTELIGENTE     ║");
-  Serial.println("║    Con Red Neuronal + Lógica Difusa  ║");
-  Serial.println("╚═══════════════════════════════════════╝");
+  Serial.println("==============================");
+  Serial.println("SISTEMA DE ALARMA INTELIGENTE");
+  Serial.println("Red Neuronal + Logica Difusa");
+  Serial.println("==============================");
   delay(2000);
 }
 
 // ============================================
-// FUNCIONES PRINCIPALES
+// FUNCIONES
 // ============================================
 
-// --- Leer todos los sensores ---
 void leerSensores() {
-  movimiento = digitalRead(pirPin);  // 0 o 1
-  luz = analogRead(ldrPin);          // 0-4095
-  ruido = analogRead(micPin);        // 0-4095
+  movimiento = digitalRead(pirPin);
+  luz = analogRead(ldrPin);
+  ruido = analogRead(micPin);
   
-  Serial.println("\n📊 LECTURAS DE SENSORES:");
-  Serial.print("   Movimiento: "); Serial.print(movimiento ? "DETECTADO" : "NO");
-  Serial.print(" | Luz: "); Serial.print(luz);
-  Serial.print(" | Ruido: "); Serial.println(ruido);
+  Serial.println("\nLECTURAS:");
+  Serial.print("  Movimiento: ");
+  Serial.println(movimiento ? "DETECTADO" : "NO");
+  Serial.print("  Luz: ");
+  Serial.println(luz);
+  Serial.print("  Ruido: ");
+  Serial.println(ruido);
 }
 
-// --- RED NEURONAL SIMULADA ---
-// En producción, aquí cargarías el modelo entrenado
-// Esta función simula la salida de la red neuronal
+// RED NEURONAL SIMULADA
 int redNeuronalDecision() {
-  // Inicializar probabilidades (scores) para cada clase
   float scores[4] = {0, 0, 0, 0};
   
-  // --- CAPA 1: EXTRACCIÓN DE CARACTERÍSTICAS ---
   bool esNoche = (luz < 800);
   bool esRuidoso = (ruido > 2000);
   bool horaSospechosa = (horaActual < 6 || horaActual > 22);
   
-  Serial.println("\n🧠 ANÁLISIS DE RED NEURONAL:");
-  Serial.print("   Noche: "); Serial.print(esNoche ? "SÍ" : "NO");
-  Serial.print(" | Ruidoso: "); Serial.print(esRuidoso ? "SÍ" : "NO");
-  Serial.print(" | Hora Sospechosa: "); Serial.println(horaSospechosa ? "SÍ" : "NO");
-  
-  // --- CAPA 2: REGLAS DE DECISIÓN CONTEXTUALES ---
-  // Simulan los pesos aprendidos por la red neuronal
+  Serial.println("\nANALISIS:");
+  Serial.print("  Noche: ");
+  Serial.println(esNoche ? "SI" : "NO");
+  Serial.print("  Ruidoso: ");
+  Serial.println(esRuidoso ? "SI" : "NO");
+  Serial.print("  Hora Sospechosa: ");
+  Serial.println(horaSospechosa ? "SI" : "NO");
   
   if (!movimiento) {
-    // SIN MOVIMIENTO → Estado NORMAL con alta confianza
     scores[0] = 0.95;
     scores[1] = 0.03;
     scores[2] = 0.01;
     scores[3] = 0.01;
   } 
   else if (movimiento && esNoche && horaSospechosa) {
-    // MOVIMIENTO + NOCHE + HORA SOSPECHOSA → ALERTA ALTA
     scores[0] = 0.05;
     scores[1] = 0.10;
     scores[2] = 0.20;
-    scores[3] = 0.85;  // ← Probabilidad más alta
+    scores[3] = 0.85;
   } 
   else if (movimiento && esRuidoso) {
-    // MOVIMIENTO + RUIDO ALTO → ALERTA MEDIA
     scores[0] = 0.10;
     scores[1] = 0.15;
-    scores[2] = 0.70;  // ← Probabilidad más alta
+    scores[2] = 0.70;
     scores[3] = 0.05;
   } 
   else if (movimiento) {
-    // SOLO MOVIMIENTO → ALERTA BAJA
     scores[0] = 0.15;
-    scores[1] = 0.68;  // ← Probabilidad más alta
+    scores[1] = 0.68;
     scores[2] = 0.12;
     scores[3] = 0.05;
   }
   
-  // --- CAPA 3: SOFTMAX (encontrar clase con máxima probabilidad) ---
   int decision = 0;
   float maxScore = scores[0];
   
@@ -954,91 +881,48 @@ int redNeuronalDecision() {
     }
   }
   
-  // Mostrar probabilidades
-  Serial.println("\n📈 PROBABILIDADES (Softmax):");
-  Serial.print("   Normal: "); Serial.print(scores[0] * 100, 1); Serial.println("%");
-  Serial.print("   Alerta Baja: "); Serial.print(scores[1] * 100, 1); Serial.println("%");
-  Serial.print("   Alerta Media: "); Serial.print(scores[2] * 100, 1); Serial.println("%");
-  Serial.print("   Alerta Alta: "); Serial.print(scores[3] * 100, 1); Serial.println("%");
+  Serial.println("\nPROBABILIDADES:");
+  Serial.print("  Normal: ");
+  Serial.print(scores[0] * 100, 1);
+  Serial.println("%");
+  Serial.print("  Alerta Baja: ");
+  Serial.print(scores[1] * 100, 1);
+  Serial.println("%");
+  Serial.print("  Alerta Media: ");
+  Serial.print(scores[2] * 100, 1);
+  Serial.println("%");
+  Serial.print("  Alerta Alta: ");
+  Serial.print(scores[3] * 100, 1);
+  Serial.println("%");
   
   return decision;
 }
 
-// --- Controlar LED RGB ---
-// Si es LED ánodo común, invertir valores (255 - valor)
 void setLED(int r, int g, int b) {
-  analogWrite(ledR, r);  // Si no funciona, usar: 255 - r
+  analogWrite(ledR, r);
   analogWrite(ledG, g);
   analogWrite(ledB, b);
 }
 
-// --- Ejecutar alarma según nivel (RED NEURONAL) ---
-void ejecutarAlerta(int nivel) {
-  Serial.print("\n🎯 DECISIÓN FINAL: ");
-  Serial.println(estados[nivel]);
-  
-  switch(nivel) {
-    case 0: // NORMAL
-      setLED(0, 255, 0);    // Verde
-      noTone(buzzerPin);    // Silenciar buzzer
-      break;
-      
-    case 1: // ALERTA BAJA
-      setLED(255, 255, 0);  // Amarillo
-      tone(buzzerPin, 1000, 200);  // Beep corto 1kHz
-      delay(200);
-      noTone(buzzerPin);
-      break;
-      
-    case 2: // ALERTA MEDIA  
-      setLED(255, 165, 0);  // Naranja
-      // 3 beeps consecutivos
-      for(int i = 0; i < 3; i++) {
-        tone(buzzerPin, 1500, 300);
-        delay(400);
-        noTone(buzzerPin);
-        delay(100);
-      }
-      break;
-      
-    case 3: // ALERTA ALTA
-      setLED(255, 0, 0);    // Rojo
-      // Alarma continua (10 beeps rápidos)
-      for(int i = 0; i < 10; i++) {
-        tone(buzzerPin, 2000, 200);
-        delay(300);
-        noTone(buzzerPin);
-        delay(100);
-      }
-      break;
-  }
-}
-
-// --- Ejecutar alarma con LÓGICA DIFUSA ---
 void ejecutarAlertaDifusa(int nivelBase, float intensidad) {
-  Serial.print("\n🌊 LÓGICA DIFUSA - Intensidad: ");
+  Serial.print("\nLOGICA DIFUSA - Intensidad: ");
   Serial.print(intensidad, 1);
   Serial.println("%");
   
-  // Mapear intensidad a frecuencia del buzzer (800-2500 Hz)
   int frecuencia = map(intensidad, 0, 100, 800, 2500);
-  
-  // Mapear intensidad a duración del beep (100-500 ms)
   int duracion = map(intensidad, 0, 100, 100, 500);
   
-  // LED proporcional: Rojo aumenta, Verde disminuye
   int rojo = map(intensidad, 0, 100, 0, 255);
   int verde = map(intensidad, 0, 100, 255, 0);
   
   setLED(rojo, verde, 0);
   
-  // Solo sonar si intensidad > 20%
   if (intensidad > 20) {
     tone(buzzerPin, frecuencia, duracion);
-    Serial.print("🔊 Buzzer: "); 
-    Serial.print(frecuencia); 
-    Serial.print(" Hz x "); 
-    Serial.print(duracion); 
+    Serial.print("Buzzer: ");
+    Serial.print(frecuencia);
+    Serial.print(" Hz x ");
+    Serial.print(duracion);
     Serial.println(" ms");
     delay(duracion + 100);
     noTone(buzzerPin);
@@ -1051,56 +935,44 @@ void ejecutarAlertaDifusa(int nivelBase, float intensidad) {
 // LOOP PRINCIPAL
 // ============================================
 void loop() {
-  Serial.println("\n╔════════════════════════════════════════╗");
-  Serial.print("║ CICLO DE MONITOREO - Hora: ");
+  Serial.println("\n==============================");
+  Serial.print("CICLO - Hora: ");
   Serial.print(horaActual);
-  Serial.println(":00      ║");
-  Serial.println("╚════════════════════════════════════════╝");
+  Serial.println(":00");
+  Serial.println("==============================");
   
-  // PASO 1: Leer sensores
   leerSensores();
   
-  // PASO 2: Decisión con Red Neuronal
   int nivelAlerta = redNeuronalDecision();
   
-  // PASO 3: Cálculo de intensidad con Lógica Difusa
   float intensidadDifusa = fuzzy.calcularIntensidad(luz, ruido, movimiento);
   
-  // PASO 4: Ejecutar alarma combinando ambas técnicas
-  // Opción A: Usar solo Red Neuronal
-  // ejecutarAlerta(nivelAlerta);
+  Serial.print("\nDECISION: ");
+  Serial.println(estados[nivelAlerta]);
   
-  // Opción B: Usar Red Neuronal + Lógica Difusa (RECOMENDADO)
   ejecutarAlertaDifusa(nivelAlerta, intensidadDifusa);
   
-  Serial.println("\n⏳ Esperando 3 segundos...\n");
-  delay(3000);  // Esperar 3 segundos antes del siguiente ciclo
+  Serial.println("\nEsperando 3 segundos...\n");
+  delay(3000);
 }
 
 ```
 
 ----------
 
-# 🐍 PARTE 6: ENTRENAMIENTO DE RED NEURONAL EN GOOGLE COLAB
+# PARTE 7: ENTRENAMIENTO EN GOOGLE COLAB
 
-## Paso 1: Abrir Google Colab
+## Script Completo de Python
 
-1.  Ir a https://colab.research.google.com
-2.  Crear nuevo notebook
-3.  Cambiar nombre a "Entrenamiento_Alarma_IA.ipynb"
-
-## Paso 2: Código de Entrenamiento Completo
+Copiar y pegar en Google Colab:
 
 ```python
-# ============================================
 # ENTRENAMIENTO DE RED NEURONAL PARA ALARMA
-# Google Colab - Python 3
-# ============================================
 
-# --- INSTALACIÓN DE LIBRERÍAS ---
+# Instalar librerías
 !pip install tensorflow scikit-learn pandas numpy matplotlib seaborn
 
-# --- IMPORTAR LIBRERÍAS ---
+# Importar librerías
 import numpy as np
 import pandas as pd
 import tensorflow as tf
@@ -1110,80 +982,73 @@ from sklearn.metrics import confusion_matrix, classification_report, accuracy_sc
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-print("✅ Librerías importadas correctamente")
-print(f"📦 TensorFlow versión: {tf.__version__}")
+print("Librerías importadas")
+print(f"TensorFlow versión: {tf.__version__}")
 
 # ============================================
-# PASO 1: GENERAR DATASET SINTÉTICO
+# PASO 1: GENERAR DATASET
 # ============================================
-print("\n📊 Generando dataset de entrenamiento...")
+print("\nGenerando dataset...")
 
-np.random.seed(42)  # Para reproducibilidad
-n_samples = 1500    # 1500 ejemplos
+np.random.seed(42)
+n_samples = 1500
 
-# Generar datos simulados de sensores
 data = {
-    'movimiento_pir': np.random.choice([0, 1], n_samples, p=[0.7, 0.3]),  # 30% con movimiento
-    'nivel_luz': np.random.normal(1500, 500, n_samples),     # Media 1500, desv 500
-    'nivel_ruido': np.random.normal(1800, 600, n_samples),   # Media 1800, desv 600
-    'hora_dia': np.random.uniform(0, 24, n_samples)          # Hora entre 0-24
+    'movimiento_pir': np.random.choice([0, 1], n_samples, p=[0.7, 0.3]),
+    'nivel_luz': np.random.normal(1500, 500, n_samples),
+    'nivel_ruido': np.random.normal(1800, 600, n_samples),
+    'hora_dia': np.random.uniform(0, 24, n_samples)
 }
 
 df = pd.DataFrame(data)
-
-# Asegurar que valores estén en rangos realistas
 df['nivel_luz'] = df['nivel_luz'].clip(0, 4095)
 df['nivel_ruido'] = df['nivel_ruido'].clip(0, 4095)
 
-print(f"✅ Dataset creado: {len(df)} muestras")
-print("\n📈 Primeras 5 filas:")
+print(f"Dataset creado: {len(df)} muestras")
+print("\nPrimeras 5 filas:")
 print(df.head())
 
 # ============================================
-# PASO 2: ETIQUETAR DATOS (CLASIFICACIÓN)
+# PASO 2: ETIQUETAR DATOS
 # ============================================
-print("\n🏷️ Etiquetando datos con reglas contextuales...")
+print("\nEtiquetando datos...")
 
 def clasificar_amenaza(fila):
-    """
-    Función que clasifica el nivel de amenaza según contexto
-    Retorna: 0=NORMAL, 1=ALERTA_BAJA, 2=ALERTA_MEDIA, 3=ALERTA_ALTA
-    """
     movimiento = fila['movimiento_pir']
     luz = fila['nivel_luz']
     ruido = fila['nivel_ruido']
     hora = fila['hora_dia']
     
-    # Definir condiciones contextuales
     es_noche = luz < 800
     es_ruidoso = ruido > 2000
-    hora_sospechosa = (hora < 6) or (hora > 22)  # Madrugada o noche
+    hora_sospechosa = (hora < 6) or (hora > 22)
     
-    # REGLAS DE CLASIFICACIÓN
     if not movimiento:
-        return 0  # NORMAL (sin movimiento)
+        return 0  # NORMAL
     
     if movimiento and es_noche and hora_sospechosa:
-        return 3  # ALERTA ALTA (movimiento nocturno en hora sospechosa)
+        return 3  # ALERTA ALTA
     
     if movimiento and es_ruidoso:
-        return 2  # ALERTA MEDIA (movimiento con ruido alto)
+        return 2  # ALERTA MEDIA
     
     if movimiento:
-        return 1  # ALERTA BAJA (solo movimiento)
+        return 1  # ALERTA BAJA
     
-    return 0  # Fallback a NORMAL
+    return 0
 
-# Aplicar clasificación a todo el dataset
 df['nivel_alerta'] = df.apply(clasificar_amenaza, axis=1)
 
-print("✅ Etiquetado completado")
-print("\n📊 Distribución de clases:")
+print("Etiquetado completado")
+print("\nDistribución de clases:")
 print(df['nivel_alerta'].value_counts().sort_index())
 
 # Visualizar distribución
 plt.figure(figsize=(10, 5))
-df['nivel_alerta'].value_counts().sort_index().plot(kind='bar', color=['green', 'yellow', 'orange', 'red'])
+df['nivel_alerta'].value_counts().sort_index().plot(
+    kind='bar', 
+    color=['green', 'yellow', 'orange', 'red']
+)
 plt.title('Distribución de Niveles de Alerta')
 plt.xlabel('Nivel de Alerta')
 plt.ylabel('Cantidad de Muestras')
@@ -1191,99 +1056,88 @@ plt.xticks([0, 1, 2, 3], ['Normal', 'Baja', 'Media', 'Alta'], rotation=0)
 plt.show()
 
 # ============================================
-# PASO 3: PREPARAR DATOS PARA LA RED
+# PASO 3: PREPARAR DATOS
 # ============================================
-print("\n🔧 Preparando datos para entrenamiento...")
+print("\nPreparando datos...")
 
-# Separar características (X) y etiquetas (y)
 X = df[['movimiento_pir', 'nivel_luz', 'nivel_ruido', 'hora_dia']].values
 y = df['nivel_alerta'].values
 
 print(f"X shape: {X.shape}")
 print(f"y shape: {y.shape}")
 
-# Normalizar datos (importante para redes neuronales)
+# Normalizar
 scaler = StandardScaler()
 X_scaled = scaler.fit_transform(X)
 
-print("\n📉 Datos normalizados:")
-print(f"Media: {X_scaled.mean(axis=0)}")  # Debe ser ~0
-print(f"Desv Estándar: {X_scaled.std(axis=0)}")  # Debe ser ~1
+print("\nDatos normalizados:")
+print(f"Media: {X_scaled.mean(axis=0)}")
+print(f"Desv Estándar: {X_scaled.std(axis=0)}")
 
-# Dividir en entrenamiento (80%) y prueba (20%)
+# Dividir en train/test
 X_train, X_test, y_train, y_test = train_test_split(
     X_scaled, y, 
     test_size=0.2, 
     random_state=42,
-    stratify=y  # Mantener proporción de clases
+    stratify=y
 )
 
-print(f"\n✅ División completada:")
-print(f"   Entrenamiento: {len(X_train)} muestras")
-print(f"   Prueba: {len(X_test)} muestras")
+print(f"\nDivisión completada:")
+print(f"  Entrenamiento: {len(X_train)} muestras")
+print(f"  Prueba: {len(X_test)} muestras")
 
 # ============================================
 # PASO 4: CONSTRUIR RED NEURONAL
 # ============================================
-print("\n🧠 Construyendo arquitectura de red neuronal...")
+print("\nConstruyendo red neuronal...")
 
 model = tf.keras.Sequential([
-    # CAPA DE ENTRADA (4 neuronas: movimiento, luz, ruido, hora)
     tf.keras.layers.Input(shape=(4,)),
-    
-    # CAPA OCULTA 1: 32 neuronas con activación ReLU
     tf.keras.layers.Dense(32, activation='relu', name='hidden1'),
-    
-    # DROPOUT: Apaga 30% de neuronas al azar (evita overfitting)
     tf.keras.layers.Dropout(0.3, name='dropout1'),
-    
-    # CAPA OCULTA 2: 16 neuronas con activación ReLU
     tf.keras.layers.Dense(16, activation='relu', name='hidden2'),
-    
-    # CAPA DE SALIDA: 4 neuronas (una por clase) con Softmax
     tf.keras.layers.Dense(4, activation='softmax', name='output')
 ])
 
-# Mostrar arquitectura
-print("\n📋 Resumen de la red:")
+print("\nResumen de la red:")
 model.summary()
 
 # ============================================
 # PASO 5: COMPILAR MODELO
 # ============================================
-print("\n⚙️ Compilando modelo...")
+print("\nCompilando modelo...")
 
 model.compile(
-    optimizer='adam',  # Optimizador adaptativo
-    loss='sparse_categorical_crossentropy',  # Función de pérdida para clasificación
-    metrics=['accuracy']  # Métrica a monitorear
+    optimizer='adam',
+    loss='sparse_categorical_crossentropy',
+    metrics=['accuracy']
 )
 
-print("✅ Modelo compilado")
+print("Modelo compilado")
 
 # ============================================
-# PASO 6: ENTRENAR RED NEURONAL
+# PASO 6: ENTRENAR
 # ============================================
-print("\n🚀 Iniciando entrenamiento...")
+print("\nIniciando entrenamiento...")
 
 history = model.fit(
     X_train, y_train,
-    epochs=50,              # 50 iteraciones completas
-    batch_size=16,          # Procesar 16 ejemplos a la vez
-    validation_split=0.2,   # 20% de train para validación
-    verbose=1               # Mostrar progreso
+    epochs=50,
+    batch_size=16,
+    validation_split=0.2,
+    verbose=1
 )
 
-print("\n✅ Entrenamiento completado")
+print("\nEntrenamiento completado")
 
 # ============================================
 # PASO 7: VISUALIZAR ENTRENAMIENTO
 # ============================================
-print("\n📈 Generando gráficas de entrenamiento...")
+print("\nGenerando gráficas...")
 
 plt.figure(figsize=(14, 5))
 
-# Gráfica 1: Precisión (Accuracy)
+# Gráfica 1: Accuracy
 plt.subplot(1, 2, 1)
 plt.plot(history.history['accuracy'], label='Train Accuracy', linewidth=2)
 plt.plot(history.history['val_accuracy'], label='Validation Accuracy', linewidth=2)
@@ -1293,7 +1147,7 @@ plt.ylabel('Accuracy')
 plt.legend()
 plt.grid(True, alpha=0.3)
 
-# Gráfica 2: Pérdida (Loss)
+# Gráfica 2: Loss
 plt.subplot(1, 2, 2)
 plt.plot(history.history['loss'], label='Train Loss', linewidth=2)
 plt.plot(history.history['val_loss'], label='Validation Loss', linewidth=2)
@@ -1307,20 +1161,17 @@ plt.tight_layout()
 plt.show()
 
 # ============================================
-# PASO 8: EVALUAR EN DATOS DE PRUEBA
+# PASO 8: EVALUAR
 # ============================================
-print("\n🧪 Evaluando modelo en datos de prueba...")
+print("\nEvaluando modelo...")
 
-# Hacer predicciones
 y_pred = model.predict(X_test)
-y_pred_classes = np.argmax(y_pred, axis=1)  # Convertir probabilidades a clases
+y_pred_classes = np.argmax(y_pred, axis=1)
 
-# Calcular métricas
 accuracy = accuracy_score(y_test, y_pred_classes)
-print(f"\n🎯 Accuracy en datos de prueba: {accuracy*100:.2f}%")
+print(f"\nAccuracy en datos de prueba: {accuracy*100:.2f}%")
 
-# Reporte de clasificación detallado
-print("\n📊 Reporte de Clasificación:")
+print("\nReporte de Clasificación:")
 print(classification_report(
     y_test, y_pred_classes,
     target_names=['Normal', 'Alerta Baja', 'Alerta Media', 'Alerta Alta']
@@ -1341,104 +1192,91 @@ plt.show()
 # ============================================
 # PASO 9: GUARDAR MODELO
 # ============================================
-print("\n💾 Guardando modelo entrenado...")
+print("\nGuardando modelo...")
 
 model.save('sistema_alarma_modelo.h5')
-print("✅ Modelo guardado como 'sistema_alarma_modelo.h5'")
+print("Modelo guardado como 'sistema_alarma_modelo.h5'")
 
-# También guardar el scaler (necesario para normalizar datos nuevos)
 import pickle
 with open('scaler.pkl', 'wb') as f:
     pickle.dump(scaler, f)
-print("✅ Scaler guardado como 'scaler.pkl'")
+print("Scaler guardado como 'scaler.pkl'")
 
 # ============================================
-# PASO 10: PROBAR MODELO CON EJEMPLOS
+# PASO 10: PROBAR CON EJEMPLOS
 # ============================================
-print("\n🧪 PRUEBAS CON EJEMPLOS NUEVOS:")
+print("\nPRUEBAS CON EJEMPLOS:")
 
-# Crear función de predicción fácil de usar
 def predecir_alerta(movimiento, luz, ruido, hora):
-    """
-    Predice el nivel de alerta dado los valores de sensores
-    """
-    # Crear array de entrada
     entrada = np.array([[movimiento, luz, ruido, hora]])
-    
-    # Normalizar con el mismo scaler usado en entrenamiento
     entrada_scaled = scaler.transform(entrada)
-    
-    # Predecir
     probabilidades = model.predict(entrada_scaled, verbose=0)[0]
     clase = np.argmax(probabilidades)
     
-    estados = ['🟢 NORMAL', '🟡 ALERTA BAJA', '🟠 ALERTA MEDIA', '🔴 ALERTA ALTA']
+    estados = ['NORMAL', 'ALERTA BAJA', 'ALERTA MEDIA', 'ALERTA ALTA']
     
-    print(f"\n📊 Entrada: Mov={movimiento}, Luz={luz}, Ruido={ruido}, Hora={hora}h")
-    print(f"🎯 Predicción: {estados[clase]} (Confianza: {probabilidades[clase]*100:.1f}%)")
-    print(f"   Probabilidades: Normal={probabilidades[0]*100:.1f}% | "
+    print(f"\nEntrada: Mov={movimiento}, Luz={luz}, Ruido={ruido}, Hora={hora}h")
+    print(f"Predicción: {estados[clase]} (Confianza: {probabilidades[clase]*100:.1f}%)")
+    print(f"  Probabilidades: Normal={probabilidades[0]*100:.1f}% | "
           f"Baja={probabilidades[1]*100:.1f}% | "
           f"Media={probabilidades[2]*100:.1f}% | "
           f"Alta={probabilidades[3]*100:.1f}%")
     
     return clase
 
-# Ejemplos de prueba
 print("\n" + "="*60)
 print("CASOS DE PRUEBA:")
 print("="*60)
 
-predecir_alerta(movimiento=0, luz=1500, ruido=1500, hora=14)  # Sin movimiento → NORMAL
-predecir_alerta(movimiento=1, luz=1800, ruido=1600, hora=14)  # Movimiento día → ALERTA BAJA
-predecir_alerta(movimiento=1, luz=600, ruido=2200, hora=23)   # Movimiento noche + ruido → ALERTA ALTA
-predecir_alerta(movimiento=1, luz=1200, ruido=2300, hora=12)  # Movimiento + mucho ruido → ALERTA MEDIA
+predecir_alerta(movimiento=0, luz=1500, ruido=1500, hora=14)
+predecir_alerta(movimiento=1, luz=1800, ruido=1600, hora=14)
+predecir_alerta(movimiento=1, luz=600, ruido=2200, hora=23)
+predecir_alerta(movimiento=1, luz=1200, ruido=2300, hora=12)
 
-print("\n✅ ¡Entrenamiento y evaluación completados exitosamente!")
+print("\n¡Entrenamiento completado!")
 
 ```
 
 ----------
 
-# 📊 PARTE 7: INTERPRETACIÓN DE RESULTADOS
+# PARTE 8: INTERPRETACIÓN DE RESULTADOS
 
 ## ¿Qué Buscar en las Gráficas?
 
 ### Gráfica de Accuracy (Precisión)
 
-```
-Bueno ✅:
-- Train y Validation suben juntas
-- Alcanzan >85% de accuracy
-- Se estabilizan sin grandes oscilaciones
+**Bueno:**
 
-Malo ❌:
-- Validation baja mientras Train sube (overfitting)
-- Ambas se quedan <70% (underfitting)
-- Validation oscila mucho (inestabilidad)
+-   Train y Validation suben juntas
+-   Alcanzan >85% de accuracy
+-   Se estabilizan sin grandes oscilaciones
 
-```
+**Malo:**
+
+-   Validation baja mientras Train sube (overfitting)
+-   Ambas se quedan <70% (underfitting)
+-   Validation oscila mucho (inestabilidad)
 
 ### Gráfica de Loss (Pérdida)
 
-```
-Bueno ✅:
-- Train y Validation bajan juntas
-- Se estabilizan cerca de 0.2-0.4
-- Curvas suaves
+**Bueno:**
 
-Malo ❌:
-- Validation sube mientras Train baja (overfitting)
-- Ambas se quedan altas >1.0 (no aprende)
+-   Train y Validation bajan juntas
+-   Se estabilizan cerca de 0.2-0.4
+-   Curvas suaves
 
-```
+**Malo:**
+
+-   Validation sube mientras Train baja (overfitting)
+-   Ambas se quedan altas >1.0 (no aprende)
 
 ### Matriz de Confusión
 
-```
-Diagonal Principal (verde oscuro) = Predicciones correctas
-Fuera de diagonal = Errores
+La diagonal principal (de arriba-izquierda a abajo-derecha) debe tener los números más altos.
 
-Ejemplo de buena matriz:
+**Ejemplo de buena matriz:**
+
+```
          Predicho
          N   B   M   A
 Real N [200  5   2   0]  ← Pocos errores
@@ -1450,7 +1288,7 @@ Real N [200  5   2   0]  ← Pocos errores
 
 ----------
 
-# 📝 PARTE 8: RÚBRICA DE EVALUACIÓN SUGERIDA
+# PARTE 9: RÚBRICA DE EVALUACIÓN
 
 ## Actividad 8: Red Neuronal (15 puntos)
 
@@ -1464,37 +1302,37 @@ Descripción
 
 2
 
-Generación correcta de datos sintéticos con 4 características
+Generación correcta de datos con 4 características
 
 **Preprocesamiento**
 
 2
 
-Normalización y división train/test correctas
+Normalización y división train/test
 
 **Arquitectura**
 
 3
 
-Red con al menos 2 capas ocultas, dropout, y activaciones apropiadas
+Red con 2+ capas ocultas, dropout, activaciones
 
 **Entrenamiento**
 
 3
 
-Modelo entrena correctamente y muestra gráficas de accuracy/loss
+Modelo entrena y muestra gráficas
 
 **Evaluación**
 
 3
 
-Accuracy >80%, matriz de confusión interpretada correctamente
+Accuracy >80%, matriz de confusión
 
 **Documentación**
 
 2
 
-Código comentado y explicación clara del proceso
+Código comentado y explicación clara
 
 ## Actividad 9: Lógica Difusa (15 puntos)
 
@@ -1504,17 +1342,17 @@ Puntos
 
 Descripción
 
-**Funciones de Membresía**
+**Funciones Membresía**
 
 4
 
-Al menos 3 funciones para luz y 3 para ruido correctamente implementadas
+3+ funciones para luz y 3+ para ruido
 
 **Reglas Difusas**
 
 3
 
-Mínimo 3 reglas SI-ENTONCES con operadores MIN/MAX
+Mínimo 3 reglas SI-ENTONCES
 
 **Defuzzificación**
 
@@ -1526,150 +1364,137 @@ Cálculo correcto del centro de gravedad
 
 3
 
-Lógica difusa modifica intensidad de alarma basada en nivel de RN
+Lógica difusa modifica intensidad
 
 **Pruebas**
 
 2
 
-Demostración de transiciones suaves en diferentes escenarios
+Transiciones suaves demostradas
 
 ## Formato de Entrega
 
-### Archivo a Entregar:
+### Archivos a Entregar:
 
-1.  **Código Arduino (.ino)**: Versión final del proyecto
-2.  **Notebook de Colab (.ipynb)**: Entrenamiento de red neuronal
-3.  **Video de Demostración (3-5 min)**:
+1.  **Código Arduino (.ino)**: Versión final
+2.  **Notebook Colab (.ipynb)**: Entrenamiento
+3.  **Video (3-5 min)**:
     -   Explicación del circuito
-    -   Demostración de 4 casos de prueba
-    -   Interpretación de resultados
+    -   4 casos de prueba
+    -   Resultados
 4.  **Reporte PDF (5-10 páginas)**:
-    -   Introducción y objetivos
-    -   Marco teórico (Redes Neuronales + Lógica Difusa)
-    -   Desarrollo (circuito, código, entrenamiento)
-    -   Resultados (gráficas, matriz de confusión)
-    -   Conclusiones y trabajo futuro
+    -   Introducción
+    -   Marco teórico
+    -   Desarrollo
+    -   Resultados
+    -   Conclusiones
 
 ----------
 
-# 🔧 PARTE 9: TROUBLESHOOTING (SOLUCIÓN DE PROBLEMAS)
+# PARTE 10: TROUBLESHOOTING
 
-## Problemas Comunes y Soluciones
+## Problemas Comunes
 
-### 1. ESP32 No Se Reconoce en Arduino IDE
+### 1. ESP32 No Se Reconoce
 
-```
-Síntomas: Puerto COM no aparece
-Soluciones:
-✅ Instalar driver CH340 o CP2102
-✅ Probar otro cable USB (algunos son solo de carga)
-✅ Presionar botón BOOT al subir código
-✅ Verificar que ESP32 esté bien conectado
+**Síntomas:** Puerto COM no aparece
 
-```
+**Soluciones:**
 
-### 2. Sensor PIR Siempre Detecta Movimiento
+-   Instalar driver CH340 o CP2102
+-   Probar otro cable USB
+-   Presionar botón BOOT al subir código
+-   Verificar conexión
 
-```
-Síntomas: pirPin siempre lee 1
-Soluciones:
-✅ Ajustar potenciómetro de sensibilidad (girar a la izquierda)
-✅ Esperar 30-60 segundos para calibración inicial
-✅ Alejar de fuentes de calor (luz directa, computadora)
-✅ Verificar que esté en modo retriggerable
+### 2. PIR Siempre Detecta Movimiento
 
-```
+**Síntomas:** pirPin siempre lee 1
 
-### 3. LDR Siempre Lee Valores Muy Altos o Muy Bajos
+**Soluciones:**
 
-```
-Síntomas: Valores siempre en 0 o siempre en 4095
-Soluciones:
-✅ Verificar resistencia de 10kΩ está correctamente conectada
-✅ Comprobar que un terminal del LDR va a 3.3V
-✅ Probar invertir conexiones del LDR
-✅ Código de prueba:
-   Serial.println(analogRead(34));  // Debe cambiar con luz
+-   Ajustar potenciómetro (girar izquierda)
+-   Esperar 30-60 segundos calibración
+-   Alejar de fuentes de calor
+-   Verificar modo retriggerable
 
-```
+### 3. LDR Lee Valores Extremos
 
-### 4. LED RGB No Muestra Colores Correctos
+**Síntomas:** Siempre 0 o siempre 4095
 
-```
-Síntomas: Colores invertidos o LED siempre encendido
-Soluciones:
-✅ Identificar si es ánodo común o cátodo común
-✅ Para ánodo común: analogWrite(pin, 255 - valor)
-✅ Verificar resistencias de 220Ω en cada pin
-✅ Código de prueba:
-   analogWrite(ledR, 255); delay(1000);  // Debe verse rojo
+**Soluciones:**
 
-```
+-   Verificar resistencia 10kΩ
+-   Comprobar conexión a 3.3V
+-   Probar invertir terminales LDR
+-   Código prueba: `Serial.println(analogRead(34));`
+
+### 4. LED RGB Colores Incorrectos
+
+**Síntomas:** Colores invertidos
+
+**Soluciones:**
+
+-   Identificar ánodo/cátodo común
+-   Para ánodo: `analogWrite(pin, 255 - valor)`
+-   Verificar resistencias 220Ω
+-   Código prueba: `analogWrite(ledR, 255); delay(1000);`
 
 ### 5. Buzzer No Suena
 
-```
-Síntomas: No se escucha ningún sonido
-Soluciones:
-✅ Verificar polaridad (+ a GPIO12, - a GND)
-✅ Probar con código simple:
-   tone(12, 1000); delay(1000); noTone(12);
-✅ Si es buzzer pasivo, usar PWM diferente
-✅ Verificar que no esté dañado (probar con 3.3V directo)
+**Síntomas:** Sin sonido
 
-```
+**Soluciones:**
 
-### 6. Error al Compilar Código
+-   Verificar polaridad (+ a GPIO12)
+-   Código prueba: `tone(12, 1000); delay(1000);`
+-   Si es pasivo, usar PWM diferente
+-   Probar con 3.3V directo
 
-```
-Síntomas: Mensajes de error en Arduino IDE
-Soluciones comunes:
-✅ "WiFi.h not found" → Seleccionar placa ESP32 correctamente
-✅ "Sketch too big" → Reducir variables o usar modelo más pequeño
-✅ "tone() not declared" → Asegurar que se usa ESP32
-✅ Verificar todas las librerías instaladas
+### 6. Error al Compilar
 
-```
+**Soluciones:**
 
-### 7. Red Neuronal con Accuracy Muy Baja (<50%)
+-   "WiFi.h not found" → Seleccionar ESP32
+-   "Sketch too big" → Reducir variables
+-   "tone() not declared" → Usar ESP32
+-   Verificar librerías instaladas
 
-```
-Síntomas: Modelo no aprende, predicciones aleatorias
-Soluciones:
-✅ Verificar que datos estén normalizados
-✅ Aumentar número de épocas (de 50 a 100)
-✅ Revisar reglas de etiquetado en clasificar_amenaza()
-✅ Aumentar tamaño del dataset (de 1500 a 3000 muestras)
-✅ Verificar que clases estén balanceadas
+### 7. Red Neuronal Accuracy Baja
 
-```
+**Síntomas:** <50% accuracy
 
-### 8. Lógica Difusa No Suaviza Transiciones
+**Soluciones:**
 
-```
-Síntomas: Cambios bruscos en intensidad de alarma
-Soluciones:
-✅ Ampliar rangos de funciones de membresía
-✅ Aumentar solapamiento entre funciones
-✅ Verificar operador MIN en reglas
-✅ Probar con valores intermedios (ej: luz=900)
+-   Verificar normalización
+-   Aumentar épocas (50 → 100)
+-   Revisar reglas de etiquetado
+-   Aumentar dataset (1500 → 3000)
+-   Balancear clases
 
-```
+### 8. Lógica Difusa Sin Suavizar
+
+**Síntomas:** Cambios bruscos
+
+**Soluciones:**
+
+-   Ampliar rangos de membresía
+-   Aumentar solapamiento
+-   Verificar operador MIN
+-   Probar valores intermedios
 
 ----------
 
-# 🚀 PARTE 10: EXTENSIONES OPCIONALES (PUNTOS EXTRA)
+# PARTE 11: EXTENSIONES OPCIONALES
 
-## A) Integración con Telegram (5 puntos extra)
+## A) Telegram (5 puntos extra)
 
 ### Configuración:
 
-1.  Crear bot en Telegram con @BotFather
+1.  Crear bot con @BotFather
 2.  Obtener token del bot
-3.  Obtener tu chat ID con @userinfobot
+3.  Obtener chat ID con @userinfobot
 
-### Código para ESP32:
+### Código:
 
 ```cpp
 #include <WiFiClientSecure.h>
@@ -1679,32 +1504,21 @@ const char* password = "TU_PASSWORD";
 const String telegramToken = "TU_BOT_TOKEN";
 const String chatID = "TU_CHAT_ID";
 
-void setup() {
-  // ... código anterior ...
-  
-  conectarWiFi();
-}
-
 void conectarWiFi() {
   WiFi.begin(ssid, password);
-  Serial.print("Conectando a WiFi");
-  
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
     Serial.print(".");
   }
-  
-  Serial.println("\n✅ WiFi Conectado");
-  Serial.print("IP: ");
-  Serial.println(WiFi.localIP());
+  Serial.println("\nWiFi Conectado");
 }
 
 void enviarAlertaTelegram(int nivel, float intensidad) {
-  if (WiFi.status() == WL_CONNECTED && nivel >= 2) {  // Solo alertas medias/altas
+  if (WiFi.status() == WL_CONNECTED && nivel >= 2) {
     HTTPClient http;
     
     String url = "https://api.telegram.org/bot" + telegramToken + "/sendMessage";
-    String mensaje = "🚨 ALERTA SISTEMA DE SEGURIDAD\n\n";
+    String mensaje = "ALERTA SISTEMA\n\n";
     mensaje += "Nivel: " + estados[nivel] + "\n";
     mensaje += "Intensidad: " + String(intensidad, 1) + "%\n";
     mensaje += "Hora: " + String(horaActual) + ":00";
@@ -1717,31 +1531,30 @@ void enviarAlertaTelegram(int nivel, float intensidad) {
     int httpCode = http.POST(payload);
     
     if (httpCode > 0) {
-      Serial.println("📱 Alerta enviada a Telegram");
-    } else {
-      Serial.println("❌ Error al enviar alerta");
+      Serial.println("Alerta enviada a Telegram");
     }
     
     http.end();
   }
 }
 
-// Agregar al loop:
+// En setup():
+void setup() {
+  // ... código anterior ...
+  conectarWiFi();
+}
+
+// En loop():
 void loop() {
   // ... código anterior ...
-  
   enviarAlertaTelegram(nivelAlerta, intensidadDifusa);
-  
-  // ... resto del código ...
 }
 
 ```
 
 ----------
 
-## B) Dashboard Web en Tiempo Real (5 puntos extra)
-
-### Servidor Web en ESP32:
+## B) Dashboard Web (5 puntos extra)
 
 ```cpp
 #include <WebServer.h>
@@ -1751,47 +1564,43 @@ WebServer server(80);
 String generarHTML() {
   String html = "<!DOCTYPE html><html><head>";
   html += "<meta charset='UTF-8'>";
-  html += "<meta name='viewport' content='width=device-width, initial-scale=1.0'>";
-  html += "<title>Sistema de Alarma IA</title>";
+  html += "<title>Sistema Alarma IA</title>";
   html += "<style>";
-  html += "body { font-family: Arial; background: #1a1a1a; color: white; text-align: center; padding: 20px; }";
-  html += ".sensor { background: #2a2a2a; border-radius: 15px; padding: 20px; margin: 10px; display: inline-block; min-width: 200px; }";
-  html += ".valor { font-size: 48px; font-weight: bold; margin: 10px 0; }";
-  html += ".normal { color: #00ff00; } .baja { color: #ffff00; } .media { color: #ffa500; } .alta { color: #ff0000; }";
+  html += "body{font-family:Arial;background:#1a1a1a;color:white;text-align:center;padding:20px}";
+  html += ".sensor{background:#2a2a2a;border-radius:15px;padding:20px;margin:10px;display:inline-block;min-width:200px}";
+  html += ".valor{font-size:48px;font-weight:bold;margin:10px 0}";
+  html += ".normal{color:#00ff00}.baja{color:#ffff00}.media{color:#ffa500}.alta{color:#ff0000}";
   html += "</style>";
-  html += "<script>";
-  html += "setInterval(() => location.reload(), 2000);";  // Actualizar cada 2 segundos
-  html += "</script>";
+  html += "<script>setInterval(()=>location.reload(),2000)</script>";
   html += "</head><body>";
   
-  html += "<h1>🤖 Sistema de Alarma Inteligente</h1>";
+  html += "<h1>Sistema de Alarma Inteligente</h1>";
   
   html += "<div class='sensor'>";
-  html += "<h3>📍 Movimiento</h3>";
-  html += "<div class='valor'>" + String(movimiento ? "DETECTADO" : "NO") + "</div>";
+  html += "<h3>Movimiento</h3>";
+  html += "<div class='valor'>" + String(movimiento ? "SI" : "NO") + "</div>";
   html += "</div>";
   
   html += "<div class='sensor'>";
-  html += "<h3>💡 Luz</h3>";
+  html += "<h3>Luz</h3>";
   html += "<div class='valor'>" + String(luz) + "</div>";
   html += "</div>";
   
   html += "<div class='sensor'>";
-  html += "<h3>🔊 Ruido</h3>";
+  html += "<h3>Ruido</h3>";
   html += "<div class='valor'>" + String(ruido) + "</div>";
   html += "</div>";
   
-  // Estado de alerta
   String claseCSS = "";
   if (nivelAlerta == 0) claseCSS = "normal";
   else if (nivelAlerta == 1) claseCSS = "baja";
   else if (nivelAlerta == 2) claseCSS = "media";
   else claseCSS = "alta";
   
-  html += "<div class='sensor' style='width: 80%; max-width: 500px;'>";
-  html += "<h2>🎯 Estado Actual</h2>";
+  html += "<div class='sensor' style='width:80%;max-width:500px'>";
+  html += "<h2>Estado Actual</h2>";
   html += "<div class='valor " + claseCSS + "'>" + estados[nivelAlerta] + "</div>";
-  html += "<p>Intensidad Difusa: " + String(intensidadDifusa, 1) + "%</p>";
+  html += "<p>Intensidad: " + String(intensidadDifusa, 1) + "%</p>";
   html += "</div>";
   
   html += "</body></html>";
@@ -1801,46 +1610,42 @@ String generarHTML() {
 void setup() {
   // ... código anterior ...
   
-  conectarWiFi();
-  
-  // Configurar servidor web
   server.on("/", []() {
     server.send(200, "text/html", generarHTML());
   });
   
   server.begin();
-  Serial.println("🌐 Servidor web iniciado");
-  Serial.print("Accede en: http://");
+  Serial.println("Servidor web iniciado");
+  Serial.print("URL: http://");
   Serial.println(WiFi.localIP());
 }
 
 void loop() {
-  server.handleClient();  // Manejar peticiones web
-  
+  server.handleClient();
   // ... resto del código ...
 }
 
 ```
 
-Ahora puedes acceder desde cualquier navegador en tu red a: `http://[IP_DEL_ESP32]`
+**Accede desde navegador:** `http://[IP_ESP32]`
 
 ----------
 
-## C) Almacenamiento de Eventos en SD (3 puntos extra)
+## C) Almacenamiento en SD (3 puntos extra)
 
 ```cpp
 #include <SD.h>
 #include <SPI.h>
 
-#define SD_CS 5  // Pin CS del módulo SD
+#define SD_CS 5
 
 void setup() {
   // ... código anterior ...
   
   if (!SD.begin(SD_CS)) {
-    Serial.println("❌ Error al inicializar tarjeta SD");
+    Serial.println("Error SD");
   } else {
-    Serial.println("✅ Tarjeta SD lista");
+    Serial.println("SD lista");
   }
 }
 
@@ -1848,7 +1653,6 @@ void guardarEvento(int nivel, float intensidad) {
   File archivo = SD.open("/eventos.csv", FILE_APPEND);
   
   if (archivo) {
-    // Formato CSV: timestamp,nivel,intensidad,movimiento,luz,ruido
     String linea = String(millis()) + ",";
     linea += String(nivel) + ",";
     linea += String(intensidad, 2) + ",";
@@ -1859,14 +1663,14 @@ void guardarEvento(int nivel, float intensidad) {
     archivo.println(linea);
     archivo.close();
     
-    Serial.println("💾 Evento guardado en SD");
+    Serial.println("Evento guardado");
   }
 }
 
 void loop() {
   // ... código anterior ...
   
-  if (nivelAlerta > 0) {  // Solo guardar si hay alerta
+  if (nivelAlerta > 0) {
     guardarEvento(nivelAlerta, intensidadDifusa);
   }
 }
@@ -1875,102 +1679,103 @@ void loop() {
 
 ----------
 
-# 📚 PARTE 11: REFERENCIAS Y RECURSOS ADICIONALES
+# PARTE 12: REFERENCIAS
 
 ## Documentación Oficial
 
--   **ESP32**: https://docs.espressif.com/projects/esp-idf/en/latest/esp32/
+-   **ESP32**: https://docs.espressif.com/projects/esp-idf/
 -   **TensorFlow**: https://www.tensorflow.org/tutorials
--   **Arduino IDE**: https://www.arduino.cc/reference/en/
+-   **Arduino**: https://www.arduino.cc/reference/
 
-## Tutoriales Recomendados
+## Tutoriales
 
--   **Redes Neuronales**: "Neural Networks and Deep Learning" - Michael Nielsen (gratuito online)
--   **Lógica Difusa**: "Introduction to Fuzzy Logic using MATLAB" - Sivanandam
--   **ESP32 IoT**: "ESP32 Projects" - Random Nerd Tutorials
+-   "Neural Networks and Deep Learning" - Michael Nielsen
+-   "Introduction to Fuzzy Logic" - Sivanandam
+-   Random Nerd Tutorials - ESP32
 
-## Videos Educativos (YouTube)
+## Videos YouTube
 
 -   "¿Qué es una Red Neuronal?" - Dot CSV
 -   "Lógica Difusa Explicada" - Electrónica Fácil
 -   "ESP32 para Principiantes" - The STEM Teacher
 
-## Herramientas Online
+## Herramientas
 
--   **Google Colab**: https://colab.research.google.com (entrenamiento de IA gratis)
--   **Tinkercad Circuits**: https://www.tinkercad.com (simulación de circuitos)
--   **Wokwi**: https://wokwi.com (simulador ESP32 online)
+-   Google Colab: https://colab.research.google.com
+-   Tinkercad: https://www.tinkercad.com
+-   Wokwi: https://wokwi.com
 
 ----------
 
-# ✅ CHECKLIST FINAL ANTES DE ENTREGAR
+# CHECKLIST FINAL
 
 ## Hardware
 
--   [ ] Todas las conexiones están firmes y sin cortocircuitos
--   [ ] Sensores responden correctamente (probados individualmente)
--   [ ] Buzzer suena con diferentes tonos
+-   [ ] Conexiones firmes sin cortocircuitos
+-   [ ] Sensores responden correctamente
+-   [ ] Buzzer suena con tonos diferentes
 -   [ ] LED RGB muestra todos los colores
--   [ ] ESP32 se programa sin errores
+-   [ ] ESP32 programa sin errores
 
 ## Software - Red Neuronal
 
--   [ ] Dataset generado con 1500+ muestras
--   [ ] Datos normalizados correctamente
--   [ ] Red entrena y converge (accuracy >80%)
--   [ ] Gráficas de accuracy/loss guardadas
--   [ ] Matriz de confusión interpretada
+-   [ ] Dataset con 1500+ muestras
+-   [ ] Datos normalizados
+-   [ ] Red converge (accuracy >80%)
+-   [ ] Gráficas guardadas
+-   [ ] Matriz confusión interpretada
 -   [ ] Modelo guardado (.h5)
 
 ## Software - Lógica Difusa
 
--   [ ] Al menos 6 funciones de membresía implementadas
--   [ ] Mínimo 3 reglas difusas definidas
--   [ ] Defuzzificación calcula correctamente
--   [ ] Transiciones suaves entre intensidades
--   [ ] Código comentado y explicado
+-   [ ] 6+ funciones membresía
+-   [ ] 3+ reglas difusas
+-   [ ] Defuzzificación correcta
+-   [ ] Transiciones suaves
+-   [ ] Código comentado
 
 ## Integración
 
--   [ ] Red neuronal clasifica nivel de alerta
--   [ ] Lógica difusa controla intensidad de respuesta
--   [ ] Ambas técnicas trabajan juntas
--   [ ] Sistema responde en tiempo real (<1 seg)
+-   [ ] Red clasifica nivel alerta
+-   [ ] Lógica controla intensidad
+-   [ ] Ambas técnicas juntas
+-   [ ] Respuesta tiempo real (<1s)
 
 ## Documentación
 
--   [ ] Código fuente completo (.ino)
--   [ ] Notebook de entrenamiento (.ipynb)
--   [ ] Video de demostración (3-5 min)
--   [ ] Reporte PDF con todas las secciones
--   [ ] Diagramas de circuito incluidos
+-   [ ] Código .ino completo
+-   [ ] Notebook .ipynb
+-   [ ] Video 3-5 min
+-   [ ] Reporte PDF
+-   [ ] Diagramas incluidos
 
 ## Pruebas
 
--   [ ] Caso 1: Sin movimiento → NORMAL ✓
--   [ ] Caso 2: Movimiento de día → ALERTA BAJA ✓
--   [ ] Caso 3: Movimiento + ruido → ALERTA MEDIA ✓
--   [ ] Caso 4: Movimiento nocturno → ALERTA ALTA ✓
+-   [ ] Sin movimiento → NORMAL
+-   [ ] Movimiento día → ALERTA BAJA
+-   [ ] Movimiento + ruido → ALERTA MEDIA
+-   [ ] Movimiento noche → ALERTA ALTA
 
 ----------
 
-# 🎓 CONCLUSIÓN
+# CONCLUSIÓN
 
-Este proyecto cumple completamente con los requisitos de:
+## Este proyecto cumple:
 
-✅ **Actividad 8 (Red Neuronal)**:
+**Actividad 8 (Red Neuronal):**
 
--   Clasificación inteligente de eventos usando red neuronal de 4 capas
--   Entrenamiento con 1500 ejemplos y accuracy >85%
--   Implementación práctica en ESP32
+-   Clasificación inteligente con red de 4 capas
+-   Entrenamiento con 1500 ejemplos
+-   Accuracy >85%
+-   Implementación en ESP32
 
-✅ **Actividad 9 (Lógica Difusa)**:
+**Actividad 9 (Lógica Difusa):**
 
--   Sistema difuso con 6 funciones de membresía
--   4 reglas difusas para control de intensidad
--   Defuzzificación mediante centro de gravedad
+-   Sistema difuso con 6 funciones membresía
+-   4 reglas difusas
+-   Defuzzificación por centro de gravedad
 
-✅ **Requisito de Robótica**:
+**Requisito Robótica:**
 
 -   Percepción: PIR, LDR, Micrófono
 -   Procesamiento: IA en tiempo real
@@ -1978,25 +1783,23 @@ Este proyecto cumple completamente con los requisitos de:
 
 ## Aplicación Real
 
-Este sistema puede implementarse en:
-
 -   Hogares (seguridad residencial)
--   Oficinas (monitoreo de acceso)
--   Almacenes (detección de intrusos)
--   Laboratorios (control de acceso a áreas sensibles)
+-   Oficinas (monitoreo acceso)
+-   Almacenes (detección intrusos)
+-   Laboratorios (control áreas sensibles)
 
 ## Aprendizajes Clave
 
-1.  Diseño e implementación de redes neuronales
-2.  Sistemas de lógica difusa para control
-3.  Integración de IA en sistemas embebidos
-4.  Robótica autónoma con sensores múltiples
+1.  Diseño redes neuronales
+2.  Sistemas lógica difusa
+3.  Integración IA en embebidos
+4.  Robótica autónoma sensores múltiples
 
 ----------
 
-**¡Éxito en tu proyecto! 🚀**
+**¡Éxito en tu proyecto!**
 
-Si tienes dudas durante la implementación, revisa la sección de Troubleshooting o consulta con tu instructor.
+Si tienes dudas, revisa Troubleshooting o consulta instructor.
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTEwNTU2MDAxOV19
+eyJoaXN0b3J5IjpbMTU2NjU0MzI0OSwtMTA1NTYwMDE5XX0=
 -->
