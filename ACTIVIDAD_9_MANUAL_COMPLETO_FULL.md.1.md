@@ -80,29 +80,8 @@ Te recomiendo ir **paso por paso** en el orden indicado.
 
 ---
 
-# 7. PASO 1 – CONFIGURACIÓN INICIAL DEL MODELO
 
-### 🎯 Objetivo
-Crear un proyecto nuevo en AnyLogic con unidades adecuadas y un agente principal `Main` que representará el CEDIS.
-
-### 🧠 Lógica
-Trabajaremos en un solo agente principal (`Main`) que contendrá:
-
-- El **layout** del CEDIS (nave, zonas internas, patios).  
-- El **diagrama de flujo** de camiones y pallets.  
-- Los **recursos** y **KPIs**.
-
-### 🛠️ Configuración
-
-1. Abrir AnyLogic → `File → New Model…`
-2. Asignar un nombre al proyecto, por ejemplo:  
-   `CEDIS_SanBartolo_ApellidoNombre`
-3. En la vista de propiedades de `Main`, configurar:
-   - **Time units:** `hours`  
-   - **Length units:** `meters`
-
-
-# 🟦 PASO 1 — CONFIGURACIÓN INICIAL DEL MODELO EN ANYLOGIC  
+# 7. 🟦 PASO 1 — CONFIGURACIÓN INICIAL DEL MODELO EN ANYLOGIC  
 ## (Incluye cómo activar METROS, cómo crear el agente MAIN y cómo insertar el layout)
 
 ---
@@ -331,5 +310,5 @@ double tSalidaSistema;
 (Sigue igual… contenido completo …)
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbOTE4ODY4NzY2XX0=
+eyJoaXN0b3J5IjpbMTIxNjYwMzc2Nl19
 -->
