@@ -100,6 +100,11 @@ Ahora vas a **dar vida a ese diseño** en una simulación digital.
 
 ### Materiales
 - Layout del CEDIS San Bartolo (imagen PNG/JPG proporcionada)
+<div align="center">
+  <img src="./images/layoutt.png" alt="Layout CEDIS" width="700"/>
+  <br>
+  <em>Figura 1: Diseño conceptual del CEDIS San Bartolo</em>
+</div>
 - Este documento MD como guía
 
 ---
@@ -704,6 +709,7 @@ avgCycleTime = totalCycleTime / trucksProcessed;
 
 El documento ahora tiene **mejor legibilidad** y **navegación más intuitiva**, manteniendo todo el contenido técnico original pero con presentación optimizada.
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTIwNjE5MTUzNzIsMTA5NDE3MDcyNSwxMD
-k0MTcwNzI1LDU4ODE2MTQ0MSwxODcyOTMzOTRdfQ==
+eyJoaXN0b3J5IjpbLTE1MDE0Nzg4NjcsLTIwNjE5MTUzNzIsMT
+A5NDE3MDcyNSwxMDk0MTcwNzI1LDU4ODE2MTQ0MSwxODcyOTMz
+OTRdfQ==
 -->
