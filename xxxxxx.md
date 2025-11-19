@@ -33,7 +33,7 @@ Es como un **videojuego de tu CEDIS** donde puedes ver cómo entran camiones, se
 ----------
 
 ## 1. DATOS DE IDENTIFICACIÓN
-
+----
 Campo
 
 Información a completar
@@ -3771,6 +3771,6 @@ Extras
 
 ----------
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTA5NDE3MDcyNSw1ODgxNjE0NDEsMTg3Mj
-kzMzk0XX0=
+eyJoaXN0b3J5IjpbLTEyNTQyMDYyOTksMTA5NDE3MDcyNSw1OD
+gxNjE0NDEsMTg3MjkzMzk0XX0=
 -->
