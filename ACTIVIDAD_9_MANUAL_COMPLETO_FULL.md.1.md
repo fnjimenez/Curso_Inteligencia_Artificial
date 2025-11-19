@@ -81,7 +81,7 @@ Te recomiendo ir **paso por paso** en el orden indicado.
 ---
 
 
-# 7. 🟦 PASO 1 — CONFIGURACIÓN INICIAL DEL MODELO EN ANYLOGIC  
+# 🟦 PASO 1 — CONFIGURACIÓN INICIAL DEL MODELO EN ANYLOGIC  
 ## (Incluye cómo activar METROS, cómo crear el agente MAIN y cómo insertar el layout)
 
 ---
@@ -146,141 +146,6 @@ En la parte inferior derecha:
 
 ## 🔧 2.1 Crear la nave principal (rectángulo grande)
 
-Aquí tienes **solamente los dos bloques que pediste**, listos para **copiar y pegar en StackEdit**, sin nada extra.
-
-----------
-
-# ✅ **BLOQUE 1 — CONFIGURACIÓN INICIAL DEL MODELO (COMPLETA Y CORREGIDA)**
-
-```markdown
-## 🔧 PASO 1 — Crear el proyecto y configurar unidades correctamente
-
-### ✔ 1. Crear un proyecto nuevo
-1. Abrir **AnyLogic**
-2. Ir a **File → New Model…**
-3. Escribir un nombre, por ejemplo:
-   `CEDIS_SanBartolo_ApellidoNombre`
-
----
-
-### ✔ 2. Confirmar que existe el agente *Main*
-Cuando se crea un proyecto nuevo, AnyLogic genera automáticamente un agente llamado **Main**.
-
-Si **NO aparece**, entonces:
-1. Clic derecho en **Agent Types**
-2. Seleccionar **New Agent Type**
-3. Nombre: `Main`
-4. Tipo: **Active Object**
-
----
-
-### ✔ 3. Configurar las unidades del modelo
-En el panel de propiedades (parte inferior izquierda):
-
-1. Selecciona el agente **Main**
-2. En la pestaña **Properties**, buscar:
-   - **Time units → hours**
-   - **Length units → meters**
-   - **Speed units → meters per hour**
-
----
-
-### ✔ 4. ¿Y si NO aparece “Length units” o “Time units” en pantalla?
-A veces AnyLogic “esconde” esas propiedades.
-
-Para mostrar todos los parámetros:
-
-1. Selecciona **Main**
-2. En la esquina superior derecha del panel Properties, da clic en el icono:
-   **“Show advanced properties”**
-3. Ahora aparecerán:
-   - **Time units**
-   - **Length units**
-   - **Database**
-   - **Java class**
-   - etc.
-
-Si aún no aparece:
-
-1. Ir a **Window → Reset perspective**
-2. Reiniciar AnyLogic
-3. Repetir los pasos anteriores
-
-Con esto ya queda configurado todo para trabajar en **metros reales**.
-
-```
-
-----------
-
-# ✅ **BLOQUE 2 — INSERTAR EL LAYOUT COMO IMAGEN DE FONDO**
-
-```markdown
-## 🗺️ PASO — Insertar el layout del CEDIS como imagen de fondo
-
-### 🎯 Objetivo
-Colocar la imagen del layout del **CEDIS San Bartolo** dentro del agente `Main` como guía visual para dibujar zonas, paths y flujos.
-
----
-
-### ✔ 1. Descargar la imagen del layout (PNG transparente)
-El profesor proporciona el archivo PNG con fondo transparente.
-
----
-
-### ✔ 2. Insertar la imagen en AnyLogic
-1. Ir al panel **Palette → Presentation**
-2. Seleccionar **Image**
-3. Arrastrarla dentro del agente **Main**
-
----
-
-### ✔ 3. Cargar el archivo correcto
-Con la imagen seleccionada:
-1. En **Properties → Picture**
-2. Clic en **Choose…**
-3. Navegar a donde guardaste el archivo PNG del layout
-4. Seleccionar **Open**
-
----
-
-### ✔ 4. Ajustar tamaño (escalado)
-En **Properties → Scale**:
-
-- **Mode:** *Fit inside selection*
-- Ajustar manualmente con el mouse o con valores numéricos
-
-Ejemplo sugerido:
-- Width: `250 m`
-- Height: `100 m`
-
-*Estos valores deben coincidir con el tamaño real que usarás para la nave.*
-
----
-
-### ✔ 5. Bloquear la imagen para no moverla accidentalmente
-1. Seleccionar la imagen
-2. Clic derecho → **Lock**
-3. Alternativa rápida: presionar **Ctrl + L**
-
-Con esto ya puedes dibujar encima:
-- Rectángulos de zonas
-- Paths de montacargas
-- Líneas de flujo
-- Entradas y salidas
-
-```
-
-----------
-
-Si quieres, puedo generarte:
-
-✅ **Los bloques 3 y 4**  
-(agregar zonas encima del layout y colocar nombres en el mapa)
-
-o  
-✅ **Un manual rápido para tus alumnos: “Cómo insertar cualquier layout en AnyLogic”**
-
-¿Quieres que continúe?
 1. Ir a:  
    **Palette → Presentation → Rectangle**
 2. Dibujar un rectángulo grande (ejemplo recomendado):  
@@ -445,5 +310,6 @@ double tSalidaSistema;
 (Sigue igual… contenido completo …)
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbOTYxNjY3ODA2LDEyMTY2MDM3NjZdfQ==
+eyJoaXN0b3J5IjpbLTE5ODMyNzAwNDUsOTYxNjY3ODA2LDEyMT
+Y2MDM3NjZdfQ==
 -->
