@@ -13,11 +13,11 @@
 | Johana Aydie Rocha Cabrian           |  ACTIVO /NORMAL        |
 | Jose Daniel Pérez Mendoza            |  ACTIVO /NORMAL      |
 | Leonardo Daniel Jiménez Munoz        |         |
-| Lex Hernandez Villanueva             |  ACTIVO /NORMAL        |
-| Liliana Saray Mejía Reyes            |         |
+| Lex Hernandez Villanueva             |  ACTIVO /NORMAL       |
+| Liliana Saray Mejía Reyes            |  ACTIVO /NORMAL       |
 | Luis Eduardo Jaramillo               |  ACTIVO /NORMAL       |
 | María Alejandra Cantero Cantero      |  ACTIVO /NORMAL       |
-| María Paula Guzmán Colunga           |         |
+| María Paula Guzmán Colunga           |  ACTIVO /NORMAL      |
 | María Refugia Sánchez Ortega         |         |
 | María Romina Longoria Carreón        |         |
 | Sonia Guadalupe Cortez SantaCruz     |         |
@@ -27,5 +27,5 @@
 
 > Written with [StackEdit](https://stackedit.io/).
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE2NjY3MTM1M119
+eyJoaXN0b3J5IjpbLTIwMzA0NTU5MzMsLTE2NjY3MTM1M119
 -->
