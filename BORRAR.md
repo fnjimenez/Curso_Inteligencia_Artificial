@@ -11,7 +11,7 @@
 | Eduardo Castañeda Castillo           |  ACTIVO /NORMAL       |
 | Gabriela Roque Banda                 |  ACTIVO /NORMAL       |
 | Johana Aydie Rocha Cabrian           |  ACTIVO /NORMAL        |
-| Jose Daniel Pérez Mendoza            |         |
+| Jose Daniel Pérez Mendoza            |  ACTIVO /NORMAL      |
 | Leonardo Daniel Jiménez Munoz        |         |
 | Lex Hernandez Villanueva             |  ACTIVO /NORMAL        |
 | Liliana Saray Mejía Reyes            |         |
@@ -27,5 +27,5 @@
 
 > Written with [StackEdit](https://stackedit.io/).
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTM5Mzk3MjI5M119
+eyJoaXN0b3J5IjpbLTE2NjY3MTM1M119
 -->
