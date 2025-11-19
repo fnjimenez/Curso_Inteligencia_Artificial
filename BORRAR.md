@@ -3,7 +3,7 @@
 | Alan Omar Aguilar Ortiz              |  ACTIVO /NORMAL       |
 | Aldo Emmanuel Rosas Castillo         |         |
 | Alejandro Morales Ávalos             |         |
-| Alexandra Hernández García           |         |
+| Alexandra Hernández García           |  ACTIVO /NORMAL      |
 | Andrea Torres Ramos                  |         |
 | Cecilia Meza Maldonado               |         |
 | Dalia Valeria Chavolla Rodriguez     |         |
@@ -27,5 +27,5 @@
 
 > Written with [StackEdit](https://stackedit.io/).
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTIwMzA0NTU5MzMsLTE2NjY3MTM1M119
+eyJoaXN0b3J5IjpbMTU3ODYyNTUyMywtMTY2NjcxMzUzXX0=
 -->
