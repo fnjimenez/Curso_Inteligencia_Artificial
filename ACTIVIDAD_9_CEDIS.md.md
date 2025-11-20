@@ -954,6 +954,28 @@ avgCycleTime = totalCycleTime / trucksProcessed;  // Calcular promedio
 - [ ] Código On exit implementado correctamente
 - [ ] No hay errores de compilación en el código
 
+### **16. PASO 10 – CREAR DASHBOARD DE MONITOREO**
+
+### 🎯 Objetivo
+Panel visual para monitoreo en tiempo real.
+
+### 🛠️ Configuración
+
+#### **Paso 10.1: Título del Dashboard**
+- **Text:** `📊 DASHBOARD - CEDIS SAN BARTOLO`
+- **Font:** Bold, Size: 18
+
+#### **Paso 10.2: Métricas Dinámicas**
+
+| Métrica | Texto Dinámico | Color |
+|---------|----------------|-------|
+| Pallets procesados | `palletsProcessed` | Verde |
+| Camiones procesados | `trucksProcessed` | Azul |
+| Tiempo promedio | `format("%.2f", avgCycleTime)` | Naranja |
+| Utilización andenes | `format("%.1f", docks.utilization() * 100)` | Rojo |
+
+---
+
 ---
 
 # PARTE 5: RECURSOS ADICIONALES Y OPTIMIZACIÓN
@@ -1051,6 +1073,26 @@ Un dashboard efectivo permite:
 - [ ] 4 valores dinámicos vinculados a variables
 - [ ] Formato correcto para números decimales
 - [ ] Dashboard organizado y legible
+
+### **17. PASO 11 – GESTIÓN DE MONTACARGAS (OPCIONAL)**
+
+### 🎯 Objetivo
+Implementar montacargas como recurso adicional.
+
+### 🛠️ Configuración
+
+#### **Paso 11.1: Crear ResourcePool**
+- **Name:** `forklifts`
+- **Capacity:** `12`
+
+#### **Paso 11.2: Usar en Procesos**
+Agregar **Seize/Release** alrededor de `SORTING_PROCESS`:
+- **Seize:** `forklifts`, Quantity: `2`
+- **Release:** `forklifts`
+
+
+
+
 
 ---
 
@@ -1343,47 +1385,12 @@ avgCycleTime = totalCycleTime / trucksProcessed;
 
 **📍 PEGAR DESPUÉS DEL PASO 9**
 
-### **16. PASO 10 – CREAR DASHBOARD DE MONITOREO**
-
-### 🎯 Objetivo
-Panel visual para monitoreo en tiempo real.
-
-### 🛠️ Configuración
-
-#### **Paso 10.1: Título del Dashboard**
-- **Text:** `📊 DASHBOARD - CEDIS SAN BARTOLO`
-- **Font:** Bold, Size: 18
-
-#### **Paso 10.2: Métricas Dinámicas**
-
-| Métrica | Texto Dinámico | Color |
-|---------|----------------|-------|
-| Pallets procesados | `palletsProcessed` | Verde |
-| Camiones procesados | `trucksProcessed` | Azul |
-| Tiempo promedio | `format("%.2f", avgCycleTime)` | Naranja |
-| Utilización andenes | `format("%.1f", docks.utilization() * 100)` | Rojo |
-
----
 
 ## 🚨 **FALTA 6: SECCIÓN COMPLETA - MONTACARGAS (OPCIONAL)**
 
 **📍 PEGAR COMO PARTE OPCIONAL DESPUÉS DEL DASHBOARD**
 
-### **17. PASO 11 – GESTIÓN DE MONTACARGAS (OPCIONAL)**
 
-### 🎯 Objetivo
-Implementar montacargas como recurso adicional.
-
-### 🛠️ Configuración
-
-#### **Paso 11.1: Crear ResourcePool**
-- **Name:** `forklifts`
-- **Capacity:** `12`
-
-#### **Paso 11.2: Usar en Procesos**
-Agregar **Seize/Release** alrededor de `SORTING_PROCESS`:
-- **Seize:** `forklifts`, Quantity: `2`
-- **Release:** `forklifts`
 
 ---
 ## 📋 RESUMEN DE SECCIONES FALTANTES
@@ -1400,6 +1407,6 @@ Agregar **Seize/Release** alrededor de `SORTING_PROCESS`:
 
 **¡Con estas 7 secciones agregadas, el documento estará COMPLETO y funcional!** 🚀
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbNTg5Mzg4OTU0LDExNDI1MzU4MiwtOTY3OT
-Q5MzU2LDE1NjQ1ODY4NjRdfQ==
+eyJoaXN0b3J5IjpbLTk1OTc3ODYzOCwxMTQyNTM1ODIsLTk2Nz
+k0OTM1NiwxNTY0NTg2ODY0XX0=
 -->
