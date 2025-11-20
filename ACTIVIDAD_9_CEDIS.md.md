@@ -1002,6 +1002,23 @@ DESTINO_OEM ─┬─(0)─> PREPARE_GM_SILAO
 - [ ] Tiempos diferenciados (BMW mayor tiempo)
 - [ ] Distribución porcentual suma 100%
 
+## 8.5 PASO – CREAR VARIABLES KPI EN MAIN
+
+### 🎯 Objetivo
+Definir variables globales para calcular métricas de desempeño.
+
+### 🛠️ Configuración
+En agente **Main**, crear estas variables:
+
+| Variable | Tipo | Valor | Descripción |
+|----------|------|-------|-------------|
+| `palletsProcessed` | int | `0` | Contador total de pallets |
+| `trucksProcessed` | int | `0` | Contador total de camiones |
+| `avgCycleTime` | double | `0.0` | Tiempo promedio en sistema |
+| `totalCycleTime` | double | `0.0` | Acumulador para cálculo promedio |
+
+**Ubicación:** Área superior derecha del canvas de Main
+
 ### **15. PASO 9 – SALIDA Y REGISTRO DE MÉTRICAS**
 
 ### 🎯 Objetivo
@@ -1386,6 +1403,6 @@ SRC_MAGNA ─┘                                         │
 
 **¡Con estas 7 secciones agregadas, el documento estará COMPLETO y funcional!** 🚀
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTEyNjYxODMzNjIsMjA2NDEyMzc0MCwxMT
+eyJoaXN0b3J5IjpbLTE3NzgzMzg1NDAsMjA2NDEyMzc0MCwxMT
 QyNTM1ODIsLTk2Nzk0OTM1NiwxNTY0NTg2ODY0XX0=
 -->
