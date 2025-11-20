@@ -608,6 +608,22 @@ La separación por regiones permite:
    - **Outputs:** `2`
 
 #### **Paso 6.2: Programar la Lógica de Decisión**
+### **Paso 6.2: Configurar Tiempos de Recepción**
+
+**Agregar estos delays después del SelectOutput ROUTE_RECEPCION:**
+
+| Bloque | Nombre | Delay Time | Descripción |
+|--------|--------|------------|-------------|
+| **Delay** | `DELAY_RECEP_NORTE` | `triangular(0.15, 0.25, 0.40)` | Procesamiento recepción norte |
+| **Delay** | `DELAY_RECEP_SUR` | `triangular(0.15, 0.25, 0.40)` | Procesamiento recepción sur |
+| **Delay** | `SORTING_PROCESS` | `triangular(0.2, 0.4, 0.8)` | Clasificación central |
+
+**Conexiones:**
+```
+RELEASE_ANDEN → ROUTE_RECEPCION ─┬─(0)─> DELAY_RECEP_NORTE ─┐
+                                 │                           ├─> SORTING_PROCESS
+                                 └─(1)─> DELAY_RECEP_SUR ───┘
+```
 En el campo de código del SelectOutput:
 
 ```java
@@ -1416,6 +1432,6 @@ Publicar modelo para compartir.
 
 **¡Con estas 7 secciones agregadas, el documento estará COMPLETO y funcional!** 🚀
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMzUzMzcwMywtOTY3OTQ5MzU2LDE1NjQ1OD
-Y4NjRdfQ==
+eyJoaXN0b3J5IjpbMjAxNzk2NTEyOCwtOTY3OTQ5MzU2LDE1Nj
+Q1ODY4NjRdfQ==
 -->
