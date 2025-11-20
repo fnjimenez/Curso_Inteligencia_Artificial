@@ -800,6 +800,64 @@ SORTING_PROCESS → FLOW_DECISION ─┬─(0)─> [Cross-docking] ─┐
 - [ ] Delay para Kitting creado con tiempos apropiados
 - [ ] Porcentajes suman 100%
 
+
+### **14. PASO 8 – ASIGNACIÓN DE DESTINO OEM**
+
+### 🎯 Objetivo
+Determinar a qué ensambladora final se dirige cada material.
+
+### 🧠 Lógica
+Distribución basada en volumen:
+- **GM Silao (55%):** Mayor volumen
+- **GM SLP (33%):** Volumen medio  
+- **BMW SLP (12%):** Volumen menor, alto valor
+
+### 🛠️ Configuración
+
+#### **Paso 8.1: Crear Decisión de Destino**
+1. Arrastrar **SelectOutput**
+2. Configurar:
+   - **Name:** `DESTINO_OEM`
+   - **Type:** `Condition`
+   - **Condition:** `By code`
+   - **Outputs:** `3`
+
+#### **Paso 8.2: Programar Asignación**
+```java
+double r = uniform(0, 1);
+if (r < 0.55) {
+    agent.destinoOEM = "GM_SILAO";
+    return 0;
+} else if (r < 0.88) {
+    agent.destinoOEM = "GM_SLP";
+    return 1;
+} else {
+    agent.destinoOEM = "BMW_SLP";
+    return 2;
+}
+```
+
+#### **Paso 8.3: Conectar Flujos Anteriores**
+- Rama 0 de `FLOW_DECISION` → `DESTINO_OEM`
+- `BUFFER_TIME` → `DESTINO_OEM`
+- `KITTING_PROCESS` → `DESTINO_OEM`
+
+#### **Paso 8.4: Preparación por Cliente**
+
+| Cliente | Bloque | Nombre | Delay Time |
+|---------|--------|--------|------------|
+| GM Silao | Delay | `PREPARE_GM_SILAO` | `triangular(0.25, 0.40, 0.60)` |
+| GM SLP | Delay | `PREPARE_GM_SLP` | `triangular(0.25, 0.40, 0.60)` |
+| BMW SLP | Delay | `PREPARE_BMW_SLP` | `triangular(0.30, 0.45, 0.70)` |
+
+**Conexiones:**
+```
+DESTINO_OEM ─┬─(0)─> PREPARE_GM_SILAO
+             ├─(1)─> PREPARE_GM_SLP
+             └─(2)─> PREPARE_BMW_SLP
+```
+
+
 ---
 
 ## 14. PASO 8 – ASIGNACIÓN DE DESTINO OEM
@@ -1249,13 +1307,6 @@ SRC_MAGNA ─┘                                         │
 
 **¡Listo para entregar! 🎯**
 
-# 🔧 PARTES FALTANTES - PARA COMPLETAR EL DOCUMENTO
-
-## 📍 UBICACIONES DONDE PEGAR CADA SECCIÓN
-
----
-
-## 🚨 **FALTA 1: COMPLETAR PASO 6 - TIEMPOS DE RECEPCIÓN**
 
 **📍 PEGAR DESPUÉS DEL PASO 6.1 (donde termina el código del SelectOutput)**
 
@@ -1315,13 +1366,6 @@ SORTING_PROCESS → FLOW_DECISION ─┬─(0)─> [Cross-docking] ─┐
 ```
 
 ---
-
-## 🚨 **FALTA 3: SECCIÓN COMPLETA - DESTINOS OEM**
-
-**📍 PEGAR DESPUÉS DEL PASO 7**
-
-
----
 ## 📋 RESUMEN DE SECCIONES FALTANTES
 
 | # | Sección | Ubicación | Crítico |
@@ -1336,6 +1380,6 @@ SORTING_PROCESS → FLOW_DECISION ─┬─(0)─> [Cross-docking] ─┐
 
 **¡Con estas 7 secciones agregadas, el documento estará COMPLETO y funcional!** 🚀
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbOTUzMzY4NjcyLDExNDI1MzU4MiwtOTY3OT
-Q5MzU2LDE1NjQ1ODY4NjRdfQ==
+eyJoaXN0b3J5IjpbLTE1NzkyMzk4NzAsMTE0MjUzNTgyLC05Nj
+c5NDkzNTYsMTU2NDU4Njg2NF19
 -->
