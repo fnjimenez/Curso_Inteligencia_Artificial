@@ -8,10 +8,25 @@
 
 ---
 # 📑 Tabla de Contenido
-
+- [ANTES DE EMPEZAR](#antes-de-empezar)
+- [DATOS DE IDENTIFICACIÓN](#datos-de-identificación)
+- [OBJETIVOS](#objetivos)
+- [REQUISITOS PREVIOS](#requisitos-previos)
+- [PASO 1: CREAR PROYECTO](#paso-1)
+- [PASO 2: DIBUJAR LAYOUT](#paso-2)
+- [PASO 3: CREAR AGENTE TRUCK](#paso-3)
+- [PASO 4: CREAR FUENTES](#paso-4)
+- [PASO 5: GESTIÓN DE ANDENES](#paso-5)
+- [PASO 6: RUTEO RECEPCIÓN](#paso-6)
+- [PASO 7: CROSS-DOCKING](#paso-7)
+- [PASO 8: DESTINO OEM](#paso-8)
+- [PASO 9: SALIDA Y KPIs](#paso-9)
+- [PASO 10: DASHBOARD](#paso-10)
+- [PASO 11: VALIDACIÓN](#paso-11)
+- [PASO 12: PUBLICACIÓN](#paso-12)
 - [Curso: Logística y Cadena de Valor](#curso:-logística-y-cadena-de-valor)
-- [Unidad: Sistemas de Almacenamiento y CEDIS](#unidad:-sistemas-de-almacenamiento-y-cedis)
-- [Versión: 2025 - EDICIÓN MEJORADA PARA PRINCIPIANTES](#versión:-2025---edición-mejorada-para-principiantes)
+- [Sistemas de Almacenamiento y CEDIS](#unidad:-sistemas-de-almacenamiento-y-cedis)
+- [Versión: 2025 - EDICIÓN PARA PRINCIPIANTES](#versión:-2025---edición-mejorada-para-principiantes)
 - [📌 ANTES DE EMPEZAR - LEE ESTO PRIMERO](#📌-antes-de-empezar---lee-esto-primero)
 - [¿Qué voy a hacer en esta actividad?](#qué-voy-a-hacer-en-esta-actividad)
 - [¿Qué es un modelo de simulación?](#qué-es-un-modelo-de-simulación)
@@ -1487,7 +1502,8 @@ SRC_MAGNA ─┘                                         │
 **¡Listo para entregar! 🎯**
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTM4OTk2NjcyNSwtMTkxNDQ3NDQ3NywxMj
-E4MDU0MDI5LC0xNzc4MzM4NTQwLDIwNjQxMjM3NDAsMTE0MjUz
-NTgyLC05Njc5NDkzNTYsMTU2NDU4Njg2NF19
+eyJoaXN0b3J5IjpbLTQ1NTMwMzcxNywtMzg5OTY2NzI1LC0xOT
+E0NDc0NDc3LDEyMTgwNTQwMjksLTE3NzgzMzg1NDAsMjA2NDEy
+Mzc0MCwxMTQyNTM1ODIsLTk2Nzk0OTM1NiwxNTY0NTg2ODY0XX
+0=
 -->
