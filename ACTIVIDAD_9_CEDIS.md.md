@@ -1147,6 +1147,291 @@ SRC_MAGNA ─┘                                         │
 ```
 
 **¡Listo para entregar! 🎯**
+
+# 🔧 PARTES FALTANTES - PARA COMPLETAR EL DOCUMENTO
+
+## 📍 UBICACIONES DONDE PEGAR CADA SECCIÓN
+
+---
+
+## 🚨 **FALTA 1: COMPLETAR PASO 6 - TIEMPOS DE RECEPCIÓN**
+
+**📍 PEGAR DESPUÉS DEL PASO 6.1 (donde termina el código del SelectOutput)**
+
+### **Paso 6.2: Configurar Tiempos de Recepción**
+
+**Agregar estos delays después del SelectOutput ROUTE_RECEPCION:**
+
+| Bloque | Nombre | Delay Time | Descripción |
+|--------|--------|------------|-------------|
+| **Delay** | `DELAY_RECEP_NORTE` | `triangular(0.15, 0.25, 0.40)` | Procesamiento recepción norte |
+| **Delay** | `DELAY_RECEP_SUR` | `triangular(0.15, 0.25, 0.40)` | Procesamiento recepción sur |
+| **Delay** | `SORTING_PROCESS` | `triangular(0.2, 0.4, 0.8)` | Clasificación central |
+
+**Conexiones:**
+```
+RELEASE_ANDEN → ROUTE_RECEPCION ─┬─(0)─> DELAY_RECEP_NORTE ─┐
+                                 │                           ├─> SORTING_PROCESS
+                                 └─(1)─> DELAY_RECEP_SUR ───┘
+```
+
+---
+
+## 🚨 **FALTA 2: SECCIÓN COMPLETA - CROSS-DOCKING Y BUFFER**
+
+**📍 PEGAR DESPUÉS DEL PASO 6 (donde termina la parte de recepción)**
+
+### **13. PASO 7 – DECISIÓN: CROSS-DOCKING O BUFFER ESTRATÉGICO**
+
+### 🎯 Objetivo
+Implementar la lógica que determina si los materiales pasan directo a embarque o requieren almacenamiento temporal.
+
+### 🧠 Lógica
+Según datos reales de CEDIS automotrices:
+- **65% Cross-docking:** Máxima eficiencia, costo mínimo
+- **30% Buffer:** Flexibilidad operativa, manejo de picos  
+- **5% Kitting:** Valor agregado, servicios especiales
+
+### 🛠️ Configuración
+
+#### **Paso 7.1: Crear Decisión de Flujo**
+1. Arrastrar **SelectOutput** a la derecha de `SORTING_PROCESS`
+2. Configurar:
+   - **Name:** `FLOW_DECISION`
+   - **Type:** `Condition`
+   - **Condition:** `By code`
+   - **Outputs:** `3`
+
+#### **Paso 7.2: Programar Distribución**
+```java
+double r = uniform(0, 1);
+if (r < 0.65) {
+    return 0;  // 65% - Cross-docking directo
+} else if (r < 0.95) {
+    return 1;  // 30% - Buffer estratégico
+} else {
+    return 2;  // 5% - Kitting/Valor agregado
+}
+```
+
+#### **Paso 7.3: Crear Procesos**
+
+| Ruta | Bloque | Nombre | Delay Time |
+|------|--------|--------|------------|
+| Buffer | Delay | `BUFFER_TIME` | `triangular(1, 3, 6)` |
+| Kitting | Delay | `KITTING_PROCESS` | `triangular(0.15, 0.30, 0.50)` |
+| Cross-docking | (Directo) | - | - |
+
+**Conexiones:**
+```
+SORTING_PROCESS → FLOW_DECISION ─┬─(0)─> [Cross-docking] ─┐
+                                 ├─(1)─> BUFFER_TIME ────┤
+                                 └─(2)─> KITTING_PROCESS ─┘
+```
+
+---
+
+## 🚨 **FALTA 3: SECCIÓN COMPLETA - DESTINOS OEM**
+
+**📍 PEGAR DESPUÉS DEL PASO 7**
+
+### **14. PASO 8 – ASIGNACIÓN DE DESTINO OEM**
+
+### 🎯 Objetivo
+Determinar a qué ensambladora final se dirige cada material.
+
+### 🧠 Lógica
+Distribución basada en volumen:
+- **GM Silao (55%):** Mayor volumen
+- **GM SLP (33%):** Volumen medio  
+- **BMW SLP (12%):** Volumen menor, alto valor
+
+### 🛠️ Configuración
+
+#### **Paso 8.1: Crear Decisión de Destino**
+1. Arrastrar **SelectOutput**
+2. Configurar:
+   - **Name:** `DESTINO_OEM`
+   - **Type:** `Condition`
+   - **Condition:** `By code`
+   - **Outputs:** `3`
+
+#### **Paso 8.2: Programar Asignación**
+```java
+double r = uniform(0, 1);
+if (r < 0.55) {
+    agent.destinoOEM = "GM_SILAO";
+    return 0;
+} else if (r < 0.88) {
+    agent.destinoOEM = "GM_SLP";
+    return 1;
+} else {
+    agent.destinoOEM = "BMW_SLP";
+    return 2;
+}
+```
+
+#### **Paso 8.3: Conectar Flujos Anteriores**
+- Rama 0 de `FLOW_DECISION` → `DESTINO_OEM`
+- `BUFFER_TIME` → `DESTINO_OEM`
+- `KITTING_PROCESS` → `DESTINO_OEM`
+
+#### **Paso 8.4: Preparación por Cliente**
+
+| Cliente | Bloque | Nombre | Delay Time |
+|---------|--------|--------|------------|
+| GM Silao | Delay | `PREPARE_GM_SILAO` | `triangular(0.25, 0.40, 0.60)` |
+| GM SLP | Delay | `PREPARE_GM_SLP` | `triangular(0.25, 0.40, 0.60)` |
+| BMW SLP | Delay | `PREPARE_BMW_SLP` | `triangular(0.30, 0.45, 0.70)` |
+
+**Conexiones:**
+```
+DESTINO_OEM ─┬─(0)─> PREPARE_GM_SILAO
+             ├─(1)─> PREPARE_GM_SLP
+             └─(2)─> PREPARE_BMW_SLP
+```
+
+---
+
+## 🚨 **FALTA 4: SECCIÓN COMPLETA - SALIDA Y KPIs**
+
+**📍 PEGAR DESPUÉS DEL PASO 8**
+
+### **15. PASO 9 – SALIDA Y REGISTRO DE MÉTRICAS**
+
+### 🎯 Objetivo
+Completar el flujo y registrar indicadores de desempeño.
+
+### 🛠️ Configuración
+
+#### **Paso 9.1: Crear Variables KPI en Main**
+
+| Variable | Tipo | Valor | Descripción |
+|----------|------|-------|-------------|
+| `palletsProcessed` | int | `0` | Total pallets procesados |
+| `trucksProcessed` | int | `0` | Total camiones procesados |
+| `avgCycleTime` | double | `0.0` | Tiempo promedio en sistema |
+| `totalCycleTime` | double | `0.0` | Acumulador para promedio |
+
+#### **Paso 9.2: Crear Salida**
+1. Arrastrar **Sink**
+2. **Name:** `EXIT_CEDIS`
+3. Conectar los 3 PREPARE al Sink
+
+#### **Paso 9.3: Código en EXIT_CEDIS (On exit)**
+```java
+// Registrar hora de salida
+agent.tSalidaSistema = time();
+
+// Calcular tiempo de ciclo
+double tCiclo = agent.tSalidaSistema - agent.tEntradaSistema;
+
+// Actualizar contadores
+palletsProcessed += agent.pallets;
+trucksProcessed += 1;
+
+// Actualizar tiempo promedio
+totalCycleTime += tCiclo;
+avgCycleTime = totalCycleTime / trucksProcessed;
+```
+
+---
+
+## 🚨 **FALTA 5: SECCIÓN COMPLETA - DASHBOARD**
+
+**📍 PEGAR DESPUÉS DEL PASO 9**
+
+### **16. PASO 10 – CREAR DASHBOARD DE MONITOREO**
+
+### 🎯 Objetivo
+Panel visual para monitoreo en tiempo real.
+
+### 🛠️ Configuración
+
+#### **Paso 10.1: Título del Dashboard**
+- **Text:** `📊 DASHBOARD - CEDIS SAN BARTOLO`
+- **Font:** Bold, Size: 18
+
+#### **Paso 10.2: Métricas Dinámicas**
+
+| Métrica | Texto Dinámico | Color |
+|---------|----------------|-------|
+| Pallets procesados | `palletsProcessed` | Verde |
+| Camiones procesados | `trucksProcessed` | Azul |
+| Tiempo promedio | `format("%.2f", avgCycleTime)` | Naranja |
+| Utilización andenes | `format("%.1f", docks.utilization() * 100)` | Rojo |
+
+---
+
+## 🚨 **FALTA 6: SECCIÓN COMPLETA - MONTACARGAS (OPCIONAL)**
+
+**📍 PEGAR COMO PARTE OPCIONAL DESPUÉS DEL DASHBOARD**
+
+### **17. PASO 11 – GESTIÓN DE MONTACARGAS (OPCIONAL)**
+
+### 🎯 Objetivo
+Implementar montacargas como recurso adicional.
+
+### 🛠️ Configuración
+
+#### **Paso 11.1: Crear ResourcePool**
+- **Name:** `forklifts`
+- **Capacity:** `12`
+
+#### **Paso 11.2: Usar en Procesos**
+Agregar **Seize/Release** alrededor de `SORTING_PROCESS`:
+- **Seize:** `forklifts`, Quantity: `2`
+- **Release:** `forklifts`
+
+---
+
+## 🚨 **FALTA 7: SECCIÓN COMPLETA - EJECUCIÓN Y PUBLICACIÓN**
+
+**📍 PEGAR AL FINAL DEL DOCUMENTO**
+
+### **18. PASO 12 – EJECUCIÓN Y VALIDACIÓN**
+
+### 🎯 Objetivo
+Verificar funcionamiento correcto del modelo.
+
+### 🛠️ Procedimiento
+
+#### **Validación de Métricas (24h simuladas):**
+
+| KPI | Rango Esperado |
+|-----|----------------|
+| Pallets procesados | 6,000 - 8,000 |
+| Camiones procesados | 200 - 300 |
+| Tiempo ciclo promedio | 2.5 - 4.5 horas |
+| Utilización andenes | 65% - 85% |
+
+### **19. PASO 13 – PUBLICACIÓN EN ANYLOGIC CLOUD**
+
+### 🎯 Objetivo
+Publicar modelo para compartir.
+
+### 🛠️ Procedimiento
+1. **File → Export → To AnyLogic Cloud...**
+2. **Model name:** `CEDIS_SanBartolo_TuApellido_Matricula`
+3. **Access:** `Public`
+4. **Upload**
+
+---
+
+## 📋 RESUMEN DE SECCIONES FALTANTES
+
+| # | Sección | Ubicación | Crítico |
+|---|---------|------------|---------|
+| 1 | Tiempos Recepción (Paso 6.2) | Después Paso 6.1 | ✅ |
+| 2 | Cross-docking y Buffer (Paso 7) | Después Paso 6 | ✅ |
+| 3 | Destinos OEM (Paso 8) | Después Paso 7 | ✅ |
+| 4 | Salida y KPIs (Paso 9) | Después Paso 8 | ✅ |
+| 5 | Dashboard (Paso 10) | Después Paso 9 | ✅ |
+| 6 | Montacargas (Paso 11) | Opcional después Dashboard | ❌ |
+| 7 | Ejecución y Cloud (Pasos 12-13) | Final documento | ✅ |
+
+**¡Con estas 7 secciones agregadas, el documento estará COMPLETO y funcional!** 🚀
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTk2Nzk0OTM1NiwxNTY0NTg2ODY0XX0=
+eyJoaXN0b3J5IjpbMTMwNzE4NTk5MiwtOTY3OTQ5MzU2LDE1Nj
+Q1ODY4NjRdfQ==
 -->
