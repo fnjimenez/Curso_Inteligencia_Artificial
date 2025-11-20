@@ -1095,6 +1095,8 @@ Después de 24 horas simuladas:
 
 ---
 
+
+
 ## 19. PASO 13 – PUBLICACIÓN EN ANYLOGIC CLOUD
 
 ### 🎯 Objetivo
@@ -1385,6 +1387,8 @@ Agregar **Seize/Release** alrededor de `SORTING_PROCESS`:
 
 ---
 
+
+
 ## 🚨 **FALTA 7: SECCIÓN COMPLETA - EJECUCIÓN Y PUBLICACIÓN**
 
 **📍 PEGAR AL FINAL DEL DOCUMENTO**
@@ -1405,6 +1409,6 @@ Agregar **Seize/Release** alrededor de `SORTING_PROCESS`:
 
 **¡Con estas 7 secciones agregadas, el documento estará COMPLETO y funcional!** 🚀
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTExMDY2MDcyMTgsLTk2Nzk0OTM1NiwxNT
-Y0NTg2ODY0XX0=
+eyJoaXN0b3J5IjpbMTE0MjUzNTgyLC05Njc5NDkzNTYsMTU2ND
+U4Njg2NF19
 -->
