@@ -760,7 +760,25 @@ SORTING_PROCESS → FLOW_DECISION ─┬─(0)─> [Cross-docking] ─┐
                                  ├─(1)─> BUFFER_TIME ────┤
                                  └─(2)─> KITTING_PROCESS ─┘
 ```
+#### **Paso 6.2: Delays de Recepción**
 
+| Bloque | Nombre | Delay Time |
+|--------|--------|------------|
+| Delay | `DELAY_RECEP_NORTE` | `triangular(0.15, 0.25, 0.40)` |
+| Delay | `DELAY_RECEP_SUR` | `triangular(0.15, 0.25, 0.40)` |
+
+**Conexiones:**
+- Rama 0 de `ROUTE_RECEPCION` → `DELAY_RECEP_NORTE`
+- Rama 1 de `ROUTE_RECEPCION` → `DELAY_RECEP_SUR`
+
+#### **Paso 6.3: Proceso de Clasificación Central**
+1. Arrastrar **Delay** al centro-derecha
+2. Configurar:
+   - **Name:** `SORTING_PROCESS`
+   - **Delay time:** `triangular(0.2, 0.4, 0.8)`
+3. **Conectar:**
+   - `DELAY_RECEP_NORTE` → `SORTING_PROCESS`
+   - `DELAY_RECEP_SUR` → `SORTING_PROCESS`
 
 ---
 
@@ -1368,6 +1386,6 @@ SRC_MAGNA ─┘                                         │
 
 **¡Con estas 7 secciones agregadas, el documento estará COMPLETO y funcional!** 🚀
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMjA2NDEyMzc0MCwxMTQyNTM1ODIsLTk2Nz
-k0OTM1NiwxNTY0NTg2ODY0XX0=
+eyJoaXN0b3J5IjpbLTEyNjYxODMzNjIsMjA2NDEyMzc0MCwxMT
+QyNTM1ODIsLTk2Nzk0OTM1NiwxNTY0NTg2ODY0XX0=
 -->
