@@ -269,17 +269,21 @@ Ahora vas a **dar vida a ese diseño** en una simulación digital.
 
 ## 4. OBJETIVOS ESPECÍFICOS
 
-| # | Objetivo | Estado | Prioridad |  💡 *Tip:* Este paso conecta con tu diseño conceptual de la Actividad 6.
-|---|----------|--------|-----------|
-| 1 | Configurar proyecto AnyLogic con unidades correctas | | 🔴 ALTA |
-| 2 | Crear agentes (camiones) con información de carga y destino | | 🔴 ALTA |
-| 3 | Dibujar layout básico del CEDIS | | 🟡 MEDIA |
-| 4 | Construir diagrama de flujo con bloques Process Modeling | | 🔴 ALTA |
-| 5 | Gestionar recursos (andenes, montacargas) | | 🔴 ALTA |
-| 6 | Programar decisiones de ruteo | | 🟡 MEDIA |
-| 7 | Calcular indicadores (KPIs) | | 🟢 BAJA |
-| 8 | Publicar modelo en AnyLogic Cloud | | 🟢 BAJA |
-| 9 | Crear dashboard de monitoreo | | 🟡 MEDIA |
+# 4. OBJETIVOS ESPECÍFICOS
+
+| # | Objetivo | Estado | Prioridad | Observaciones |
+|---|----------|--------|-----------|---------------|
+| 1 | Configurar proyecto AnyLogic con unidades correctas | | 🔴 ALTA | |
+| 2 | Crear agentes (camiones) con información de carga y destino | | 🔴 ALTA | |
+| 3 | Dibujar layout básico del CEDIS | | 🟡 MEDIA | |
+| 4 | Construir diagrama de flujo con bloques Process Modeling | | 🔴 ALTA | |
+| 5 | Gestionar recursos (andenes, montacargas) | | 🔴 ALTA | |
+| 6 | Programar decisiones de ruteo | | 🟡 MEDIA | |
+| 7 | Calcular indicadores (KPIs) | | 🟢 BAJA | |
+| 8 | Publicar modelo en AnyLogic Cloud | | 🟢 BAJA | |
+| 9 | Crear dashboard de monitoreo | | 🟡 MEDIA | |
+
+**💡 Tip:** Este paso conecta con tu diseño conceptual de la Actividad 6.
 
 ---
 
@@ -1487,8 +1491,8 @@ SRC_MAGNA ─┘                                         │
 **¡Listo para entregar! 🎯**
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE3OTc4NjgwMzEsMTY1MDQwOTQxMSwtND
-U1MzAzNzE3LC0zODk5NjY3MjUsLTE5MTQ0NzQ0NzcsMTIxODA1
-NDAyOSwtMTc3ODMzODU0MCwyMDY0MTIzNzQwLDExNDI1MzU4Mi
-wtOTY3OTQ5MzU2LDE1NjQ1ODY4NjRdfQ==
+eyJoaXN0b3J5IjpbMTQyMzU0MTIxNiwxNjUwNDA5NDExLC00NT
+UzMDM3MTcsLTM4OTk2NjcyNSwtMTkxNDQ3NDQ3NywxMjE4MDU0
+MDI5LC0xNzc4MzM4NTQwLDIwNjQxMjM3NDAsMTE0MjUzNTgyLC
+05Njc5NDkzNTYsMTU2NDU4Njg2NF19
 -->
