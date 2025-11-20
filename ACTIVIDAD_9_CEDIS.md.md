@@ -683,19 +683,41 @@ RELEASE_ANDEN → ROUTE_RECEPCION ─┬─(0)─> DELAY_RECEP_NORTE ─┐
 
 ---
 
-# PARTE 4: CROSS-DOCKING, BUFFER Y KITTING
+
+# 🟦 ACTIVIDAD 9 – MODELADO DEL CEDIS AUTOMOTRIZ SAN BARTOLO EN ANYLOGIC
+
+## 📋 ANÁLISIS DE COMPLETITUD DEL DOCUMENTO
+
+### ✅ **CONFIGURACIONES COMPLETADAS**
+
+| Sección | Estado | Elementos Implementados |
+|---------|--------|------------------------|
+| **Configuración Inicial** | ✅ COMPLETO | Proyecto, unidades (horas/metros), Main activo |
+| **Agente Truck** | ✅ COMPLETO | 6 variables con tipos y valores iniciales |
+| **Fuentes de Camiones** | ✅ COMPLETO | 3 Sources con rates y código On exit |
+| **Gestión de Andenes** | ✅ COMPLETO | ResourcePool docks (24), flowchart entrada completo |
+
+### ❌ **CONFIGURACIONES PENDIENTES - SE REQUIERE COMPLETAR**
+
+---
+
+## 🔧 SECCIONES FALTANTES - IMPLEMENTACIÓN COMPLETA
+
+---
+
+# PARTE 4: CROSS-DOCKING, BUFFER Y KITTING (CONTINUACIÓN)
 
 ---
 
 ## 13. PASO 7 – DECISIÓN: CROSS-DOCKING O BUFFER ESTRATÉGICO
 
 ### 🎯 Objetivo
-Implementar la lógica que determina si los materiales pasan directo a embarque o requieren almacenamiento temporal.
+Implementar la lógica que determina si los materiales pasan directo a embarque (cross-docking) o requieren almacenamiento temporal (buffer).
 
 ### 🧠 Lógica
 Según datos reales de CEDIS automotrices:
 - **65% Cross-docking:** Máxima eficiencia, costo mínimo
-- **30% Buffer:** Flexibilidad operativa, manejo de picos
+- **30% Buffer:** Flexibilidad operativa, manejo de picos  
 - **5% Kitting:** Valor agregado, servicios especiales
 
 ### 🛠️ Configuración Paso a Paso
@@ -740,36 +762,27 @@ if (randomValue < 0.65) {
 
 **Ruta 0: Cross-docking** va directo al siguiente paso
 
-### ⚠️ PROBLEMAS COMUNES Y SOLUCIONES
-
-| Problema | Síntoma | Solución |
-|----------|---------|----------|
-| **Porcentajes incorrectos** | Distribución no coincide | Verificar: <0.65=65%, 0.65-0.95=30%, >0.95=5% |
-| **Solo 2 salidas** | No veo tercera opción | Properties → Outputs: cambiar a `3` |
-| **Error uniform** | No reconoce la función | Usar `uniform(0, 1)` no `random()` |
-| **Acumulación en buffer** | Demasiados materiales | Verificar porcentajes y tiempos |
-
-### 💡 CONSEJOS DE DISTRIBUCIÓN
-- **Verificar suma:** 65% + 30% + 5% = 100%
-- **Testear distribución:** Ejecutar y verificar proporciones
-- **Tiempos diferenciados:** Buffer más largo, kitting más corto
-- **Flexibilidad:** Puedes ajustar porcentajes según necesidades
-
-### 📊 Explicación de Porcentajes
+#### **Paso 7.4: Conectar las Rutas**
 ```
-uniform(0,1) genera: 0.0 ←----------→ 1.0
-                    │        │       │
-Divisiones:        65%      30%      5%
-                  Cross    Buffer   Kitting
+SORTING_PROCESS → FLOW_DECISION ─┬─(0)─> [Cross-docking] ─┐
+                                 ├─(1)─> BUFFER_TIME ────┤
+                                 └─(2)─> KITTING_PROCESS ─┘
 ```
 
-### ✅ Checklist de Verificación
+### ⚠️ PROBLEMAS COMUNES
+
+| Problema | Solución |
+|----------|----------|
+| Porcentajes incorrectos | Verificar: <0.65=65%, 0.65-0.95=30%, >0.95=5% |
+| Solo 2 salidas | Properties → Outputs: cambiar a `3` |
+| Error uniform | Usar `uniform(0, 1)` no `random()` |
+
+### ✅ Checklist
 - [ ] SelectOutput configurado con 3 salidas
 - [ ] Código de distribución probabilística correcto
 - [ ] Delay para Buffer creado con tiempos apropiados
 - [ ] Delay para Kitting creado con tiempos apropiados
-- [ ] Porcentajes suman 100% (0.65 + 0.30 + 0.05)
-- [ ] Cross-docking identificado (sin delay específico)
+- [ ] Porcentajes suman 100%
 
 ---
 
@@ -846,35 +859,12 @@ DESTINO_OEM ─┬─(0)─> PREPARE_GM_SILAO
              └─(2)─> PREPARE_BMW_SLP
 ```
 
-### ⚠️ PROBLEMAS COMUNES Y SOLUCIONES
-
-| Problema | Síntoma | Solución |
-|----------|---------|----------|
-| **Error asignación variable** | No encuentra destinoOEM | Verificar que la variable existe en agente Truck |
-| **Porcentajes incorrectos** | Distribución no coincide | 0.55=55%, 0.88=55%+33%=88%, resto=12% |
-| **Conexiones múltiples** | Error al conectar | AnyLogic permite múltiples entradas a un bloque |
-| **Tiempos muy largos** | Acumulación en preparación | Ajustar tiempos según capacidad real |
-
-### 💡 CONSEJOS DE ASIGNACIÓN
-- **Priorizar GM Silao:** Mayor volumen, tiempos estándar
-- **BMW diferenciado:** Tiempos mayores por calidad premium
-- **Verificar distribución:** Ejecutar y contar destinos
-- **Flexibilidad:** Los porcentajes se pueden ajustar fácilmente
-
-### 📊 Distribución de Destinos
-```
-GM Silao:   55%  ← Mayor capacidad
-GM SLP:     33%  ← Capacidad media  
-BMW SLP:    12%  ← Volumen menor, alto valor
-```
-
-### ✅ Checklist de Verificación
+### ✅ Checklist
 - [ ] SelectOutput con 3 salidas para destinos
 - [ ] Código asigna correctamente destinoOEM
 - [ ] Los 3 flujos anteriores conectados al mismo SelectOutput
 - [ ] 3 delays de preparación creados (uno por OEM)
 - [ ] Tiempos diferenciados (BMW mayor tiempo)
-- [ ] Conexiones correctas desde SelectOutput
 - [ ] Distribución porcentual suma 100%
 
 ---
@@ -939,49 +929,63 @@ trucksProcessed += 1;               // Incrementar contador de camiones
 // 4. Calcular tiempo promedio de ciclo
 totalCycleTime += cicloIndividual;  // Acumular tiempos
 avgCycleTime = totalCycleTime / trucksProcessed;  // Calcular promedio
-
-// 5. Log opcional para debugging (quitar en versión final)
-// traceln("Camión " + trucksProcessed + " - Ciclo: " + cicloIndividual + "h - Pallets: " + agent.pallets);
 ```
 
-### ⚠️ PROBLEMAS COMUNES Y SOLUCIONES
-
-| Problema | Síntoma | Solución |
-|----------|---------|----------|
-| **Variables no encontradas** | Error "cannot resolve" | Verificar que variables están en Main, no Truck |
-| **División por cero** | Error en avgCycleTime | trucksProcessed empieza en 0, cálculo se hace después |
-| **Múltiples conexiones** | Sink rechaza conexiones | AnyLogic acepta múltiples entradas normalmente |
-| **Valores incorrectos** | Métricas no coinciden | Revisar fórmulas y inicializaciones |
-
-### 💡 CONSEJOS DE MÉTRICAS
-- **Inicializar correctamente:** `0` para int, `0.0` para double
-- **Usar +=** para acumuladores
-- **Cálculo promedio:** Solo después de tener datos
-- **Verificar valores:** Ejecutar y verificar que números aumentan
-
-### 📊 Fórmulas de Métricas
-```
-Throughput = palletsProcessed / tiempoSimulación
-Utilización = (tiempoOcupado / tiempoTotal) × 100
-Tiempo Ciclo Promedio = totalCycleTime / trucksProcessed
-```
-
-### ✅ Checklist de Verificación
+### ✅ Checklist
 - [ ] 4 variables KPI creadas en Main con valores iniciales
 - [ ] Sink creado como punto final del flujo
 - [ ] Los 3 delays de preparación conectados al Sink
 - [ ] Código On exit implementado correctamente
 - [ ] No hay errores de compilación en el código
-- [ ] Fórmulas de cálculo validadas
-- [ ] Flowchart completo de inicio a fin
 
 ---
 
-# PARTE 5: DASHBOARD Y VISUALIZACIÓN
+# PARTE 5: RECURSOS ADICIONALES Y OPTIMIZACIÓN
 
 ---
 
-## 16. PASO 10 – CREAR DASHBOARD DE MONITOREO
+## 16. PASO 10 – GESTIÓN DE MONTACARGAS (OPCIONAL)
+
+### 🎯 Objetivo
+Implementar el uso de montacargas como recurso adicional para procesos internos.
+
+### 🧠 Lógica
+Algunos procesos requieren recursos físicos:
+- **Montacargas:** Para mover pallets en sorting, buffer y kitting
+- **Operadores:** Para tareas manuales
+
+### 🛠️ Configuración Paso a Paso
+
+#### **Paso 10.1: Crear ResourcePool de Montacargas**
+1. En **Main**, arrastrar **Resource Pool**
+2. Configurar:
+   - **Name:** `forklifts`
+   - **Capacity:** `12`
+
+#### **Paso 10.2: Usar Montacargas en Procesos Clave**
+
+**En SORTING_PROCESS:**
+1. **ANTES** del delay: Agregar **Seize**
+   - **Name:** `SEIZE_FORK_SORTING`
+   - **Resource:** `forklifts`, **Quantity:** `2`
+2. **DESPUÉS** del delay: Agregar **Release**
+   - **Name:** `RELEASE_FORK_SORTING`
+   - **Resource:** `forklifts`
+
+**Reconectar:** `DELAY_RECEP_*` → `SEIZE_FORK_SORTING` → `SORTING_PROCESS` → `RELEASE_FORK_SORTING` → `FLOW_DECISION`
+
+### ✅ Checklist (Opcional)
+- [ ] ResourcePool forklifts creado
+- [ ] Seize/Release agregados en al menos un proceso
+- [ ] El modelo sigue funcionando correctamente
+
+---
+
+# PARTE 6: DASHBOARD Y VISUALIZACIÓN
+
+---
+
+## 17. PASO 11 – CREAR DASHBOARD DE MONITOREO
 
 ### 🎯 Objetivo
 Crear un panel de control visual que muestre en tiempo real el estado del CEDIS y las métricas clave.
@@ -995,83 +999,56 @@ Un dashboard efectivo permite:
 
 ### 🛠️ Configuración Paso a Paso
 
-#### **Paso 10.1: Crear Título del Dashboard**
+#### **Paso 11.1: Crear Título del Dashboard**
 1. En **Main**, paleta: **Presentation → Text**
 2. Arrastrar a esquina superior derecha
 3. Configurar:
    - **Text:** `📊 DASHBOARD - CEDIS SAN BARTOLO`
    - **Font:** Bold, Size: 18
-   - **Text color:** `#2C3E50` (Azul oscuro)
+   - **Text color:** `#2C3E50`
 
-#### **Paso 10.2: Crear Etiquetas de Métricas**
-Crear textos estáticos para las métricas:
+#### **Paso 11.2: Crear Etiquetas y Valores Dinámicos**
 
-| Texto | Posición |
-|-------|----------|
-| `Pallets procesados:` | Debajo del título |
-| `Camiones procesados:` | Debajo del anterior |
-| `Tiempo promedio de ciclo (horas):` | Debajo del anterior |
-| `Utilización de andenes (%):` | Debajo del anterior |
+**Para Pallets Procesados:**
+1. **Texto estático:** `Pallets procesados:`
+2. **Texto dinámico:** `palletsProcessed`
+   - **Font:** Bold, Size: 14, Color: Verde
 
-**Configuración común:**
-- **Font:** Normal, Size: 12
-- **Text alignment:** Left
+**Para Camiones Procesados:**
+1. **Texto estático:** `Camiones procesados:`
+2. **Texto dinámico:** `trucksProcessed`
+   - **Font:** Bold, Size: 14, Color: Azul
 
-#### **Paso 10.3: Crear Valores Dinámicos**
-Para cada métrica, crear un texto vinculado a variables:
+**Para Tiempo Promedio:**
+1. **Texto estático:** `Tiempo promedio (horas):`
+2. **Texto dinámico:** `format("%.2f", avgCycleTime)`
+   - **Font:** Bold, Size: 14, Color: Naranja
 
-**Pallets Procesados:**
-1. **Text:** `palletsProcessed`
-2. **Font:** Bold, Size: 14, Color: `#27AE60` (Verde)
+**Para Utilización Andenes:**
+1. **Texto estático:** `Utilización andenes (%):`
+2. **Texto dinámico:** `format("%.1f", docks.utilization() * 100)`
+   - **Font:** Bold, Size: 14, Color: Rojo
 
-**Camiones Procesados:**
-1. **Text:** `trucksProcessed`  
-2. **Font:** Bold, Size: 14, Color: `#2980B9` (Azul)
-
-**Tiempo Promedio:**
-1. **Text:** `format("%.2f", avgCycleTime)`
-2. **Font:** Bold, Size: 14, Color: `#E67E22` (Naranja)
-
-**Utilización Andenes:**
-1. **Text:** `format("%.1f", docks.utilization() * 100)`
-2. **Font:** Bold, Size: 14, Color: `#E74C3C` (Rojo)
-
-#### **Paso 10.4: Agregar Gráfica de Tiempo (Opcional)**
-1. Paleta: **Analysis → Time Plot**
-2. Arrastrar debajo del dashboard
-3. Configurar:
-   - **Title:** `Evolución de Pallets Procesados`
-   - **Data items:** Add → `palletsProcessed`
-   - **Width:** 300, **Height:** 200
-
-### 💡 CONSEJOS DE DASHBOARD
-- **Posición estratégica:** Esquina superior derecha
-- **Colores significativos:** Verde=bien, Rojo=alerta
-- **Formato consistente:** 2 decimales para tiempos
-- **Actualización automática:** Los textos se actualizan solos
-
-### ✅ Checklist de Verificación
+### ✅ Checklist
 - [ ] Título del dashboard creado
 - [ ] 4 etiquetas estáticas de métricas
 - [ ] 4 valores dinámicos vinculados a variables
 - [ ] Formato correcto para números decimales
-- [ ] Gráfica de tiempo opcional agregada
-- [ ] Colores consistentes y significativos
 - [ ] Dashboard organizado y legible
 
 ---
 
-# PARTE 6: EJECUCIÓN Y PUBLICACIÓN
+# PARTE 7: EJECUCIÓN Y PUBLICACIÓN
 
 ---
 
-## 17. PASO 11 – EJECUCIÓN Y PRUEBAS
+## 18. PASO 12 – EJECUCIÓN Y VALIDACIÓN
 
 ### 🎯 Objetivo
 Verificar que el modelo funciona correctamente y produce resultados dentro de rangos esperados.
 
 ### 🧠 Lógica
-Las pruebas validad que:
+Las pruebas validan que:
 - **El flujo es continuo** sin bloqueos
 - **Las métricas son razonables** según diseño
 - **Los recursos se utilizan** eficientemente
@@ -1079,164 +1056,97 @@ Las pruebas validad que:
 
 ### 🛠️ Procedimiento de Pruebas
 
-#### **Paso 11.1: Ejecución Inicial**
-1. Click en botón **Run** (▶️) en barra superior
-2. Esperar que se abra ventana de simulación
-3. Observar comportamiento por 5-10 minutos reales
+#### **Paso 12.1: Ejecución Inicial**
+1. Click en botón **Run** (▶️)
+2. Observar comportamiento por 5-10 minutos
+3. Verificar flujo continuo de camiones
 
-#### **Paso 11.2: Verificación Visual**
-**Lo que DEBES ver:**
-- ✅ Camiones aparecen en Sources
-- ✅ Fluyen continuamente por el flowchart
-- ✅ Se distribuyen entre rutas Norte/Sur
-- ✅ Toman diferentes caminos (Cross-dock/Buffer/Kitting)
-- ✅ Dashboard se actualiza en tiempo real
-- ✅ No hay acumulaciones excesivas en colas
+#### **Paso 12.2: Validación de Métricas**
+Después de 24 horas simuladas:
 
-**Señales de ALERTA:**
-- ❌ Camiones atorados en algún punto
-- ❌ Colas que crecen infinitamente
-- ❌ Recursos con 0% o 100% utilización constante
-- ❌ KPIs que no cambian
+| KPI | Rango Esperado |
+|-----|----------------|
+| **Pallets procesados** | 6,000 - 8,000 |
+| **Camiones procesados** | 200 - 300 |
+| **Tiempo ciclo promedio** | 2.5 - 4.5 horas |
+| **Utilización andenes** | 65% - 85% |
 
-#### **Paso 11.3: Validación de Métricas**
-Después de 24 horas simuladas (2-3 minutos reales):
-
-| KPI | Rango Esperado | Tu Resultado |
-|-----|----------------|--------------|
-| **Pallets procesados** | 6,000 - 8,000 | |
-| **Camiones procesados** | 200 - 300 | |
-| **Tiempo ciclo promedio** | 2.5 - 4.5 horas | |
-| **Utilización andenes** | 65% - 85% | |
-
-### ⚠️ AJUSTES COMUNES
-
-**Si llegada es muy alta:**
-```java
-// En Sources, reducir tasas:
-uniform(1, 2)  // Menos camiones por hora
-```
-
-**Si utilización es 100%:**
-```java
-// En docks, aumentar capacidad:
-capacity = 28  // Más andenes
-```
-
-**Si tiempos ciclo son muy altos:**
-```java
-// En delays, reducir tiempos:
-triangular(0.2, 0.3, 0.5)  // Más rápido
-```
-
-### ✅ Checklist de Validación
+### ✅ Checklist
 - [ ] Modelo ejecuta sin errores
 - [ ] Camiones fluyen de inicio a fin
 - [ ] Dashboard muestra datos reales
 - [ ] Métricas en rangos esperados
-- [ ] No hay bloqueos en el sistema
-- [ ] Recursos se utilizan balanceadamente
 
 ---
 
-## 18. PASO 12 – PUBLICACIÓN EN ANYLOGIC CLOUD
+## 19. PASO 13 – PUBLICACIÓN EN ANYLOGIC CLOUD
 
 ### 🎯 Objetivo
-Publicar el modelo en la nube para compartirlo con el profesor y compañeros.
+Publicar el modelo en la nube para compartirlo.
 
-### 🧠 Lógica
-AnyLogic Cloud permite:
-- **Acceso desde cualquier navegador**
-- **Compartir sin instalar software**
-- **Ejecución en servidores remotos**
-- **Colaboración y revisión**
+### 🛠️ Procedimiento
 
-### 🛠️ Procedimiento de Publicación
-
-#### **Paso 12.1: Exportar a la Nube**
+#### **Paso 13.1: Exportar a la Nube**
 1. Menú: **File → Export → To AnyLogic Cloud...**
-2. Iniciar sesión o crear cuenta gratuita
-3. Configurar publicación:
+2. Configurar:
    - **Model name:** `CEDIS_SanBartolo_TuApellido_Matricula`
    - **Access:** `Public`
-   - **Description:** `Modelo CEDIS Automotriz - Actividad 9`
-4. Click en **Upload**
+3. Click en **Upload**
 
-#### **Paso 12.2: Probar en Navegador**
+#### **Paso 13.2: Probar en Navegador**
 1. Copiar URL proporcionada
 2. Abrir en navegador web
-3. Click en **Run model**
-4. Verificar que funciona igual que local
+3. Verificar funcionalidad
 
-### ✅ Checklist de Publicación
+### ✅ Checklist
 - [ ] Modelo exportado sin errores
 - [ ] URL copiada y guardada
 - [ ] Modelo accesible públicamente
-- [ ] Funcionalidad verificada en navegador
-- [ ] KPIs visibles y actualizándose
 
 ---
 
-## 🎉 ¡FELICITACIONES!
+## 🎯 RESUMEN DE COMPLETITUD
 
-Has completado exitosamente el modelo del CEDIS Automotriz San Bartolo en AnyLogic. Tu modelo incluye:
+### ✅ **CONFIGURACIONES AHORA COMPLETAS:**
 
-### ✅ **Características Implementadas:**
-- Flujo completo de camiones desde 3 proveedores
-- Sistema de andenes con recursos limitados
-- Ruteo inteligente por regiones
-- Tres rutas operativas (Cross-dock/Buffer/Kitting)
-- Asignación a 3 destinos OEM finales
-- Dashboard con métricas en tiempo real
-- Cálculo automático de KPIs
+| Objetivo | Estado |
+|----------|--------|
+| 1. Configurar proyecto AnyLogic | ✅ COMPLETO |
+| 2. Crear agentes (camiones) | ✅ COMPLETO |
+| 3. Dibujar layout del CEDIS | ✅ COMPLETO |
+| 4. Construir diagrama de flujo | ✅ COMPLETO |
+| 5. Gestionar recursos | ✅ COMPLETO |
+| 6. Programar decisiones de ruteo | ✅ COMPLETO |
+| 7. Calcular indicadores (KPIs) | ✅ COMPLETO |
+| 8. Publicar en AnyLogic Cloud | ✅ COMPLETO |
+| 9. Crear dashboard de monitoreo | ✅ COMPLETO |
 
-### 📊 **Capacidades del Modelo:**
-- **Throughput:** ~7,000 pallets/día
-- **Recursos:** 24 andenes gestionados
-- **Flexibilidad:** Parámetros ajustables
-- **Visualización:** Dashboard integrado
-- **Validación:** Métricas en tiempo real
-
-### 🚀 **Próximos Pasos:**
-1. **Documentar** el modelo en reporte final
-2. **Capturar** evidencias de funcionamiento
-3. **Analizar** resultados y cuellos de botella
-4. **Proponer** mejoras basadas en simulación
-
-**¡Excelente trabajo! Has creado una herramienta profesional de simulación logística.**
-
----
-
-## 📋 CHECKLIST FINAL DE ENTREGA
-
-### 🔧 **Modelo AnyLogic:**
-- [ ] Proyecto con nombre personalizado
-- [ ] Unidades configuradas en horas y metros
-- [ ] Layout visual del CEDIS completo
-- [ ] Agente Truck con 6 variables
-- [ ] 3 Sources configurados correctamente
-- [ ] Flowchart completo funcionando
-- [ ] ResourcePool de andenes (capacidad 24)
-- [ ] Decisiones de ruteo programadas
-- [ ] 3 rutas operativas implementadas
-- [ ] Asignación a 3 destinos OEM
-- [ ] Variables KPI en Main
-- [ ] Dashboard funcional
-- [ ] Modelo ejecuta sin errores
-
-### 🌐 **Publicación:**
-- [ ] Modelo subido a AnyLogic Cloud
-- [ ] Enlace funcional y público
-- [ ] KPIs visibles en versión web
-
-### 📄 **Documentación:**
-- [ ] Reporte completo en formato PDF
-- [ ] 6 capturas de pantalla obligatorias
-- [ ] Tabla de resultados con KPIs
-- [ ] Análisis de cuellos de botella
-- [ ] Conclusión personal reflexiva
+### 📊 **FLUJO COMPLETO IMPLEMENTADO:**
+```
+SRC_LEAR ──┐
+SRC_COND ──┼─> ENTER → Q_ANDEN → SEIZE → UNLOAD → RELEASE → ROUTE_RECEPCION
+SRC_MAGNA ─┘                                         │
+                                                     ↓
+                                              ┌─ RECEP_NORTE ─┐
+                                              │               │
+                                              └─ RECEP_SUR ───┘
+                                                     │
+                                                SORTING_PROCESS
+                                                     │
+                                               FLOW_DECISION
+                                              /      |      \
+                                      Cross-docking Buffer Kitting
+                                            |        |        |
+                                            ↓        ↓        ↓
+                                         DESTINO_OEM (Convergen)
+                                            /        |        \
+                                    GM_SILAO     GM_SLP     BMW_SLP
+                                       |            |           |
+                                       ↓            ↓           ↓
+                                    EXIT_CEDIS → KPIs & Dashboard
+```
 
 **¡Listo para entregar! 🎯**
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTU2NDU4Njg2NF19
+eyJoaXN0b3J5IjpbLTk2Nzk0OTM1NiwxNTY0NTg2ODY0XX0=
 -->
