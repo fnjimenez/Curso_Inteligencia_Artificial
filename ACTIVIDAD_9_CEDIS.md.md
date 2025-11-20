@@ -1389,34 +1389,7 @@ Agregar **Seize/Release** alrededor de `SORTING_PROCESS`:
 
 **📍 PEGAR AL FINAL DEL DOCUMENTO**
 
-### **18. PASO 12 – EJECUCIÓN Y VALIDACIÓN**
 
-### 🎯 Objetivo
-Verificar funcionamiento correcto del modelo.
-
-### 🛠️ Procedimiento
-
-#### **Validación de Métricas (24h simuladas):**
-
-| KPI | Rango Esperado |
-|-----|----------------|
-| Pallets procesados | 6,000 - 8,000 |
-| Camiones procesados | 200 - 300 |
-| Tiempo ciclo promedio | 2.5 - 4.5 horas |
-| Utilización andenes | 65% - 85% |
-
-### **19. PASO 13 – PUBLICACIÓN EN ANYLOGIC CLOUD**
-
-### 🎯 Objetivo
-Publicar modelo para compartir.
-
-### 🛠️ Procedimiento
-1. **File → Export → To AnyLogic Cloud...**
-2. **Model name:** `CEDIS_SanBartolo_TuApellido_Matricula`
-3. **Access:** `Public`
-4. **Upload**
-
----
 
 ## 📋 RESUMEN DE SECCIONES FALTANTES
 
@@ -1432,6 +1405,6 @@ Publicar modelo para compartir.
 
 **¡Con estas 7 secciones agregadas, el documento estará COMPLETO y funcional!** 🚀
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMjAxNzk2NTEyOCwtOTY3OTQ5MzU2LDE1Nj
-Q1ODY4NjRdfQ==
+eyJoaXN0b3J5IjpbLTExMDY2MDcyMTgsLTk2Nzk0OTM1NiwxNT
+Y0NTg2ODY0XX0=
 -->
