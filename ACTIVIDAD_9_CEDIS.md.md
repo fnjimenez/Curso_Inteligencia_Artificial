@@ -1,5 +1,10 @@
 # 🟦 MODELADO DEL CEDIS EN ANYLOGIC
-<div align="center"> <img src="https://upload.wikimedia.org/wikipedia/commons/4/4c/Logo_AnyLogic.png" alt="AnyLogic Logo" width="200" style="float: right; margin-left: 20px;"> </div>
+<div align="center"> <img src="https://upload.wikimedia.org/wikipedia/commons/4/4c/Logo_AnyLogic.png" alt="AnyLogic Logo" width="200" style="float: right; margin-left: 20px;">
+
+### 🖼️ Layout de Referencia
+![Layout CEDIS San Bartolo](https://raw.githubusercontent.com/fnjimenez/Curso_Logistica_CV/main/CEDIS.png)
+
+ </div>
 💬 Este modelo representa tu propuesta real del CEDIS San Bartolo. Cada bloque que configures es un paso hacia la eficiencia que justificaste en la Actividad 6 (reducción del 55% en viajes, mejora del 40% en utilización). ¡Hazlo como si fuera tu proyecto profesional! 🚀
 
 💡 **Tip Global:** Usa colores y nombres claros en el layout para que tu simulación sea fácil de interpretar. Esto refleja el diseño conceptual que planteaste (áreas de sorting, buffer y kitting).
@@ -1305,10 +1310,10 @@ SRC_MAGNA ─┘                                         │
 **¡Listo para entregar! 🎯**
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTY0MzQ1MDEyOSw5MTc0NTAyNjUsMjA3OT
-AwNDM0NywtMTMyNTgzMTg0MSwxMjgzMDcwMDE0LDE0MjM1NDEy
-MTYsMTY1MDQwOTQxMSwtNDU1MzAzNzE3LC0zODk5NjY3MjUsLT
-E5MTQ0NzQ0NzcsMTIxODA1NDAyOSwtMTc3ODMzODU0MCwyMDY0
-MTIzNzQwLDExNDI1MzU4MiwtOTY3OTQ5MzU2LDE1NjQ1ODY4Nj
-RdfQ==
+eyJoaXN0b3J5IjpbNjkwNzk1MzE1LDkxNzQ1MDI2NSwyMDc5MD
+A0MzQ3LC0xMzI1ODMxODQxLDEyODMwNzAwMTQsMTQyMzU0MTIx
+NiwxNjUwNDA5NDExLC00NTUzMDM3MTcsLTM4OTk2NjcyNSwtMT
+kxNDQ3NDQ3NywxMjE4MDU0MDI5LC0xNzc4MzM4NTQwLDIwNjQx
+MjM3NDAsMTE0MjUzNTgyLC05Njc5NDkzNTYsMTU2NDU4Njg2NF
+19
 -->
