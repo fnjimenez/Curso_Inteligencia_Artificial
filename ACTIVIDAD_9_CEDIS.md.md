@@ -8,12 +8,12 @@
 ⚠️ **Error Común:** No olvides configurar las unidades (horas y metros) antes de avanzar. Si fallas aquí, todo el modelo será inconsistente.
 
 ---
-
+<div align="center"> <img src="https://github.com/fnjimenez/Curso_Logistica_CV/blob/main/CEDIS.png?raw=true" alt="CEDIS Layout" width="600"> </div>
 
 # 🟦 ACTIVIDAD 9 – MODELADO DEL CEDIS AUTOMOTRIZ SAN BARTOLO EN ANYLOGIC
 
 ### Curso: Logística y Cadena de Valor
-### Unidad: Sistemas de Almacenamiento y CEDIS
+### Sistemas de Almacenamiento y CEDIS
 ### Versión: 2025 - EDICIÓN  PARA PRINCIPIANTES
 
 ---
@@ -1308,8 +1308,9 @@ SRC_MAGNA ─┘                                         │
 **¡Listo para entregar! 🎯**
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTI4MzA3MDAxNCwxNDIzNTQxMjE2LDE2NT
-A0MDk0MTEsLTQ1NTMwMzcxNywtMzg5OTY2NzI1LC0xOTE0NDc0
-NDc3LDEyMTgwNTQwMjksLTE3NzgzMzg1NDAsMjA2NDEyMzc0MC
-wxMTQyNTM1ODIsLTk2Nzk0OTM1NiwxNTY0NTg2ODY0XX0=
+eyJoaXN0b3J5IjpbLTEzMjU4MzE4NDEsMTI4MzA3MDAxNCwxND
+IzNTQxMjE2LDE2NTA0MDk0MTEsLTQ1NTMwMzcxNywtMzg5OTY2
+NzI1LC0xOTE0NDc0NDc3LDEyMTgwNTQwMjksLTE3NzgzMzg1ND
+AsMjA2NDEyMzc0MCwxMTQyNTM1ODIsLTk2Nzk0OTM1NiwxNTY0
+NTg2ODY0XX0=
 -->
