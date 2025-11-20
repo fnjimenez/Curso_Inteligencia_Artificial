@@ -1,4 +1,5 @@
 # 🟦 MODELADO DEL CEDIS EN ANYLOGIC
+<img src="https://upload.wikimedia.org/wikipedia/commons/4/4c/Logo_AnyLogic.png" alt="AnyLogic Logo" width="200" style="float: right; margin-left: 20px;">
 
 💬 Este modelo representa tu propuesta real del CEDIS San Bartolo. Cada bloque que configures es un paso hacia la eficiencia que justificaste en la Actividad 6 (reducción del 55% en viajes, mejora del 40% en utilización). ¡Hazlo como si fuera tu proyecto profesional! 🚀
 
@@ -1307,8 +1308,8 @@ SRC_MAGNA ─┘                                         │
 **¡Listo para entregar! 🎯**
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbNTc3MzkyNDgyLDE0MjM1NDEyMTYsMTY1MD
-QwOTQxMSwtNDU1MzAzNzE3LC0zODk5NjY3MjUsLTE5MTQ0NzQ0
-NzcsMTIxODA1NDAyOSwtMTc3ODMzODU0MCwyMDY0MTIzNzQwLD
-ExNDI1MzU4MiwtOTY3OTQ5MzU2LDE1NjQ1ODY4NjRdfQ==
+eyJoaXN0b3J5IjpbMTI4MzA3MDAxNCwxNDIzNTQxMjE2LDE2NT
+A0MDk0MTEsLTQ1NTMwMzcxNywtMzg5OTY2NzI1LC0xOTE0NDc0
+NDc3LDEyMTgwNTQwMjksLTE3NzgzMzg1NDAsMjA2NDEyMzc0MC
+wxMTQyNTM1ODIsLTk2Nzk0OTM1NiwxNTY0NTg2ODY0XX0=
 -->
