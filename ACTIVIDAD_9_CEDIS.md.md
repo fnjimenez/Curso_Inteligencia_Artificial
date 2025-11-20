@@ -713,11 +713,54 @@ RELEASE_ANDEN → ROUTE_RECEPCION ─┬─(0)─> DELAY_RECEP_NORTE ─┐
 | **Fuentes de Camiones** | ✅ COMPLETO | 3 Sources con rates y código On exit |
 | **Gestión de Andenes** | ✅ COMPLETO | ResourcePool docks (24), flowchart entrada completo |
 
-### ❌ **CONFIGURACIONES PENDIENTES - SE REQUIERE COMPLETAR**
+### **13. PASO 7 – DECISIÓN: CROSS-DOCKING O BUFFER ESTRATÉGICO**
 
----
+### 🎯 Objetivo
+Implementar la lógica que determina si los materiales pasan directo a embarque o requieren almacenamiento temporal.
 
-## 🔧 SECCIONES FALTANTES - IMPLEMENTACIÓN COMPLETA
+### 🧠 Lógica
+Según datos reales de CEDIS automotrices:
+- **65% Cross-docking:** Máxima eficiencia, costo mínimo
+- **30% Buffer:** Flexibilidad operativa, manejo de picos  
+- **5% Kitting:** Valor agregado, servicios especiales
+
+### 🛠️ Configuración
+
+#### **Paso 7.1: Crear Decisión de Flujo**
+1. Arrastrar **SelectOutput** a la derecha de `SORTING_PROCESS`
+2. Configurar:
+   - **Name:** `FLOW_DECISION`
+   - **Type:** `Condition`
+   - **Condition:** `By code`
+   - **Outputs:** `3`
+
+#### **Paso 7.2: Programar Distribución**
+```java
+double r = uniform(0, 1);
+if (r < 0.65) {
+    return 0;  // 65% - Cross-docking directo
+} else if (r < 0.95) {
+    return 1;  // 30% - Buffer estratégico
+} else {
+    return 2;  // 5% - Kitting/Valor agregado
+}
+```
+
+#### **Paso 7.3: Crear Procesos**
+
+| Ruta | Bloque | Nombre | Delay Time |
+|------|--------|--------|------------|
+| Buffer | Delay | `BUFFER_TIME` | `triangular(1, 3, 6)` |
+| Kitting | Delay | `KITTING_PROCESS` | `triangular(0.15, 0.30, 0.50)` |
+| Cross-docking | (Directo) | - | - |
+
+**Conexiones:**
+```
+SORTING_PROCESS → FLOW_DECISION ─┬─(0)─> [Cross-docking] ─┐
+                                 ├─(1)─> BUFFER_TIME ────┤
+                                 └─(2)─> KITTING_PROCESS ─┘
+```
+
 
 ---
 
@@ -1307,63 +1350,8 @@ SRC_MAGNA ─┘                                         │
 
 **¡Listo para entregar! 🎯**
 
-
-**📍 PEGAR DESPUÉS DEL PASO 6.1 (donde termina el código del SelectOutput)**
-
-
----
-
-## 🚨 **FALTA 2: SECCIÓN COMPLETA - CROSS-DOCKING Y BUFFER**
-
 **📍 PEGAR DESPUÉS DEL PASO 6 (donde termina la parte de recepción)**
 
-### **13. PASO 7 – DECISIÓN: CROSS-DOCKING O BUFFER ESTRATÉGICO**
-
-### 🎯 Objetivo
-Implementar la lógica que determina si los materiales pasan directo a embarque o requieren almacenamiento temporal.
-
-### 🧠 Lógica
-Según datos reales de CEDIS automotrices:
-- **65% Cross-docking:** Máxima eficiencia, costo mínimo
-- **30% Buffer:** Flexibilidad operativa, manejo de picos  
-- **5% Kitting:** Valor agregado, servicios especiales
-
-### 🛠️ Configuración
-
-#### **Paso 7.1: Crear Decisión de Flujo**
-1. Arrastrar **SelectOutput** a la derecha de `SORTING_PROCESS`
-2. Configurar:
-   - **Name:** `FLOW_DECISION`
-   - **Type:** `Condition`
-   - **Condition:** `By code`
-   - **Outputs:** `3`
-
-#### **Paso 7.2: Programar Distribución**
-```java
-double r = uniform(0, 1);
-if (r < 0.65) {
-    return 0;  // 65% - Cross-docking directo
-} else if (r < 0.95) {
-    return 1;  // 30% - Buffer estratégico
-} else {
-    return 2;  // 5% - Kitting/Valor agregado
-}
-```
-
-#### **Paso 7.3: Crear Procesos**
-
-| Ruta | Bloque | Nombre | Delay Time |
-|------|--------|--------|------------|
-| Buffer | Delay | `BUFFER_TIME` | `triangular(1, 3, 6)` |
-| Kitting | Delay | `KITTING_PROCESS` | `triangular(0.15, 0.30, 0.50)` |
-| Cross-docking | (Directo) | - | - |
-
-**Conexiones:**
-```
-SORTING_PROCESS → FLOW_DECISION ─┬─(0)─> [Cross-docking] ─┐
-                                 ├─(1)─> BUFFER_TIME ────┤
-                                 └─(2)─> KITTING_PROCESS ─┘
-```
 
 ---
 ## 📋 RESUMEN DE SECCIONES FALTANTES
@@ -1380,6 +1368,6 @@ SORTING_PROCESS → FLOW_DECISION ─┬─(0)─> [Cross-docking] ─┐
 
 **¡Con estas 7 secciones agregadas, el documento estará COMPLETO y funcional!** 🚀
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE1NzkyMzk4NzAsMTE0MjUzNTgyLC05Nj
-c5NDkzNTYsMTU2NDU4Njg2NF19
+eyJoaXN0b3J5IjpbMjA2NDEyMzc0MCwxMTQyNTM1ODIsLTk2Nz
+k0OTM1NiwxNTY0NTg2ODY0XX0=
 -->
