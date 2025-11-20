@@ -1,7 +1,7 @@
 # 🟦 MODELADO DEL CEDIS EN ANYLOGIC
 <div align="center"> <img src="https://upload.wikimedia.org/wikipedia/commons/4/4c/Logo_AnyLogic.png" alt="AnyLogic Logo" width="200" style="float: right; margin-left: 20px;">
 
-### 🖼️ Layout de Referencia
+### 🖼️ Visualizar CEDIS 3D
 ![Layout CEDIS San Bartolo](https://raw.githubusercontent.com/fnjimenez/Curso_Logistica_CV/main/CEDIS.png)
 
  </div>
@@ -1310,10 +1310,10 @@ SRC_MAGNA ─┘                                         │
 **¡Listo para entregar! 🎯**
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbNjkwNzk1MzE1LDkxNzQ1MDI2NSwyMDc5MD
-A0MzQ3LC0xMzI1ODMxODQxLDEyODMwNzAwMTQsMTQyMzU0MTIx
-NiwxNjUwNDA5NDExLC00NTUzMDM3MTcsLTM4OTk2NjcyNSwtMT
-kxNDQ3NDQ3NywxMjE4MDU0MDI5LC0xNzc4MzM4NTQwLDIwNjQx
-MjM3NDAsMTE0MjUzNTgyLC05Njc5NDkzNTYsMTU2NDU4Njg2NF
-19
+eyJoaXN0b3J5IjpbMTgxOTM3NTk3OSw5MTc0NTAyNjUsMjA3OT
+AwNDM0NywtMTMyNTgzMTg0MSwxMjgzMDcwMDE0LDE0MjM1NDEy
+MTYsMTY1MDQwOTQxMSwtNDU1MzAzNzE3LC0zODk5NjY3MjUsLT
+E5MTQ0NzQ0NzcsMTIxODA1NDAyOSwtMTc3ODMzODU0MCwyMDY0
+MTIzNzQwLDExNDI1MzU4MiwtOTY3OTQ5MzU2LDE1NjQ1ODY4Nj
+RdfQ==
 -->
