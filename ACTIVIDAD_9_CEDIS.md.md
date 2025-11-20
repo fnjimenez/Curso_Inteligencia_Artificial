@@ -14,7 +14,6 @@
 ### Curso: Logística y Cadena de Valor
 ### Sistemas de Almacenamiento y CEDIS
 ### Versión: 2025 - EDICIÓN  PARA PRINCIPIANTES
-<div align="center"> <img src="https://github.com/fnjimenez/Curso_Logistica_CV/blob/main/CEDIS.png?raw=true" alt="CEDIS Layout" width="600"> </div>
 ---
 
 ## 📌 ANTES DE EMPEZAR - LEE ESTO PRIMERO
@@ -1307,7 +1306,7 @@ SRC_MAGNA ─┘                                         │
 **¡Listo para entregar! 🎯**
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTI4MDYwMDIxMSwtMTMyNTgzMTg0MSwxMj
+eyJoaXN0b3J5IjpbMjA3OTAwNDM0NywtMTMyNTgzMTg0MSwxMj
 gzMDcwMDE0LDE0MjM1NDEyMTYsMTY1MDQwOTQxMSwtNDU1MzAz
 NzE3LC0zODk5NjY3MjUsLTE5MTQ0NzQ0NzcsMTIxODA1NDAyOS
 wtMTc3ODMzODU0MCwyMDY0MTIzNzQwLDExNDI1MzU4MiwtOTY3
