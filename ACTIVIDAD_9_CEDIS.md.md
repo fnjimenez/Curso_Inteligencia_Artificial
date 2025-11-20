@@ -1,18 +1,12 @@
 # 🟦 ACTIVIDAD 9 – MODELADO DEL CEDIS AUTOMOTRIZ SAN BARTOLO EN ANYLOGIC
 
-
-💬 **Nota Motivadora:** Este modelo representa tu propuesta real del CEDIS San Bartolo. Cada bloque que configures es un paso hacia la eficiencia que justificaste en la Actividad 6 (reducción del 55% en viajes, mejora del 40% en utilización). ¡Hazlo como si fuera tu proyecto profesional! 🚀
-
+💬 Este modelo representa tu propuesta real del CEDIS San Bartolo. Cada bloque que configures es un paso hacia la eficiencia que justificaste en la Actividad 6 (reducción del 55% en viajes, mejora del 40% en utilización). ¡Hazlo como si fuera tu proyecto profesional! 🚀
 
 💡 **Tip Global:** Usa colores y nombres claros en el layout para que tu simulación sea fácil de interpretar. Esto refleja el diseño conceptual que planteaste (áreas de sorting, buffer y kitting).
 
-
 ⚠️ **Error Común:** No olvides configurar las unidades (horas y metros) antes de avanzar. Si fallas aquí, todo el modelo será inconsistente.
 
-
 ---
-
-
 # 📑 Tabla de Contenido
 
 - [Curso: Logística y Cadena de Valor](#curso:-logística-y-cadena-de-valor)
@@ -1614,7 +1608,7 @@ PARTE 7: EJECUCIÓN Y PUBLICACIÓN
 
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTg5NDU3MDYxNSwtMTkxNDQ3NDQ3NywxMj
+eyJoaXN0b3J5IjpbMTU3ODA1ODA1OSwtMTkxNDQ3NDQ3NywxMj
 E4MDU0MDI5LC0xNzc4MzM4NTQwLDIwNjQxMjM3NDAsMTE0MjUz
 NTgyLC05Njc5NDkzNTYsMTU2NDU4Njg2NF19
 -->
