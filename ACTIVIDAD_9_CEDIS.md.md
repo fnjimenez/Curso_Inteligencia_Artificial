@@ -883,6 +883,47 @@ DESTINO_OEM ─┬─(0)─> PREPARE_GM_SILAO
 - [ ] Tiempos diferenciados (BMW mayor tiempo)
 - [ ] Distribución porcentual suma 100%
 
+### **15. PASO 9 – SALIDA Y REGISTRO DE MÉTRICAS**
+
+### 🎯 Objetivo
+Completar el flujo y registrar indicadores de desempeño.
+
+### 🛠️ Configuración
+
+#### **Paso 9.1: Crear Variables KPI en Main**
+
+| Variable | Tipo | Valor | Descripción |
+|----------|------|-------|-------------|
+| `palletsProcessed` | int | `0` | Total pallets procesados |
+| `trucksProcessed` | int | `0` | Total camiones procesados |
+| `avgCycleTime` | double | `0.0` | Tiempo promedio en sistema |
+| `totalCycleTime` | double | `0.0` | Acumulador para promedio |
+
+#### **Paso 9.2: Crear Salida**
+1. Arrastrar **Sink**
+2. **Name:** `EXIT_CEDIS`
+3. Conectar los 3 PREPARE al Sink
+
+#### **Paso 9.3: Código en EXIT_CEDIS (On exit)**
+```java
+// Registrar hora de salida
+agent.tSalidaSistema = time();
+
+// Calcular tiempo de ciclo
+double tCiclo = agent.tSalidaSistema - agent.tEntradaSistema;
+
+// Actualizar contadores
+palletsProcessed += agent.pallets;
+trucksProcessed += 1;
+
+// Actualizar tiempo promedio
+totalCycleTime += tCiclo;
+avgCycleTime = totalCycleTime / trucksProcessed;
+```
+
+---
+
+
 ---
 
 ## 15. PASO 9 – SALIDA Y REGISTRO DE MÉTRICAS
@@ -1279,118 +1320,6 @@ SORTING_PROCESS → FLOW_DECISION ─┬─(0)─> [Cross-docking] ─┐
 
 **📍 PEGAR DESPUÉS DEL PASO 7**
 
-### **14. PASO 8 – ASIGNACIÓN DE DESTINO OEM**
-
-### 🎯 Objetivo
-Determinar a qué ensambladora final se dirige cada material.
-
-### 🧠 Lógica
-Distribución basada en volumen:
-- **GM Silao (55%):** Mayor volumen
-- **GM SLP (33%):** Volumen medio  
-- **BMW SLP (12%):** Volumen menor, alto valor
-
-### 🛠️ Configuración
-
-#### **Paso 8.1: Crear Decisión de Destino**
-1. Arrastrar **SelectOutput**
-2. Configurar:
-   - **Name:** `DESTINO_OEM`
-   - **Type:** `Condition`
-   - **Condition:** `By code`
-   - **Outputs:** `3`
-
-#### **Paso 8.2: Programar Asignación**
-```java
-double r = uniform(0, 1);
-if (r < 0.55) {
-    agent.destinoOEM = "GM_SILAO";
-    return 0;
-} else if (r < 0.88) {
-    agent.destinoOEM = "GM_SLP";
-    return 1;
-} else {
-    agent.destinoOEM = "BMW_SLP";
-    return 2;
-}
-```
-
-#### **Paso 8.3: Conectar Flujos Anteriores**
-- Rama 0 de `FLOW_DECISION` → `DESTINO_OEM`
-- `BUFFER_TIME` → `DESTINO_OEM`
-- `KITTING_PROCESS` → `DESTINO_OEM`
-
-#### **Paso 8.4: Preparación por Cliente**
-
-| Cliente | Bloque | Nombre | Delay Time |
-|---------|--------|--------|------------|
-| GM Silao | Delay | `PREPARE_GM_SILAO` | `triangular(0.25, 0.40, 0.60)` |
-| GM SLP | Delay | `PREPARE_GM_SLP` | `triangular(0.25, 0.40, 0.60)` |
-| BMW SLP | Delay | `PREPARE_BMW_SLP` | `triangular(0.30, 0.45, 0.70)` |
-
-**Conexiones:**
-```
-DESTINO_OEM ─┬─(0)─> PREPARE_GM_SILAO
-             ├─(1)─> PREPARE_GM_SLP
-             └─(2)─> PREPARE_BMW_SLP
-```
-
----
-
-## 🚨 **FALTA 4: SECCIÓN COMPLETA - SALIDA Y KPIs**
-
-**📍 PEGAR DESPUÉS DEL PASO 8**
-
-### **15. PASO 9 – SALIDA Y REGISTRO DE MÉTRICAS**
-
-### 🎯 Objetivo
-Completar el flujo y registrar indicadores de desempeño.
-
-### 🛠️ Configuración
-
-#### **Paso 9.1: Crear Variables KPI en Main**
-
-| Variable | Tipo | Valor | Descripción |
-|----------|------|-------|-------------|
-| `palletsProcessed` | int | `0` | Total pallets procesados |
-| `trucksProcessed` | int | `0` | Total camiones procesados |
-| `avgCycleTime` | double | `0.0` | Tiempo promedio en sistema |
-| `totalCycleTime` | double | `0.0` | Acumulador para promedio |
-
-#### **Paso 9.2: Crear Salida**
-1. Arrastrar **Sink**
-2. **Name:** `EXIT_CEDIS`
-3. Conectar los 3 PREPARE al Sink
-
-#### **Paso 9.3: Código en EXIT_CEDIS (On exit)**
-```java
-// Registrar hora de salida
-agent.tSalidaSistema = time();
-
-// Calcular tiempo de ciclo
-double tCiclo = agent.tSalidaSistema - agent.tEntradaSistema;
-
-// Actualizar contadores
-palletsProcessed += agent.pallets;
-trucksProcessed += 1;
-
-// Actualizar tiempo promedio
-totalCycleTime += tCiclo;
-avgCycleTime = totalCycleTime / trucksProcessed;
-```
-
----
-
-## 🚨 **FALTA 5: SECCIÓN COMPLETA - DASHBOARD**
-
-**📍 PEGAR DESPUÉS DEL PASO 9**
-
-
-## 🚨 **FALTA 6: SECCIÓN COMPLETA - MONTACARGAS (OPCIONAL)**
-
-**📍 PEGAR COMO PARTE OPCIONAL DESPUÉS DEL DASHBOARD**
-
-
 
 ---
 ## 📋 RESUMEN DE SECCIONES FALTANTES
@@ -1407,6 +1336,6 @@ avgCycleTime = totalCycleTime / trucksProcessed;
 
 **¡Con estas 7 secciones agregadas, el documento estará COMPLETO y funcional!** 🚀
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTk1OTc3ODYzOCwxMTQyNTM1ODIsLTk2Nz
-k0OTM1NiwxNTY0NTg2ODY0XX0=
+eyJoaXN0b3J5IjpbOTUzMzY4NjcyLDExNDI1MzU4MiwtOTY3OT
+Q5MzU2LDE1NjQ1ODY4NjRdfQ==
 -->
