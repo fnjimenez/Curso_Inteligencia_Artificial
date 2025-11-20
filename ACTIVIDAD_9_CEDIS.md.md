@@ -199,9 +199,106 @@ Trabajaremos en un solo agente llamado `Main` que contendrá todos los elementos
 - [ ] Main está abierto y visible en el canvas
 - [ ] Puedo ver la ventana de Properties en la parte inferior
 
+# PARTE 1: CONFIGURACIÓN INICIAL (CONTINUACIÓN)
+
+---
+
+## 8. PASO 2 – DIBUJAR EL LAYOUT DEL CEDIS
+
+### 🎯 Objetivo
+Crear la representación visual del CEDIS usando el layout proporcionado como referencia, definiendo claramente todas las zonas operativas.
+
+### 🧠 Lógica
+Un buen layout visual ayuda a:
+- Entender el flujo de materiales
+- Ubicar correctamente los procesos
+- Comunicar el diseño a otras personas
+- Debuggear problemas en la simulación
+
+### 🛠️ Configuración Paso a Paso
+
+#### **Paso 2.1: Insertar la Imagen de Fondo (ALTAMENTE RECOMENDADO)**
+1. Descargar la imagen `layoutt.png` desde GitHub
+2. En AnyLogic, con Main abierto, ir a menú **Insert → Image...**
+3. Navegar y seleccionar la imagen, click en **Open**
+4. Click en el canvas para colocarla como referencia
+5. Ajustar tamaño arrastrando desde las esquinas
+
+**Para fijar la imagen y que no estorbe:**
+6. Click derecho sobre la imagen → **Order → Send to Back**  
+7. Click derecho → **Lock** (para que no se mueva accidentalmente)
+
+#### **Paso 2.2: Dibujar las Zonas Principales con Rectángulos**
+En la paleta izquierda, buscar **Presentation → Space Markup → Rectangular Node**:
+
+| Zona | Color Sugerido | Propósito |
+|------|----------------|-----------|
+| Recepción Norte | `#FFF2CC` (Amarillo claro) | Entrada camiones región norte |
+| Recepción Sur | `#FFF2CC` (Amarillo claro) | Entrada camiones región sur |
+| Sorting | `#D5E8D4` (Verde claro) | Clasificación de materiales |
+| Buffer Estratégico | `#F8CECC` (Rojo claro) | Almacenamiento temporal |
+| Kitting | `#DAE8FC` (Azul claro) | Valor agregado |
+| Embarques GM Silao | `#E1D5E7` (Morado claro) | Salida GM Silao |
+| Embarques GM SLP | `#E1D5E7` (Morado claro) | Salida GM San Luis |
+| Embarques BMW SLP | `#E1D5E7` (Morado claro) | Salida BMW |
+
+**Para cada rectángulo:**
+1. Arrastrar **Rectangular Node** al canvas
+2. Dibujar sobre la zona correspondiente en la imagen
+3. Click derecho → **Properties → Fill color** → Elegir color
+4. **Line color:** Gris oscuro para mejor contorno
+
+#### **Paso 2.3: Agregar Etiquetas de Texto Identificadoras**
+1. En paleta izquierda: **Presentation → Text**
+2. Arrastrar al canvas y colocar sobre cada zona
+3. Configurar texto según esta tabla:
+
+| Texto | Tamaño Fuente | Color | Ubicación |
+|-------|---------------|-------|-----------|
+| "RECEPCIÓN NORTE" | 16 | Negro | Sobre recepción norte |
+| "RECEPCIÓN SUR" | 16 | Negro | Sobre recepción sur |
+| "SORTING" | 14 | Negro | Sobre área sorting |
+| "BUFFER ESTRATÉGICO" | 12 | Negro | Sobre buffer |
+| "KITTING" | 14 | Negro | Sobre kitting |
+| "EMBARQUES GM SILAO" | 12 | Negro | Sobre embarques GM Silao |
+| "EMBARQUES GM SLP" | 12 | Negro | Sobre embarques GM SLP |
+| "EMBARQUES BMW SLP" | 12 | Negro | Sobre embarques BMW |
+
+### ⚠️ PROBLEMAS COMUNES Y SOLUCIONES
+
+| Problema | Síntoma | Solución |
+|----------|---------|----------|
+| **La imagen tapa todo** | No se ven los rectángulos | Click derecho → Order → Send to Back |
+| **No puedo mover la imagen** | La imagen está bloqueada | Click derecho → Unlock temporalmente |
+| **Los rectángulos no se ven** | Sólo se ve el borde | Properties → Fill color → Elegir color sólido |
+| **El texto se sale** | Las etiquetas no caben | Reducir tamaño de fuente o usar abreviaciones |
+
+### 💡 CONSEJOS DE DISEÑO
+- **Usa colores consistentes** - mismo color para funciones similares
+- **Mantén proporciones** - no necesita ser exacto, pero sí reconocible
+- **Deja espacio para el flowchart** - el layout va a la izquierda, flowchart a la derecha
+- **Grupa elementos relacionados** - recepciones juntas, embarques juntos
+- **Usa la función Snap** - ayuda a alinear elementos perfectamente
+
+### 🎨 Esquema de Colores Recomendado
+```
+Recepción:    #FFF2CC  (Amarillo - Entrada)
+Procesamiento: #D5E8D4  (Verde - Transformación)
+Almacenamiento: #F8CECC  (Rojo - Buffer)
+Salida:       #E1D5E7  (Morado - Embarques)
+```
+
+### ✅ Checklist de Verificación
+- [ ] Imagen de fondo insertada y bloqueada en posición
+- [ ] 8 zonas dibujadas con rectángulos de colores diferenciados
+- [ ] Todas las etiquetas de texto agregadas y legibles
+- [ ] Colores consistentes según la función de cada zona
+- [ ] Layout organizado y fácil de entender
+- [ ] Espacio reservado para el diagrama de flujo
+
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTIxODA1NDAyOSwtMTc3ODMzODU0MCwyMD
-Y0MTIzNzQwLDExNDI1MzU4MiwtOTY3OTQ5MzU2LDE1NjQ1ODY4
-NjRdfQ==
+eyJoaXN0b3J5IjpbLTE5MTQ0NzQ0NzcsMTIxODA1NDAyOSwtMT
+c3ODMzODU0MCwyMDY0MTIzNzQwLDExNDI1MzU4MiwtOTY3OTQ5
+MzU2LDE1NjQ1ODY4NjRdfQ==
 -->
