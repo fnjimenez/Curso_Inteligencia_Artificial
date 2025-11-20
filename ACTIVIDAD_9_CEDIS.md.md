@@ -1,58 +1,88 @@
-# 🟦 ACTIVIDAD 9 – MODELADO DEL CEDIS AUTOMOTRIZ SAN BARTOLO EN ANYLOGIC
+# 📚 Índice Simplificado
 
   
 
-💬 Este modelo representa tu propuesta real del CEDIS San Bartolo. Cada bloque que configures es un paso hacia la eficiencia que justificaste en la Actividad 6 (reducción del 55% en viajes, mejora del 40% en utilización). ¡Hazlo como si fuera tu proyecto profesional! 🚀
+- 📌 ANTES DE EMPEZAR - LEE ESTO PRIMERO
 
-  
+-  1. DATOS DE IDENTIFICACIÓN
 
-💡 **Tip Global:** Usa colores y nombres claros en el layout para que tu simulación sea fácil de interpretar. Esto refleja el diseño conceptual que planteaste (áreas de sorting, buffer y kitting).
+-  2. CONTEXTO Y VÍNCULO CON ACTIVIDADES ANTERIORES
 
-  
+-  3. OBJETIVO GENERAL
 
-⚠️ **Error Común:** No olvides configurar las unidades (horas y metros) antes de avanzar. Si fallas aquí, todo el modelo será inconsistente.
+-  4. OBJETIVOS ESPECÍFICOS
+
+-  5. REQUISITOS PREVIOS
+
+-  6. ¿CÓMO USAR ESTE DOCUMENTO?
+
+- PARTE 1: CONFIGURACIÓN INICIAL
+
+-  7. PASO 1 – CREAR EL PROYECTO Y CONFIGURAR UNIDADES
+
+-  8. PASO 2 – DIBUJAR EL LAYOUT DEL CEDIS
+
+- PARTE 2: CREACIÓN DE AGENTES Y FUENTES
+
+-  9. PASO 3 – CREAR EL AGENTE `Truck`
+
+-  10. PASO 4 – CREAR LAS FUENTES DE CAMIONES
+
+- PARTE 3: FLUJO DE ENTRADA Y ANDENES
+
+-  11. PASO 5 – ENTRADA AL CEDIS Y GESTIÓN DE ANDENES
+
+-  12. PASO 6 – RUTEO HACIA RECEPCIÓN NORTE O SUR
+
+- 🟦 ACTIVIDAD 9 – MODELADO DEL CEDIS AUTOMOTRIZ SAN BARTOLO EN ANYLOGIC
+
+- 📋 ANÁLISIS DE COMPLETITUD DEL DOCUMENTO
+
+- PARTE 4: CROSS-DOCKING, BUFFER Y KITTING (CONTINUACIÓN)
+
+-  13. PASO 7 – DECISIÓN: CROSS-DOCKING O BUFFER ESTRATÉGICO
+
+-  14. PASO 8 – ASIGNACIÓN DE DESTINO OEM
+
+- 8.5 PASO – CREAR VARIABLES KPI EN MAIN
+
+-  15. PASO 9 – SALIDA Y REGISTRO DE MÉTRICAS
+
+- PARTE 5: RECURSOS ADICIONALES Y OPTIMIZACIÓN
+
+-  16. PASO 10 – GESTIÓN DE MONTACARGAS (OPCIONAL)
+
+- PARTE 6: DASHBOARD Y VISUALIZACIÓN
+
+-  17. PASO 11 – CREAR DASHBOARD DE MONITOREO
+
+- PARTE 7: EJECUCIÓN Y PUBLICACIÓN
+
+-  18. PASO 12 – EJECUCIÓN Y VALIDACIÓN
+
+-  19. PASO 13 – PUBLICACIÓN EN ANYLOGIC CLOUD
+
+- 🎯 RESUMEN DE COMPLETITUD
+
+- 📋 RESUMEN DE SECCIONES FALTANTES
+
+- 🔍 AUDITORÍA COMPLETA - INCOHERENCIAS IDENTIFICADAS
+
+- 🚨 **PROBLEMAS PRINCIPALES IDENTIFICADOS**
+
+- 🔧 **CORRECCIONES REQUERIDAS - VERSIÓN LIMPIA**
+
+- 📋 **CHECKLIST DE LIMPIEZA**
+
+- 🎯 **RESULTADO ESPERADO**
 
   
 
 ---
 
-# 📑 Tabla de Contenido
-
   
 
-# 📚 ÍNDICE ORGANIZADO
-
-  
-
-- 📌 ANTES DE EMPEZAR
-
-- 1️⃣ PASO 1 – CREAR PROYECTO Y CONFIGURAR UNIDADES
-
-- 2️⃣ PASO 2 – DIBUJAR LAYOUT DEL CEDIS
-
-- 3️⃣ PASO 3 – CREAR AGENTE TRUCK
-
-- 4️⃣ PASO 4 – CREAR FUENTES DE CAMIONES
-
-- 5️⃣ PASO 5 – ENTRADA Y GESTIÓN DE ANDENES
-
-- 6️⃣ PASO 6 – RUTEO HACIA RECEPCIÓN NORTE/SUR
-
-- 7️⃣ PASO 7 – DECISIÓN: CROSS-DOCKING O BUFFER
-
-- 8️⃣ PASO 8 – ASIGNACIÓN DE DESTINO OEM
-
-- 9️⃣ PASO 9 – SALIDA Y REGISTRO DE MÉTRICAS
-
-- 🔟 PASO 10 – CREAR DASHBOARD DE MONITOREO
-
-- 1️⃣1️⃣ PASO 11 – EJECUCIÓN Y VALIDACIÓN
-
-- 1️⃣2️⃣ PASO 12 – PUBLICACIÓN EN ANYLOGIC CLOUD
-
-  
-
-# 🟦 ACTIVIDAD 9 – MODELADO DEL CEDIS AUTOMOTRIZ SAN BARTOLO EN ANYLOGIC
+Mejor te paso el codigo # 🟦 ACTIVIDAD 9 – MODELADO DEL CEDIS AUTOMOTRIZ SAN BARTOLO EN ANYLOGIC
 
   
 
@@ -90,7 +120,7 @@ Es como un **videojuego de tu CEDIS** donde puedes ver cómo entran camiones, se
 
 ✅ Este documento te guía paso a paso
 
-✅ Cada sección tiene: 🎯 Objetivo | 🧠 Explicación | 🛠️ Qué hacer | 💡 Consejos 💡 *Tip:* Este paso conecta con tu diseño conceptual de la Actividad 6.
+✅ Cada sección tiene: 🎯 Objetivo | 🧠 Explicación | 🛠️ Qué hacer | 💡 Consejos
 
 ✅ Si te atoras, busca las secciones **"⚠️ PROBLEMAS COMUNES"**
 
@@ -204,7 +234,7 @@ Ahora vas a **dar vida a ese diseño** en una simulación digital.
 
   
 
-| # | Objetivo | Estado | Prioridad | 💡 *Tip:* Este paso conecta con tu diseño conceptual de la Actividad 6.
+| # | Objetivo | Estado | Prioridad |
 
 |---|----------|--------|-----------|
 
@@ -300,7 +330,7 @@ Cada sección sigue este formato estándar:
 
   
 
-### ✅ Sistema de Checklist 🧐 *Verifica:* Si todo coincide con los parámetros del CEDIS San Bartolo (22,000 pallets, 24 andenes).
+### ✅ Sistema de Checklist
 
 Al final de cada sección encontrarás:
 
@@ -338,17 +368,17 @@ Al final de cada sección encontrarás:
 
   
 
-## 1. PASO 1 CREAR EL PROYECTO Y CONFIGURAR UNIDADES
+## 7. PASO 1 – CREAR EL PROYECTO Y CONFIGURAR UNIDADES
 
   
 
-### 🎯 Objetivo 💡 *Tip:* Este paso conecta con tu diseño conceptual de la Actividad 6.
+### 🎯 Objetivo
 
 Crear un proyecto nuevo en AnyLogic con las unidades correctas (horas y metros) para el modelo del CEDIS.
 
   
 
-### 🧠 Lógica 📌 *Recuerda:* Justificaste esta lógica en tu ensayo (reducción de viajes, eficiencia).
+### 🧠 Lógica
 
 Trabajaremos en un solo agente llamado `Main` que contendrá todos los elementos:
 
@@ -362,7 +392,7 @@ Trabajaremos en un solo agente llamado `Main` que contendrá todos los elementos
 
   
 
-### 🛠️ Configuración Paso a Paso ✅ *Consejo:* Sigue el orden exacto para evitar errores en AnyLogic.
+### 🛠️ Configuración Paso a Paso
 
   
 
@@ -438,7 +468,7 @@ Trabajaremos en un solo agente llamado `Main` que contendrá todos los elementos
 
   
 
-### ✅ Checklist de Verificación 🧐 *Verifica:* Si todo coincide con los parámetros del CEDIS San Bartolo (22,000 pallets, 24 andenes).
+### ✅ Checklist de Verificación
 
 - [ ] Proyecto creado con nombre personalizado correcto
 
@@ -454,17 +484,17 @@ Trabajaremos en un solo agente llamado `Main` que contendrá todos los elementos
 
   
 
-## 2. PASO 2 DIBUJAR EL LAYOUT DEL CEDIS
+## 8. PASO 2 – DIBUJAR EL LAYOUT DEL CEDIS
 
   
 
-### 🎯 Objetivo 💡 *Tip:* Este paso conecta con tu diseño conceptual de la Actividad 6.
+### 🎯 Objetivo
 
 Crear la representación visual del CEDIS usando el layout proporcionado como referencia, definiendo claramente todas las zonas operativas.
 
   
 
-### 🧠 Lógica 📌 *Recuerda:* Justificaste esta lógica en tu ensayo (reducción de viajes, eficiencia).
+### 🧠 Lógica
 
 Un buen layout visual ayuda a:
 
@@ -478,7 +508,7 @@ Un buen layout visual ayuda a:
 
   
 
-### 🛠️ Configuración Paso a Paso ✅ *Consejo:* Sigue el orden exacto para evitar errores en AnyLogic.
+### 🛠️ Configuración Paso a Paso
 
   
 
@@ -624,7 +654,7 @@ Salida: #E1D5E7 (Morado - Embarques)
 
   
 
-### ✅ Checklist de Verificación 🧐 *Verifica:* Si todo coincide con los parámetros del CEDIS San Bartolo (22,000 pallets, 24 andenes).
+### ✅ Checklist de Verificación
 
 - [ ] Imagen de fondo insertada y bloqueada en posición
 
@@ -652,17 +682,17 @@ Salida: #E1D5E7 (Morado - Embarques)
 
   
 
-## 3. PASO 3 CREAR EL AGENTE `Truck`
+## 9. PASO 3 – CREAR EL AGENTE `Truck`
 
   
 
-### 🎯 Objetivo 💡 *Tip:* Este paso conecta con tu diseño conceptual de la Actividad 6.
+### 🎯 Objetivo
 
 Definir la "ficha técnica" de los camiones que entrarán al CEDIS con todos sus atributos necesarios.
 
   
 
-### 🧠 Lógica 📌 *Recuerda:* Justificaste esta lógica en tu ensayo (reducción de viajes, eficiencia).
+### 🧠 Lógica
 
 Cada camión es un **agente** que fluye por el sistema y necesita almacenar información específica:
 
@@ -676,7 +706,7 @@ Cada camión es un **agente** que fluye por el sistema y necesita almacenar info
 
   
 
-### 🛠️ Configuración Paso a Paso ✅ *Consejo:* Sigue el orden exacto para evitar errores en AnyLogic.
+### 🛠️ Configuración Paso a Paso
 
   
 
@@ -764,7 +794,7 @@ Cada camión es un **agente** que fluye por el sistema y necesita almacenar info
 
   
 
-### ✅ Checklist de Verificación 🧐 *Verifica:* Si todo coincide con los parámetros del CEDIS San Bartolo (22,000 pallets, 24 andenes).
+### ✅ Checklist de Verificación
 
 - [ ] Agente Truck creado en Agent Types
 
@@ -782,17 +812,17 @@ Cada camión es un **agente** que fluye por el sistema y necesita almacenar info
 
   
 
-## 4. PASO 4 CREAR LAS FUENTES DE CAMIONES
+## 10. PASO 4 – CREAR LAS FUENTES DE CAMIONES
 
   
 
-### 🎯 Objetivo 💡 *Tip:* Este paso conecta con tu diseño conceptual de la Actividad 6.
+### 🎯 Objetivo
 
 Configurar la generación automática de camiones desde los tres proveedores principales con sus características específicas.
 
   
 
-### 🧠 Lógica 📌 *Recuerda:* Justificaste esta lógica en tu ensayo (reducción de viajes, eficiencia).
+### 🧠 Lógica
 
 Cada proveedor tiene patrones únicos:
 
@@ -806,7 +836,7 @@ Cada proveedor tiene patrones únicos:
 
   
 
-### 🛠️ Configuración Paso a Paso ✅ *Consejo:* Sigue el orden exacto para evitar errores en AnyLogic.
+### 🛠️ Configuración Paso a Paso
 
   
 
@@ -820,7 +850,7 @@ Cada proveedor tiene patrones únicos:
 
   
 
-#### **Paso 4.2: Configuración de Sources por Proveedor** ✅ *Consejo:* Sigue el orden exacto para evitar errores en AnyLogic.
+#### **Paso 4.2: Configuración de Sources por Proveedor**
 
   
 
@@ -976,7 +1006,7 @@ agent.tEntradaSistema  =  time();
 
   
 
-### ✅ Checklist de Verificación 🧐 *Verifica:* Si todo coincide con los parámetros del CEDIS San Bartolo (22,000 pallets, 24 andenes).
+### ✅ Checklist de Verificación
 
 - [ ] 3 Sources creados con nombres descriptivos
 
@@ -1004,17 +1034,17 @@ agent.tEntradaSistema  =  time();
 
   
 
-## 5. PASO 5 ENTRADA AL CEDIS Y GESTIÓN DE ANDENES
+## 11. PASO 5 – ENTRADA AL CEDIS Y GESTIÓN DE ANDENES
 
   
 
-### 🎯 Objetivo 💡 *Tip:* Este paso conecta con tu diseño conceptual de la Actividad 6.
+### 🎯 Objetivo
 
 Implementar el sistema de recepción donde camiones esperan, ocupan andenes, descargan y liberan recursos.
 
   
 
-### 🧠 Lógica 📌 *Recuerda:* Justificaste esta lógica en tu ensayo (reducción de viajes, eficiencia).
+### 🧠 Lógica
 
 Los andenes son recursos limitados que deben gestionarse eficientemente:
 
@@ -1028,7 +1058,7 @@ Los andenes son recursos limitados que deben gestionarse eficientemente:
 
   
 
-### 🛠️ Configuración Paso a Paso ✅ *Consejo:* Sigue el orden exacto para evitar errores en AnyLogic.
+### 🛠️ Configuración Paso a Paso
 
   
 
@@ -1200,7 +1230,7 @@ SRC_MAGNA_SUR ───┘
 
   
 
-### ✅ Checklist de Verificación 🧐 *Verifica:* Si todo coincide con los parámetros del CEDIS San Bartolo (22,000 pallets, 24 andenes).
+### ✅ Checklist de Verificación
 
 - [ ] ResourcePool `docks` creado con capacidad 24
 
@@ -1224,17 +1254,17 @@ SRC_MAGNA_SUR ───┘
 
   
 
-## 6. PASO 6 RUTEO HACIA RECEPCIÓN NORTE O SUR
+## 12. PASO 6 – RUTEO HACIA RECEPCIÓN NORTE O SUR
 
   
 
-### 🎯 Objetivo 💡 *Tip:* Este paso conecta con tu diseño conceptual de la Actividad 6.
+### 🎯 Objetivo
 
 Implementar la decisión que dirige cada camión a la zona de recepción correcta según su región de origen.
 
   
 
-### 🧠 Lógica 📌 *Recuerda:* Justificaste esta lógica en tu ensayo (reducción de viajes, eficiencia).
+### 🧠 Lógica
 
 La separación por regiones permite:
 
@@ -1248,7 +1278,7 @@ La separación por regiones permite:
 
   
 
-### 🛠️ Configuración Paso a Paso ✅ *Consejo:* Sigue el orden exacto para evitar errores en AnyLogic.
+### 🛠️ Configuración Paso a Paso
 
   
 
@@ -1270,7 +1300,7 @@ La separación por regiones permite:
 
   
 
-#### **Paso 6.2: Programar la Lógica de Decisión** 📌 *Recuerda:* Justificaste esta lógica en tu ensayo (reducción de viajes, eficiencia).
+#### **Paso 6.2: Programar la Lógica de Decisión**
 
 ### **Paso 6.2: Configurar Tiempos de Recepción**
 
@@ -1432,7 +1462,7 @@ RELEASE_ANDEN → ROUTE_RECEPCION ─┬─(0)─> DELAY_RECEP_NORTE ─┐
 
   
 
-### ✅ Checklist de Verificación 🧐 *Verifica:* Si todo coincide con los parámetros del CEDIS San Bartolo (22,000 pallets, 24 andenes).
+### ✅ Checklist de Verificación
 
 - [ ] SelectOutput configurado con 2 salidas
 
@@ -1459,17 +1489,39 @@ RELEASE_ANDEN → ROUTE_RECEPCION ─┬─(0)─> DELAY_RECEP_NORTE ─┐
 
   
 
-## 7. PASO 7 DECISIÓN: CROSS-DOCKING O BUFFER ESTRATÉGICO
+## 📋 ANÁLISIS DE COMPLETITUD DEL DOCUMENTO
 
   
 
-### 🎯 Objetivo 💡 *Tip:* Este paso conecta con tu diseño conceptual de la Actividad 6.
-
-Implementar la lógica que determina si los materiales pasan directo a embarque (cross-docking) o requieren almacenamiento temporal (buffer).
+### ✅ **CONFIGURACIONES COMPLETADAS**
 
   
 
-### 🧠 Lógica 📌 *Recuerda:* Justificaste esta lógica en tu ensayo (reducción de viajes, eficiencia).
+| Sección | Estado | Elementos Implementados |
+
+|---------|--------|------------------------|
+
+| **Configuración Inicial** | ✅ COMPLETO | Proyecto, unidades (horas/metros), Main activo |
+
+| **Agente Truck** | ✅ COMPLETO | 6 variables con tipos y valores iniciales |
+
+| **Fuentes de Camiones** | ✅ COMPLETO | 3 Sources con rates y código On exit |
+
+| **Gestión de Andenes** | ✅ COMPLETO | ResourcePool docks (24), flowchart entrada completo |
+
+  
+
+### **13. PASO 7 – DECISIÓN: CROSS-DOCKING O BUFFER ESTRATÉGICO**
+
+  
+
+### 🎯 Objetivo
+
+Implementar la lógica que determina si los materiales pasan directo a embarque o requieren almacenamiento temporal.
+
+  
+
+### 🧠 Lógica
 
 Según datos reales de CEDIS automotrices:
 
@@ -1481,7 +1533,153 @@ Según datos reales de CEDIS automotrices:
 
   
 
-### 🛠️ Configuración Paso a Paso ✅ *Consejo:* Sigue el orden exacto para evitar errores en AnyLogic.
+### 🛠️ Configuración
+
+  
+
+#### **Paso 7.1: Crear Decisión de Flujo**
+
+1. Arrastrar **SelectOutput** a la derecha de `SORTING_PROCESS`
+
+2. Configurar:
+
+-  **Name:**  `FLOW_DECISION`
+
+-  **Type:**  `Condition`
+
+-  **Condition:**  `By code`
+
+-  **Outputs:**  `3`
+
+  
+
+#### **Paso 7.2: Programar Distribución**
+
+```java
+
+double  r  =  uniform(0, 1);
+
+if (r <  0.65) {
+
+return  0; // 65% - Cross-docking directo
+
+} else  if (r <  0.95) {
+
+return  1; // 30% - Buffer estratégico
+
+} else {
+
+return  2; // 5% - Kitting/Valor agregado
+
+}
+
+```
+
+  
+
+#### **Paso 7.3: Crear Procesos**
+
+  
+
+| Ruta | Bloque | Nombre | Delay Time |
+
+|------|--------|--------|------------|
+
+| Buffer | Delay | `BUFFER_TIME` | `triangular(1, 3, 6)` |
+
+| Kitting | Delay | `KITTING_PROCESS` | `triangular(0.15, 0.30, 0.50)` |
+
+| Cross-docking | (Directo) | - | - |
+
+  
+
+**Conexiones:**
+
+```
+
+SORTING_PROCESS → FLOW_DECISION ─┬─(0)─> [Cross-docking] ─┐
+
+├─(1)─> BUFFER_TIME ────┤
+
+└─(2)─> KITTING_PROCESS ─┘
+
+```
+
+#### **Paso 6.2: Delays de Recepción**
+
+  
+
+| Bloque | Nombre | Delay Time |
+
+|--------|--------|------------|
+
+| Delay | `DELAY_RECEP_NORTE` | `triangular(0.15, 0.25, 0.40)` |
+
+| Delay | `DELAY_RECEP_SUR` | `triangular(0.15, 0.25, 0.40)` |
+
+  
+
+**Conexiones:**
+
+- Rama 0 de `ROUTE_RECEPCION` → `DELAY_RECEP_NORTE`
+
+- Rama 1 de `ROUTE_RECEPCION` → `DELAY_RECEP_SUR`
+
+  
+
+#### **Paso 6.3: Proceso de Clasificación Central**
+
+1. Arrastrar **Delay** al centro-derecha
+
+2. Configurar:
+
+-  **Name:**  `SORTING_PROCESS`
+
+-  **Delay time:**  `triangular(0.2, 0.4, 0.8)`
+
+3.  **Conectar:**
+
+-  `DELAY_RECEP_NORTE` → `SORTING_PROCESS`
+
+-  `DELAY_RECEP_SUR` → `SORTING_PROCESS`
+
+  
+
+---
+
+  
+
+# PARTE 4: CROSS-DOCKING, BUFFER Y KITTING (CONTINUACIÓN)
+
+  
+
+---
+
+  
+
+## 13. PASO 7 – DECISIÓN: CROSS-DOCKING O BUFFER ESTRATÉGICO
+
+  
+
+### 🎯 Objetivo
+
+Implementar la lógica que determina si los materiales pasan directo a embarque (cross-docking) o requieren almacenamiento temporal (buffer).
+
+  
+
+### 🧠 Lógica
+
+Según datos reales de CEDIS automotrices:
+
+-  **65% Cross-docking:** Máxima eficiencia, costo mínimo
+
+-  **30% Buffer:** Flexibilidad operativa, manejo de picos
+
+-  **5% Kitting:** Valor agregado, servicios especiales
+
+  
+
+### 🛠️ Configuración Paso a Paso
 
   
 
@@ -1595,7 +1793,7 @@ SORTING_PROCESS → FLOW_DECISION ─┬─(0)─> [Cross-docking] ─┐
 
   
 
-### ✅ Checklist 🧐 *Verifica:* Si todo coincide con los parámetros del CEDIS San Bartolo (22,000 pallets, 24 andenes).
+### ✅ Checklist
 
 - [ ] SelectOutput configurado con 3 salidas
 
@@ -1610,17 +1808,17 @@ SORTING_PROCESS → FLOW_DECISION ─┬─(0)─> [Cross-docking] ─┐
   
   
 
-## 8. PASO 8 ASIGNACIÓN DE DESTINO OEM**
+### **14. PASO 8 – ASIGNACIÓN DE DESTINO OEM**
 
   
 
-### 🎯 Objetivo 💡 *Tip:* Este paso conecta con tu diseño conceptual de la Actividad 6.
+### 🎯 Objetivo
 
 Determinar a qué ensambladora final se dirige cada material.
 
   
 
-### 🧠 Lógica 📌 *Recuerda:* Justificaste esta lógica en tu ensayo (reducción de viajes, eficiencia).
+### 🧠 Lógica
 
 Distribución basada en volumen:
 
@@ -1632,7 +1830,7 @@ Distribución basada en volumen:
 
   
 
-### 🛠️ Configuración ✅ *Consejo:* Sigue el orden exacto para evitar errores en AnyLogic.
+### 🛠️ Configuración
 
   
 
@@ -1727,13 +1925,17 @@ DESTINO_OEM ─┬─(0)─> PREPARE_GM_SILAO
 
   
 
-### 🎯 Objetivo 💡 *Tip:* Este paso conecta con tu diseño conceptual de la Actividad 6.
+## 14. PASO 8 – ASIGNACIÓN DE DESTINO OEM
+
+  
+
+### 🎯 Objetivo
 
 Determinar a qué ensambladora final se dirige cada material y prepararlo para embarque.
 
   
 
-### 🧠 Lógica 📌 *Recuerda:* Justificaste esta lógica en tu ensayo (reducción de viajes, eficiencia).
+### 🧠 Lógica
 
 Distribución basada en volumen de producción:
 
@@ -1745,7 +1947,7 @@ Distribución basada en volumen de producción:
 
   
 
-### 🛠️ Configuración Paso a Paso ✅ *Consejo:* Sigue el orden exacto para evitar errores en AnyLogic.
+### 🛠️ Configuración Paso a Paso
 
   
 
@@ -1869,7 +2071,7 @@ DESTINO_OEM ─┬─(0)─> PREPARE_GM_SILAO
 
   
 
-### ✅ Checklist 🧐 *Verifica:* Si todo coincide con los parámetros del CEDIS San Bartolo (22,000 pallets, 24 andenes).
+### ✅ Checklist
 
 - [ ] SelectOutput con 3 salidas para destinos
 
@@ -1885,13 +2087,17 @@ DESTINO_OEM ─┬─(0)─> PREPARE_GM_SILAO
 
   
 
-### 🎯 Objetivo 💡 *Tip:* Este paso conecta con tu diseño conceptual de la Actividad 6.
+## 8.5 PASO – CREAR VARIABLES KPI EN MAIN
+
+  
+
+### 🎯 Objetivo
 
 Definir variables globales para calcular métricas de desempeño.
 
   
 
-### 🛠️ Configuración ✅ *Consejo:* Sigue el orden exacto para evitar errores en AnyLogic.
+### 🛠️ Configuración
 
 En agente **Main**, crear estas variables:
 
@@ -1915,17 +2121,17 @@ En agente **Main**, crear estas variables:
 
   
 
-## 9. PASO 9 SALIDA Y REGISTRO DE MÉTRICAS**
+### **15. PASO 9 – SALIDA Y REGISTRO DE MÉTRICAS**
 
   
 
-### 🎯 Objetivo 💡 *Tip:* Este paso conecta con tu diseño conceptual de la Actividad 6.
+### 🎯 Objetivo
 
 Completar el flujo y registrar indicadores de desempeño.
 
   
 
-### 🛠️ Configuración ✅ *Consejo:* Sigue el orden exacto para evitar errores en AnyLogic.
+### 🛠️ Configuración
 
   
 
@@ -2000,13 +2206,17 @@ avgCycleTime = totalCycleTime / trucksProcessed;
 
   
 
-### 🎯 Objetivo 💡 *Tip:* Este paso conecta con tu diseño conceptual de la Actividad 6.
+## 15. PASO 9 – SALIDA Y REGISTRO DE MÉTRICAS
+
+  
+
+### 🎯 Objetivo
 
 Completar el flujo con la salida del sistema y registrar todos los indicadores clave de desempeño.
 
   
 
-### 🧠 Lógica 📌 *Recuerda:* Justificaste esta lógica en tu ensayo (reducción de viajes, eficiencia).
+### 🧠 Lógica
 
 El punto de salida es crítico para:
 
@@ -2020,7 +2230,7 @@ El punto de salida es crítico para:
 
   
 
-### 🛠️ Configuración Paso a Paso ✅ *Consejo:* Sigue el orden exacto para evitar errores en AnyLogic.
+### 🛠️ Configuración Paso a Paso
 
   
 
@@ -2120,7 +2330,7 @@ avgCycleTime = totalCycleTime / trucksProcessed; // Calcular promedio
 
   
 
-### ✅ Checklist 🧐 *Verifica:* Si todo coincide con los parámetros del CEDIS San Bartolo (22,000 pallets, 24 andenes).
+### ✅ Checklist
 
 - [ ] 4 variables KPI creadas en Main con valores iniciales
 
@@ -2134,13 +2344,17 @@ avgCycleTime = totalCycleTime / trucksProcessed; // Calcular promedio
 
   
 
-### 🎯 Objetivo 💡 *Tip:* Este paso conecta con tu diseño conceptual de la Actividad 6.
+### **16. PASO 10 – CREAR DASHBOARD DE MONITOREO**
+
+  
+
+### 🎯 Objetivo
 
 Panel visual para monitoreo en tiempo real.
 
   
 
-### 🛠️ Configuración ✅ *Consejo:* Sigue el orden exacto para evitar errores en AnyLogic.
+### 🛠️ Configuración
 
   
 
@@ -2186,17 +2400,17 @@ Panel visual para monitoreo en tiempo real.
 
   
 
-## 10. PASO 10 GESTIÓN DE MONTACARGAS (OPCIONAL)
+## 16. PASO 10 – GESTIÓN DE MONTACARGAS (OPCIONAL)
 
   
 
-### 🎯 Objetivo 💡 *Tip:* Este paso conecta con tu diseño conceptual de la Actividad 6.
+### 🎯 Objetivo
 
 Implementar el uso de montacargas como recurso adicional para procesos internos.
 
   
 
-### 🧠 Lógica 📌 *Recuerda:* Justificaste esta lógica en tu ensayo (reducción de viajes, eficiencia).
+### 🧠 Lógica
 
 Algunos procesos requieren recursos físicos:
 
@@ -2206,7 +2420,7 @@ Algunos procesos requieren recursos físicos:
 
   
 
-### 🛠️ Configuración Paso a Paso ✅ *Consejo:* Sigue el orden exacto para evitar errores en AnyLogic.
+### 🛠️ Configuración Paso a Paso
 
   
 
@@ -2246,7 +2460,7 @@ Algunos procesos requieren recursos físicos:
 
   
 
-### ✅ Checklist (Opcional) 🧐 *Verifica:* Si todo coincide con los parámetros del CEDIS San Bartolo (22,000 pallets, 24 andenes).
+### ✅ Checklist (Opcional)
 
 - [ ] ResourcePool forklifts creado
 
@@ -2268,17 +2482,17 @@ Algunos procesos requieren recursos físicos:
 
   
 
-## 11. PASO 11 CREAR DASHBOARD DE MONITOREO
+## 17. PASO 11 – CREAR DASHBOARD DE MONITOREO
 
   
 
-### 🎯 Objetivo 💡 *Tip:* Este paso conecta con tu diseño conceptual de la Actividad 6.
+### 🎯 Objetivo
 
 Crear un panel de control visual que muestre en tiempo real el estado del CEDIS y las métricas clave.
 
   
 
-### 🧠 Lógica 📌 *Recuerda:* Justificaste esta lógica en tu ensayo (reducción de viajes, eficiencia).
+### 🧠 Lógica
 
 Un dashboard efectivo permite:
 
@@ -2292,7 +2506,7 @@ Un dashboard efectivo permite:
 
   
 
-### 🛠️ Configuración Paso a Paso ✅ *Consejo:* Sigue el orden exacto para evitar errores en AnyLogic.
+### 🛠️ Configuración Paso a Paso
 
   
 
@@ -2356,7 +2570,7 @@ Un dashboard efectivo permite:
 
   
 
-### ✅ Checklist 🧐 *Verifica:* Si todo coincide con los parámetros del CEDIS San Bartolo (22,000 pallets, 24 andenes).
+### ✅ Checklist
 
 - [ ] Título del dashboard creado
 
@@ -2370,13 +2584,17 @@ Un dashboard efectivo permite:
 
   
 
-### 🎯 Objetivo 💡 *Tip:* Este paso conecta con tu diseño conceptual de la Actividad 6.
+### **17. PASO 11 – GESTIÓN DE MONTACARGAS (OPCIONAL)**
+
+  
+
+### 🎯 Objetivo
 
 Implementar montacargas como recurso adicional.
 
   
 
-### 🛠️ Configuración ✅ *Consejo:* Sigue el orden exacto para evitar errores en AnyLogic.
+### 🛠️ Configuración
 
   
 
@@ -2414,17 +2632,17 @@ Agregar **Seize/Release** alrededor de `SORTING_PROCESS`:
 
   
 
-## 12. PASO 12 EJECUCIÓN Y VALIDACIÓN
+## 18. PASO 12 – EJECUCIÓN Y VALIDACIÓN
 
   
 
-### 🎯 Objetivo 💡 *Tip:* Este paso conecta con tu diseño conceptual de la Actividad 6.
+### 🎯 Objetivo
 
 Verificar que el modelo funciona correctamente y produce resultados dentro de rangos esperados.
 
   
 
-### 🧠 Lógica 📌 *Recuerda:* Justificaste esta lógica en tu ensayo (reducción de viajes, eficiencia).
+### 🧠 Lógica
 
 Las pruebas validan que:
 
@@ -2472,7 +2690,7 @@ Después de 24 horas simuladas:
 
   
 
-### ✅ Checklist 🧐 *Verifica:* Si todo coincide con los parámetros del CEDIS San Bartolo (22,000 pallets, 24 andenes).
+### ✅ Checklist
 
 - [ ] Modelo ejecuta sin errores
 
@@ -2490,11 +2708,11 @@ Después de 24 horas simuladas:
   
   
 
-## 13. PASO 13 PUBLICACIÓN EN ANYLOGIC CLOUD
+## 19. PASO 13 – PUBLICACIÓN EN ANYLOGIC CLOUD
 
   
 
-### 🎯 Objetivo 💡 *Tip:* Este paso conecta con tu diseño conceptual de la Actividad 6.
+### 🎯 Objetivo
 
 Publicar el modelo en la nube para compartirlo.
 
@@ -2528,7 +2746,7 @@ Publicar el modelo en la nube para compartirlo.
 
   
 
-### ✅ Checklist 🧐 *Verifica:* Si todo coincide con los parámetros del CEDIS San Bartolo (22,000 pallets, 24 andenes).
+### ✅ Checklist
 
 - [ ] Modelo exportado sin errores
 
@@ -2550,7 +2768,7 @@ Publicar el modelo en la nube para compartirlo.
 
   
 
-| Objetivo | Estado | 💡 *Tip:* Este paso conecta con tu diseño conceptual de la Actividad 6.
+| Objetivo | Estado |
 
 |----------|--------|
 
@@ -2625,9 +2843,257 @@ EXIT_CEDIS → KPIs & Dashboard
   
 
 **¡Listo para entregar! 🎯**
+
+  
+
+**📍 PEGAR DESPUÉS DEL PASO 6 (donde termina la parte de recepción)**
+
+  
+  
+
+---
+
+## 📋 RESUMEN DE SECCIONES FALTANTES
+
+  
+
+| # | Sección | Ubicación | Crítico |
+
+|---|---------|------------|---------|
+
+| 1 | Tiempos Recepción (Paso 6.2) | Después Paso 6.1 | ✅ |
+
+| 2 | Cross-docking y Buffer (Paso 7) | Después Paso 6 | ✅ |
+
+| 3 | Destinos OEM (Paso 8) | Después Paso 7 | ✅ |
+
+| 4 | Salida y KPIs (Paso 9) | Después Paso 8 | ✅ |
+
+| 5 | Dashboard (Paso 10) | Después Paso 9 | ✅ |
+
+| 6 | Montacargas (Paso 11) | Opcional después Dashboard | ❌ |
+
+| 7 | Ejecución y Cloud (Pasos 12-13) | Final documento | ✅ |
+
+  
+
+**¡Con estas 7 secciones agregadas, el documento estará COMPLETO y funcional!** 🚀
+
+  
+  
+
+# 🔍 AUDITORÍA COMPLETA - INCOHERENCIAS IDENTIFICADAS
+
+  
+
+He analizado el documento completo y encontré **múltiples problemas críticos** de estructura y duplicación que impiden su correcta implementación.
+
+  
+
+## 🚨 **PROBLEMAS PRINCIPALES IDENTIFICADOS**
+
+  
+
+### 1. **SECCIONES DUPLICADAS Y REPETIDAS**
+
+  
+
+**Problema:** Hay múltiples secciones con el mismo nombre y contenido:
+
+  
+
+- ❌ **Paso 7 duplicado:** Dos "Paso 7 – Decisión: Cross-docking" diferentes
+
+- ❌ **Paso 8 duplicado:** Dos "Paso 8 – Asignación de destino OEM" diferentes
+
+- ❌ **Paso 9 duplicado:** Dos "Paso 9 – Salida y registro de métricas" diferentes
+
+- ❌ **Dashboard duplicado:** Múltiples secciones de dashboard
+
+  
+
+### 2. **SECUENCIA NUMÉRICA ROMPIDA**
+
+  
+
+**Problema:** La numeración de pasos está completamente desorganizada:
+
+  
+
+```
+
+Paso 6 → Paso 7 → [ANÁLISIS] → Paso 7 (otro) → Paso 8 → [8.5] → Paso 9 → Paso 15 → Paso 16 → Paso 17 → Paso 18 → Paso 19
+
+```
+
+  
+
+### 3. **CONTENIDO REPETIDO INNECESARIAMENTE**
+
+  
+
+**Problema:** Mismo código y configuraciones aparecen múltiples veces:
+
+- Código de `FLOW_DECISION` repetido 3 veces
+
+- Configuración de variables KPI repetida 2 veces
+
+- Dashboard configurado múltiples veces
+
+  
+
+## 🔧 **CORRECCIONES REQUERIDAS - VERSIÓN LIMPIA**
+
+  
+
+### **📍 UBICACIÓN: ELIMINAR CONTENIDO DUPLICADO**
+
+  
+
+**ELIMINAR estas secciones completamente:**
+
+  
+
+1.  **❌ ELIMINAR:** Todo desde "## 📋 ANÁLISIS DE COMPLETITUD" hasta antes del "## 13. PASO 7 – DECISIÓN: CROSS-DOCKING"
+
+2.  **❌ ELIMINAR:** La segunda sección "### **13. PASO 7 – DECISIÓN: CROSS-DOCKING O BUFFER ESTRATÉGICO**"
+
+3.  **❌ ELIMINAR:** La sección "### **14. PASO 8 – ASIGNACIÓN DE DESTINO OEM**" (la corta)
+
+4.  **❌ ELIMINAR:** La sección "## 8.5 PASO – CREAR VARIABLES KPI EN MAIN"
+
+5.  **❌ ELIMINAR:** La sección "### **15. PASO 9 – SALIDA Y REGISTRO DE MÉTRICAS**" (la corta)
+
+6.  **❌ ELIMINAR:** La sección "### **16. PASO 10 – CREAR DASHBOARD DE MONITOREO**" (la corta)
+
+7.  **❌ ELIMINAR:** La sección "### **17. PASO 11 – GESTIÓN DE MONTACARGAS (OPCIONAL)**" (la corta)
+
+  
+
+### **📍 MANTENER SOLO ESTAS SECCIONES PRINCIPALES:**
+
+  
+
+```
+
+PARTE 1: CONFIGURACIÓN INICIAL
+
+├── 7. PASO 1 – CREAR PROYECTO
+
+├── 8. PASO 2 – DIBUJAR LAYOUT
+
+  
+
+PARTE 2: CREACIÓN DE AGENTES Y FUENTES
+
+├── 9. PASO 3 – CREAR AGENTE TRUCK
+
+├── 10. PASO 4 – CREAR FUENTES
+
+  
+
+PARTE 3: FLUJO DE ENTRADA Y ANDENES
+
+├── 11. PASO 5 – ENTRADA Y GESTIÓN ANDENES
+
+├── 12. PASO 6 – RUTEO RECEPCIÓN
+
+  
+
+PARTE 4: CROSS-DOCKING, BUFFER Y KITTING
+
+├── 13. PASO 7 – DECISIÓN CROSS-DOCKING
+
+├── 14. PASO 8 – ASIGNACIÓN DESTINO OEM
+
+  
+
+PARTE 5: SALIDA Y MÉTRICAS
+
+├── 15. PASO 9 – SALIDA Y REGISTRO KPIs
+
+  
+
+PARTE 6: DASHBOARD Y VISUALIZACIÓN
+
+├── 16. PASO 10 – CREAR DASHBOARD
+
+  
+
+PARTE 7: EJECUCIÓN Y PUBLICACIÓN
+
+├── 17. PASO 11 – EJECUCIÓN Y VALIDACIÓN
+
+├── 18. PASO 12 – PUBLICACIÓN CLOUD
+
+```
+
+  
+
+## 📋 **CHECKLIST DE LIMPIEZA**
+
+  
+
+### **✅ PARA CORREGIR EL DOCUMENTO:**
+
+  
+
+1.  **ELIMINAR** todo desde "## 📋 ANÁLISIS DE COMPLETITUD" hasta antes de "## 13. PASO 7 – DECISIÓN: CROSS-DOCKING"
+
+2.  **ELIMINAR** secciones duplicadas de Pasos 7, 8, 9, 10, 11
+
+3.  **RENOMBRAR** secuencialmente: Paso 13 → Paso 7, Paso 14 → Paso 8, etc.
+
+4.  **VERIFICAR** que cada paso tenga número único y en orden
+
+5.  **CONFIRMAR** que el flujo lógico sea continuo
+
+  
+
+### **🔍 VERIFICACIÓN FINAL DEL FLUJO:**
+
+  
+
+```
+
+✅ SRC_LEAR → ENTER → Q_ANDEN → SEIZE → UNLOAD → RELEASE
+
+✅ → ROUTE_RECEPCION → DELAY_RECEP_* → SORTING_PROCESS
+
+✅ → FLOW_DECISION → [Cross/Buffer/Kitting] → DESTINO_OEM
+
+✅ → PREPARE_* → EXIT_CEDIS → KPIs → DASHBOARD
+
+```
+
+  
+
+## 🎯 **RESULTADO ESPERADO**
+
+  
+
+**Después de las correcciones, el documento tendrá:**
+
+- ✅ **Secuencia numérica correcta** (Paso 1 al 12)
+
+- ✅ **Contenido sin duplicaciones**
+
+- ✅ **Flujo lógico continuo** sin saltos
+
+- ✅ **Estructura coherente** por partes
+
+- ✅ **Instrucciones claras** y únicas
+
+  
+
+**¡Con estas correcciones, el documento será COHERENTE y FUNCIONAL para implementar!** 🚀
+
+  
+
+**Recomendación:** Realizar esta limpieza antes de intentar implementar cualquier parte del modelo, ya que las duplicaciones actuales causarán confusión y errores durante la construcción.
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTIwNjQ5OTk4ODAsMTY1MDQwOTQxMSwtND
-U1MzAzNzE3LC0zODk5NjY3MjUsLTE5MTQ0NzQ0NzcsMTIxODA1
-NDAyOSwtMTc3ODMzODU0MCwyMDY0MTIzNzQwLDExNDI1MzU4Mi
-wtOTY3OTQ5MzU2LDE1NjQ1ODY4NjRdfQ==
+eyJoaXN0b3J5IjpbMTY1MDQwOTQxMSwxNjUwNDA5NDExLC00NT
+UzMDM3MTcsLTM4OTk2NjcyNSwtMTkxNDQ3NDQ3NywxMjE4MDU0
+MDI5LC0xNzc4MzM4NTQwLDIwNjQxMjM3NDAsMTE0MjUzNTgyLC
+05Njc5NDkzNTYsMTU2NDU4Njg2NF19
 -->
