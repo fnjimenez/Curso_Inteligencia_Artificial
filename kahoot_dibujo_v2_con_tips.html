@@ -1,0 +1,453 @@
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=Open+Sans:wght@400;600&display=swap');
+  *{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --or:#E85D04;--rd:#9B1D20;--lt:#FFF3E0;
+    --oa:#D62828;--ob:#023E8A;--oc:#1B4332;--od:#7B2D8B;
+    --fn:'Nunito',sans-serif;--fb:'Open Sans',sans-serif;
+  }
+  #app{font-family:var(--fb);background:transparent}
+  .hdr{background:#9B1D20;padding:14px 18px 10px;display:flex;align-items:center;justify-content:space-between;border-radius:12px 12px 0 0}
+  .hdr-t{font-family:var(--fn);color:#fff;font-size:14px;font-weight:800;line-height:1.2}
+  .hdr-s{color:rgba(255,255,255,.8);font-size:10px;margin-top:2px}
+  .logo{background:rgba(255,255,255,.2);border-radius:7px;padding:5px 9px;color:#fff;font-family:var(--fn);font-size:17px;font-weight:900;letter-spacing:1px}
+  .pgbar{background:#7a1518;height:5px}
+  .pgfill{height:100%;background:#FFD166;transition:width .5s ease}
+  .main{background:#fff;padding:18px 16px 14px;border-radius:0 0 12px 12px;border:0.5px solid #E0C8B0}
+
+  #sc-intro{text-align:center;padding:8px 0}
+  .i-ico{font-size:52px;display:block;margin:6px 0}
+  .i-tit{font-family:var(--fn);font-size:21px;font-weight:900;color:#9B1D20;margin-bottom:4px}
+  .i-sub{font-size:12px;color:#777;margin-bottom:14px}
+  .pills{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:16px}
+  .pill{background:var(--lt);border:1px solid #F0C28A;border-radius:20px;padding:5px 12px;font-size:11px;font-weight:700;color:#9B1D20}
+  .btn-st{background:#E85D04;color:#fff;border:none;border-radius:28px;padding:13px 36px;font-family:var(--fn);font-size:16px;font-weight:800;cursor:pointer;transition:transform .15s}
+  .btn-st:hover{transform:translateY(-2px)}
+
+  #sc-quiz{display:none}
+  .qtop{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px;gap:10px}
+  .qcnt{font-size:10px;color:#999;font-weight:700;margin-bottom:3px}
+  .stag{display:inline-block;font-size:9px;font-weight:700;padding:2px 8px;border-radius:10px;margin-bottom:8px;text-transform:uppercase;letter-spacing:.4px}
+  .tf{background:#FFF3E0;color:#E85D04;border:1px solid #FFB347}
+  .tb{background:#EDE7F6;color:#6A1B9A;border:1px solid #CE93D8}
+  .qtxt{font-family:var(--fn);font-size:15px;font-weight:800;color:#1a1a1a;line-height:1.35;flex:1}
+  .tcir{width:46px;height:46px;border-radius:50%;background:#E85D04;color:#fff;font-family:var(--fn);font-size:19px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .4s}
+  .tcir.urg{background:#9B1D20;animation:pls .5s infinite alternate}
+  @keyframes pls{from{transform:scale(1)}to{transform:scale(1.08)}}
+  .notebox{background:#FFF8EE;border-left:3px solid #E85D04;border-radius:0 8px 8px 0;padding:7px 11px;font-size:11px;color:#7A4500;margin-bottom:10px;line-height:1.4}
+  .ogrid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:4px}
+  .obtn{border:none;border-radius:9px;padding:11px 9px;font-family:var(--fn);font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:8px;text-align:left;transition:transform .12s;color:#fff;line-height:1.25}
+  .obtn:hover:not(:disabled){transform:translateY(-2px)}
+  .obtn:disabled{cursor:not-allowed}
+  .obtn.a{background:var(--oa)}.obtn.b{background:var(--ob)}.obtn.c{background:var(--oc)}.obtn.d{background:var(--od)}
+  .obtn.correct{background:#1B5E20!important;outline:3px solid #69F0AE}
+  .obtn.wrong{background:#B71C1C!important;opacity:.7}
+  .obtn.reveal{opacity:.45}
+  .oico{width:24px;height:24px;border-radius:4px;background:rgba(255,255,255,.22);display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0}
+
+  .fbwrap{margin-top:10px;display:none;flex-direction:column;gap:0;border-radius:10px;overflow:hidden}
+  .fbwrap.show{display:flex}
+  .fbhead{display:flex;align-items:center;gap:8px;padding:9px 13px;font-size:13px;font-weight:700}
+  .fbhead.ok{background:#E8F5E9;color:#1B5E20}
+  .fbhead.fail{background:#FFEBEE;color:#B71C1C}
+  .fbexp{padding:8px 13px;font-size:12px;line-height:1.5;color:#444;background:#fafafa;border-top:0.5px solid #eee}
+  .fbtip{padding:8px 13px 10px;font-size:11.5px;line-height:1.45;background:#FFFDE7;border-top:0.5px solid #FFF176;color:#5D4037;display:none}
+  .fbtip.show{display:block}
+  .tip-lbl{font-weight:700;color:#E65100;font-size:11px;text-transform:uppercase;letter-spacing:.4px;margin-bottom:3px}
+
+  .btn-nx{display:none;margin-top:10px;width:100%;background:#E85D04;color:#fff;border:none;border-radius:24px;padding:11px;font-family:var(--fn);font-size:14px;font-weight:800;cursor:pointer}
+  .btn-nx:hover{opacity:.9}
+
+  #sc-res{display:none;text-align:center;padding:8px 0}
+  .rbadge{font-size:58px;display:block;margin-bottom:6px}
+  .rscore{font-family:var(--fn);font-size:48px;font-weight:900;line-height:1;margin-bottom:3px;color:#E85D04}
+  .rlbl{font-size:13px;color:#666;margin-bottom:14px}
+  .rbarw{background:#F5EFE6;border-radius:30px;height:16px;width:100%;margin-bottom:16px;overflow:hidden}
+  .rbarf{height:100%;border-radius:30px;background:#E85D04;transition:width 1s ease}
+  .rbd{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px}
+  .rcard{background:var(--lt);border-radius:9px;padding:9px;border:1px solid #F0C28A}
+  .rcn{font-family:var(--fn);font-size:24px;font-weight:900;color:#9B1D20}
+  .rcl{font-size:10px;color:#999;font-weight:600}
+  .btn-rs{background:#E85D04;color:#fff;border:none;border-radius:28px;padding:12px 32px;font-family:var(--fn);font-size:15px;font-weight:800;cursor:pointer}
+  .btn-rs:hover{opacity:.9}
+  .revwrap{margin-top:16px;text-align:left}
+  .revtit{font-family:var(--fn);font-size:13px;font-weight:800;color:#9B1D20;margin-bottom:8px}
+  .ritem{background:#fafafa;border:0.5px solid #ddd;border-radius:7px;padding:7px 10px;margin-bottom:5px;font-size:11px;line-height:1.4}
+  .ritem.ok{border-left:3px solid #2D6A4F}
+  .ritem.fail{border-left:3px solid #c62828}
+  .rq{font-weight:700;color:#333;margin-bottom:2px}
+  .ra{color:#555}
+  .rcorr{color:#2D6A4F;font-weight:700}
+  .rtip-inline{margin-top:4px;background:#FFFDE7;border-radius:5px;padding:4px 7px;font-size:10.5px;color:#5D4037;border-left:2px solid #FFD54F}
+</style>
+
+<div id="app">
+  <div class="hdr">
+    <div>
+      <div class="hdr-t">Dibujo Computarizado y Manufactura Aditiva</div>
+      <div class="hdr-s">Universidad del SABES — Campus San Felipe</div>
+    </div>
+    <div class="logo">SABES</div>
+  </div>
+  <div class="pgbar"><div class="pgfill" id="prog" style="width:0%"></div></div>
+
+  <div class="main">
+
+    <div id="sc-intro">
+      <span class="i-ico">🖥️</span>
+      <div class="i-tit">¡Quiz de Repaso!</div>
+      <p class="i-sub">Responde y recibe retroalimentación inmediata con tips de estudio</p>
+      <div class="pills">
+        <span class="pill">🎯 25 preguntas</span>
+        <span class="pill">⏱️ ~20 minutos</span>
+        <span class="pill">⚡ 25 seg / pregunta</span>
+        <span class="pill">💡 Tips en respuestas incorrectas</span>
+      </div>
+      <button class="btn-st" onclick="startQuiz()">¡COMENZAR!</button>
+    </div>
+
+    <div id="sc-quiz">
+      <div class="qtop">
+        <div style="flex:1">
+          <div class="qcnt" id="qcnt">Pregunta 1 de 25</div>
+          <span class="stag tf" id="qstag">FUSION 360</span>
+          <div class="qtxt" id="qtxt"></div>
+        </div>
+        <div class="tcir" id="tcir">25</div>
+      </div>
+      <div class="notebox" id="notebox" style="display:none"></div>
+      <div class="ogrid" id="ogrid"></div>
+
+      <div class="fbwrap" id="fbwrap">
+        <div class="fbhead" id="fbhead"><span id="fbico"></span><span id="fbmsg"></span></div>
+        <div class="fbexp" id="fbexp"></div>
+        <div class="fbtip" id="fbtip">
+          <div class="tip-lbl">💡 Tip de estudio</div>
+          <div id="fbtiptxt"></div>
+        </div>
+      </div>
+
+      <button class="btn-nx" id="btnx" onclick="nextQ()">Siguiente →</button>
+    </div>
+
+    <div id="sc-res">
+      <span class="rbadge" id="rbadge">🏆</span>
+      <div class="rscore" id="rscore">0/25</div>
+      <div class="rlbl" id="rlbl"></div>
+      <div class="rbarw"><div class="rbarf" id="rbarf" style="width:0%"></div></div>
+      <div class="rbd">
+        <div class="rcard"><div class="rcn" id="rc1">0</div><div class="rcl">✅ Correctas</div></div>
+        <div class="rcard"><div class="rcn" id="rc2">0</div><div class="rcl">❌ Incorrectas</div></div>
+        <div class="rcard"><div class="rcn" id="rc3">0%</div><div class="rcl">📊 Porcentaje</div></div>
+        <div class="rcard"><div class="rcn" id="rc4">0s</div><div class="rcl">⏱️ Tiempo usado</div></div>
+      </div>
+      <button class="btn-rs" onclick="restart()">🔄 Intentar de nuevo</button>
+      <div class="revwrap" id="revwrap"></div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const QS = [
+  {sec:"FUSION 360 — Interfaz",tag:"tf",
+   q:"¿Cuál es el nombre del espacio de trabajo en Fusion 360 donde se realizan diseños 3D sólidos?",
+   opts:["DESIGN","MANUFACTURE","RENDER","SIMULATION"],ans:0,
+   exp:"El workspace 'Design' es donde se crean y editan modelos 3D usando herramientas de modelado sólido, de superficie y malla.",
+   tip:"Recuerda los 7 workspaces: Design, Manufacture, Render, Simulation, Animation, Drawing y Electronics. Cada uno tiene un icono distinto en la barra superior izquierda."},
+
+  {sec:"FUSION 360 — Interfaz",tag:"tf",
+   q:"¿Qué panel muestra el historial cronológico de todas las operaciones de diseño aplicadas al modelo?",
+   opts:["Browser (árbol de componentes)","Timeline (línea de tiempo)","Data Panel","Inspect Panel"],ans:1,
+   exp:"La Timeline en la parte inferior muestra todas las operaciones en orden cronológico y permite editarlas o suprimirlas.",
+   tip:"La Timeline está en la parte INFERIOR de la pantalla. El Browser está a la izquierda. No los confundas: Browser = árbol de jerarquía de piezas; Timeline = historial de operaciones."},
+
+  {sec:"FUSION 360 — Sketch",tag:"tf",
+   q:"¿Qué significa que un Sketch esté completamente 'FULLY CONSTRAINED'?",
+   opts:["El sketch está bloqueado y no se puede editar","Todas las geometrías tienen dimensiones y restricciones que no permiten movimiento libre","El sketch fue exportado como DXF","El sketch tiene más de 10 líneas dibujadas"],ans:1,
+   exp:"Un sketch fully constrained (negro) significa que cada entidad geométrica está completamente definida con cotas y restricciones geométricas.",
+   tip:"El color importa en Fusion 360: AZUL = geometría sin constrainar (puede moverse); NEGRO = fully constrained; AMARILLO = sobre-constrainado (conflicto). Busca siempre el negro antes de extruir."},
+
+  {sec:"FUSION 360 — Sketch",tag:"tf",
+   q:"¿Para qué se utiliza la restricción 'COINCIDENT' en un sketch de Fusion 360?",
+   opts:["Para hacer dos líneas paralelas","Para unir dos puntos o un punto con una curva en la misma ubicación","Para establecer una distancia entre dos líneas","Para bloquear la posición de un eje"],ans:1,
+   exp:"La restricción Coincident une dos puntos, o un punto con una curva, forzándolos a compartir la misma posición en el espacio.",
+   tip:"Las restricciones geométricas clave: Coincident=mismo punto, Parallel=paralelas, Perpendicular=90°, Tangent=tangente a curva, Equal=misma longitud. Accede al menú CONSTRAINTS dentro del sketch."},
+
+  {sec:"FUSION 360 — Modelado Sólido",tag:"tf",
+   q:"¿Qué operación convierte un perfil 2D en un sólido 3D arrastrándolo a lo largo de una distancia lineal?",
+   opts:["REVOLVE","SWEEP","EXTRUDE","LOFT"],ans:2,
+   exp:"Extrude toma un perfil 2D y lo proyecta linealmente en la dirección del eje, generando un sólido 3D.",
+   tip:"Mnemotecnia: EXTRUDE = 'estirar'. REVOLVE = 'rotar alrededor de eje'. SWEEP = 'barrer a lo largo de un camino'. LOFT = 'transición entre perfiles'. Son las 4 operaciones base del modelado sólido."},
+
+  {sec:"FUSION 360 — Modelado Sólido",tag:"tf",
+   q:"¿Qué herramienta crea un sólido al rotar un perfil 2D alrededor de un eje?",
+   opts:["EXTRUDE","REVOLVE","SWEEP","SHELL"],ans:1,
+   exp:"Revolve rota un perfil cerrado alrededor de un eje central, ideal para piezas de revolución como ejes, vasos o tornillos.",
+   tip:"Para usar REVOLVE necesitas: 1) un perfil 2D cerrado, 2) un eje de rotación (puede ser una línea del sketch o un eje del origen). Perfecto para diseñar botellas, poleas, ruedas o cualquier pieza simétrica axialmente."},
+
+  {sec:"FUSION 360 — Modelado Sólido",tag:"tf",
+   q:"La operación FILLET en Fusion 360 sirve para:",
+   opts:["Crear una superficie plana en una arista","Agregar un chaflán (corte en 45°) a una arista","Redondear aristas o esquinas de un sólido","Crear un agujero pasado"],ans:2,
+   exp:"Fillet redondea aristas con un radio definido. A diferencia de Chamfer que genera un plano inclinado, Fillet genera una superficie redondeada.",
+   tip:"FILLET = redondeo (radio curvo). CHAMFER = chaflán (corte recto en ángulo). Ambos están en el menú MODIFY. Los fillets reducen concentradores de esfuerzo en piezas mecánicas reales."},
+
+  {sec:"FUSION 360 — Modelado Sólido",tag:"tf",
+   q:"¿Qué función realiza la herramienta SHELL en Fusion 360?",
+   opts:["Crea una copia espejo del cuerpo","Vacía el interior de un sólido dejando paredes de grosor uniforme","Agrega material al exterior del modelo","Divide el cuerpo en dos partes"],ans:1,
+   exp:"Shell elimina el interior del sólido y crea una 'cáscara' con paredes de espesor constante. Útil para carcasas y contenedores.",
+   tip:"Al aplicar SHELL debes seleccionar las caras que quieres ABRIR (eliminar). Las demás caras quedarán como paredes. Define el grosor en mm. Muy usado para diseñar cajas, tapas y productos de plástico inyectado."},
+
+  {sec:"FUSION 360 — Ensamblaje",tag:"tf",
+   q:"¿Qué tipo de Joint (junta) permite ROTACIÓN en un solo eje, como el movimiento de una bisagra?",
+   opts:["Rigid","Slider","Revolute","Ball"],ans:2,
+   exp:"El Joint tipo 'Revolute' permite la rotación de un componente alrededor de un único eje, simulando el comportamiento de una bisagra o pin.",
+   tip:"Tipos de Joint más usados: RIGID=fijo sin movimiento, REVOLUTE=gira en 1 eje (bisagra), SLIDER=traslada en 1 eje (pistón), CYLINDRICAL=gira+traslada, BALL=rotación libre (esférica). Están en menú ASSEMBLE > Joint."},
+
+  {sec:"FUSION 360 — Ensamblaje",tag:"tf",
+   q:"Al insertar un componente en un ensamblaje y aplicar la condición 'GROUND', ¿qué ocurre?",
+   opts:["El componente desaparece del Browser","El componente queda fijo en el espacio y no puede moverse","El componente se ancla al piso del workspace","El componente se convierte en referencia y no puede editarse"],ans:1,
+   exp:"La condición Ground fija absolutamente el componente al origen del ensamblaje, evitando cualquier movimiento o rotación accidental.",
+   tip:"El primer componente de un ensamblaje debe siempre ser GROUNDED. Se identifica con un ícono de chincheta en el Browser. Los componentes sin ground aparecen con un ícono de movimiento y pueden deslizarse accidentalmente."},
+
+  {sec:"FUSION 360 — Drawing",tag:"tf",
+   q:"¿Cuál es la proyección estándar utilizada en México e Iberoamérica en dibujo técnico?",
+   opts:["Primer ángulo (norma europea / ISO E)","Tercer ángulo (norma americana / ASME)","Vista isométrica","Proyección oblicua"],ans:0,
+   exp:"México sigue la norma ISO/DIN que corresponde al 1er ángulo (primer diedro). EE.UU. usa el 3er ángulo (ASME).",
+   tip:"Truco para recordarlo: En 1er ángulo (Europa/México) la vista se proyecta HACIA ATRÁS del objeto. En 3er ángulo (EE.UU.) la vista se proyecta HACIA ADELANTE. El símbolo en el cuadro de rotulación muestra un cono truncado para diferenciarlo."},
+
+  {sec:"FUSION 360 — Drawing",tag:"tf",
+   q:"¿Qué tipo de vista muestra la pieza cortada para revelar su geometría interna?",
+   opts:["Vista de detalle","Vista auxiliar","Vista en sección (corte)","Vista explosionada"],ans:2,
+   exp:"La vista en sección corta el modelo con un plano imaginario, revelando la geometría interior. Las líneas de corte se rellenan con hachuras.",
+   tip:"En Fusion 360 Drawing: SECTION VIEW = corte completo, HALF SECTION = medio corte, DETAIL VIEW = ampliación de zona, AUXILIARY VIEW = vista de superficie inclinada. Las hachuras indican material cortado y siguen norma ISO 128."},
+
+  {sec:"FUSION 360 — CAM",tag:"tf",
+   q:"¿Qué tipo de operación de mecanizado se usa para desbastar grandes volúmenes de material rápidamente?",
+   opts:["Finishing","Adaptive Clearing (desbaste adaptativo)","Contour","Drill"],ans:1,
+   exp:"Adaptive Clearing optimiza las trayectorias de desbaste manteniendo un ángulo de contacto constante, reduciendo cargas y acelerando el proceso.",
+   tip:"Secuencia típica de mecanizado: 1) ADAPTIVE CLEARING (desbaste rápido), 2) POCKET (vaciado de bolsillos), 3) CONTOUR (perfiles verticales), 4) PARALLEL/SCALLOP (acabado superficial). Siempre desbaste antes de acabado."},
+
+  {sec:"FUSION 360 — CAM",tag:"tf",
+   q:"¿Qué archivo genera Fusion 360 al final del proceso CAM para enviar a la máquina CNC?",
+   opts:["Archivo .STL","Archivo .DXF","Código G (G-code / .nc)","Archivo .STEP"],ans:2,
+   exp:"El postprocesador de Fusion 360 convierte las trayectorias en Código G (G00, G01, G02...) que la máquina CNC interpreta directamente.",
+   tip:"Instrucciones G-code básicas: G00=movimiento rápido (sin corte), G01=interpolación lineal (corte recto), G02/G03=interpolación circular (arcos), M03=encender husillo, M05=apagar husillo. El postprocesador adapta el código al controlador específico (Fanuc, Haas, Siemens...)."},
+
+  {sec:"Manufactura Aditiva",tag:"tf",
+   q:"¿Cuál es el formato de archivo estándar para exportar modelos 3D hacia software de laminado (slicing)?",
+   opts:[".DWG",".IGES",".STL",".PDF"],ans:2,
+   exp:"El formato STL tessela la superficie del modelo en triángulos y es el estándar universal para impresión 3D FDM, SLA y SLS.",
+   tip:"STL = Standard Tessellation Language. Mientras más triángulos, más preciso pero más pesado el archivo. Alternativa moderna: formato .3MF (incluye color, materiales y escala). En Fusion 360: File > Export > .STL o .3MF."},
+
+  {sec:"Manufactura Aditiva",tag:"tf",
+   q:"La tecnología FDM (Fused Deposition Modeling) funciona de la siguiente manera:",
+   opts:["Cura resina fotopolimérica capa a capa con luz UV","Funde y deposita filamento termoplástico capa a capa","Sinteriza polvo metálico con láser de alta potencia","Proyecta gotas de tinta sobre capas de polvo"],ans:1,
+   exp:"FDM funde un filamento plástico (PLA, ABS, PETG) y lo deposita por capas mediante un extrusor caliente, construyendo la pieza de abajo hacia arriba.",
+   tip:"Tecnologías de impresión 3D: FDM=filamento fundido (más común, económica), SLA=resina+UV (alta resolución), SLS=polvo+láser (piezas funcionales sin soporte), DMLS=metal+láser (industria aeroespacial). Para este curso aplica principalmente FDM."},
+
+  {sec:"Manufactura Aditiva",tag:"tf",
+   q:"Los SOPORTES (supports) en impresión 3D son necesarios cuando:",
+   opts:["La pieza tiene más de 5 colores","El modelo tiene geometrías en voladizo (overhang) que superan generalmente los 45°","El material es PLA transparente","La pieza tiene orificios cilíndricos"],ans:1,
+   exp:"Geometrías en voladizo mayores a ~45° no tienen apoyo durante la impresión y requieren soportes temporales para evitar que colapsen.",
+   tip:"Regla de los 45°: ángulos menores a 45° respecto a la vertical NECESITAN soporte. Para minimizarlos: orienta la pieza inteligentemente antes de imprimir. Los soportes se retiran manualmente y dejan marcas; evítalos cuando sea posible reorientando el modelo."},
+
+  {sec:"Manufactura Aditiva",tag:"tf",
+   q:"¿Qué parámetro del slicer controla el porcentaje de relleno interno de la pieza impresa?",
+   opts:["Layer height (altura de capa)","Print speed (velocidad)","Infill density (densidad de relleno)","Nozzle temperature"],ans:2,
+   exp:"El Infill Density determina qué porcentaje del interior será sólido. Un 20% es ligero; 100% es sólido total.",
+   tip:"Valores típicos de Infill: 10-20% = ligero (prototipos visuales), 40-60% = uso funcional general, 80-100% = máxima resistencia. El patrón también importa: Gyroid y Honeycomb son más resistentes que Lines para aplicaciones mecánicas."},
+
+  {sec:"FUSION 360 — Render",tag:"tf",
+   q:"En el workspace RENDER de Fusion 360, ¿qué parámetro define el aspecto visual del material de una superficie?",
+   opts:["Apariencia (Appearance)","Entorno (Environment)","Cámara (Camera)","Exposición (Exposure)"],ans:0,
+   exp:"La herramienta 'Appearance' asigna materiales visuales con propiedades ópticas como albedo, roughness y metalness para el render.",
+   tip:"En Render: APPEARANCE = material visual (plástico, metal, vidrio), ENVIRONMENT = iluminación del entorno HDRI, CAMERA = encuadre y lente, RENDER = configura calidad y resolución final. Arrastra el material del panel directo a la cara del modelo."},
+
+  {sec:"FUSION 360 — Paramétrico",tag:"tf",
+   q:"Los PARÁMETROS del usuario (User Parameters) en Fusion 360 permiten:",
+   opts:["Controlar la velocidad de orbita de la cámara","Definir variables con nombre que controlan dimensiones del sketch y del modelo","Cambiar el idioma de la interfaz","Guardar versiones anteriores del archivo"],ans:1,
+   exp:"Los User Parameters permiten crear variables (ej: espesor_pared = 3mm) que se usan en las cotas del sketch, facilitando el diseño paramétrico y cambios globales.",
+   tip:"Acceso: MODIFY > Change Parameters. Define variables tipo: largo=100mm, ancho=50mm. Luego en el sketch escribe el nombre en vez del número al dimensionar. Si cambias el parámetro, TODA la pieza se actualiza automáticamente. ¡Esto es el poder del CAD paramétrico!"},
+
+  {sec:"FUSION 360 — Paramétrico",tag:"tf",
+   q:"La función PATTERN (patrón) en Fusion 360 se usa para:",
+   opts:["Agregar texturas al render del modelo","Repetir operaciones o cuerpos de forma rectangular o circular","Dividir un cuerpo en múltiples piezas","Analizar el peso del componente"],ans:1,
+   exp:"Pattern repite features o cuerpos en arreglos rectangulares o circulares, evitando rehacer la misma operación manualmente.",
+   tip:"Tipos de Pattern: RECTANGULAR PATTERN = cuadrícula con filas y columnas, CIRCULAR PATTERN = distribución angular alrededor de eje (ej: 6 tornillos en una brida), PATTERN ON PATH = repite a lo largo de una curva. Usa MIRROR para simetría especular."},
+
+  {sec:"BONUS — Inventor vs Fusion",tag:"tb",
+   note:"📌 Nota: Autodesk Inventor es CAD de escritorio para ingeniería mecánica industrial. Fusion 360 es cloud-based con CAD+CAM+CAE integrado. Ambos son de Autodesk.",
+   q:"¿Cuál es la PRINCIPAL diferencia entre Autodesk Inventor y Fusion 360 respecto a su modelo de uso?",
+   opts:["Inventor es gratuito y Fusion 360 es de pago","Fusion 360 es cloud-based con herramientas CAM/CAE integradas; Inventor es desktop especializado en manufactura pesada","Inventor puede imprimir en 3D y Fusion 360 no","Ambos son idénticos, solo cambia la interfaz"],ans:1,
+   exp:"Fusion 360 es una plataforma cloud-first que integra CAD, CAM, CAE, PCB y manufactura aditiva. Inventor es desktop-first, muy potente para mecánica industrial.",
+   tip:"Para tu perfil como ingeniero en México: Fusion 360 es ideal para PYMES, startups y manufactura aditiva (y tiene licencia educativa gratuita). Inventor domina en empresas grandes con infraestructura Autodesk establecida. El conocimiento de Fusion 360 es transferible a Inventor en ~70%."},
+
+  {sec:"BONUS — SolidWorks",tag:"tb",
+   note:"📌 Nota: SolidWorks (Dassault Systèmes) es CAD líder en industria global. Usa FeatureManager Design Tree, equivalente al Browser+Timeline de Fusion 360.",
+   q:"En SolidWorks, el árbol de operaciones del modelo equivalente a la Timeline+Browser de Fusion 360 se llama:",
+   opts:["Design History","FeatureManager Design Tree","Part Navigator","Model Tree"],ans:1,
+   exp:"El FeatureManager Design Tree de SolidWorks muestra todas las features en el orden en que fueron creadas, igual que en Fusion 360.",
+   tip:"Si aprendes Fusion 360, migrar a SolidWorks es natural: Extrude Boss=Extrude, Extrude Cut=Extrude con corte, Fillet=Fillet, Shell=Shell. La lógica paramétrica es idéntica. SolidWorks añade SimulationXpress (FEA), PDM para gestión de versiones y una comunidad enorme de foros técnicos."},
+
+  {sec:"BONUS — Comparativa",tag:"tb",
+   note:"📌 Nota: Los formatos NATIVOS (.ipt Inventor, .sldprt SolidWorks, .f3d Fusion 360) son propietarios. Para intercambiar entre softwares se usan formatos NEUTROS.",
+   q:"⚠️ Pregunta capciosa: Un archivo nativo de SolidWorks (.SLDPRT) se puede abrir DIRECTAMENTE en Fusion 360 sin conversión:",
+   opts:["Sí, Fusion 360 es compatible de forma nativa con .SLDPRT","No, se requiere exportar a un formato neutro (.STEP, .IGES, .STL) para importarlo en Fusion 360","Solo si ambos programas están instalados en la misma computadora","Sí, pero solo en la versión Enterprise de Fusion 360"],ans:1,
+   exp:"Los formatos nativos son propietarios. Se debe exportar a STEP o IGES para preservar geometría, aunque se pierde el historial paramétrico.",
+   tip:"Jerarquía de formatos de intercambio: STEP (.stp) = mejor opción, preserva geometría sólida y colores. IGES (.igs) = más antiguo, para superficies. STL = solo geometría triangulada, sin historia ni parámetros. Parasolid (.x_t) = alto fidelidad entre CAD de sólidos. Al importar STEP en Fusion, usa 'Do not capture design history' para archivos complejos."},
+
+  {sec:"BONUS — Manufactura Aditiva",tag:"tb",
+   note:"📌 Nota: El PLA (Ácido Poliláctico) es el filamento más usado en FDM. Se fabrica a partir de almidón vegetal (maíz, caña) y se promociona como 'biodegradable'.",
+   q:"⚠️ Pregunta capciosa: El PLA para impresión 3D es biodegradable porque se desintegra fácilmente al aire libre en pocas semanas:",
+   opts:["Verdadero, el PLA se degrada rápido al estar expuesto al sol y la lluvia","Falso: el PLA requiere condiciones industriales de compostaje (~60°C, humedad controlada) para degradarse; al aire libre tarda años","Verdadero, pero solo el PLA de color blanco","Falso: el PLA es exactamente igual al plástico ABS en cuanto a biodegradabilidad"],ans:1,
+   exp:"El PLA es biodegradable SOLO en condiciones industriales de compostaje. Al aire libre puede tardar años en degradarse, similar al plástico convencional.",
+   tip:"Materiales FDM y sus usos: PLA=fácil de imprimir, frágil ante calor (60°C); ABS=resistente, requiere enclosure, fumes tóxicos; PETG=equilibrio rigidez+flexibilidad, resistente humedad; TPU=flexible (suelas, juntas); Nylon=alta resistencia mecánica. Para piezas funcionales industriales prefiere PETG o Nylon sobre PLA."}
+];
+
+let cQ=0,score=0,ans=[],tUsed=0,done=false,tLeft=25,tInt=null,t0=0;
+const ICOS=["🔺","🔷","🟢","🟣"],CLS=["a","b","c","d"];
+
+function startQuiz(){
+  cQ=0;score=0;ans=[];tUsed=0;
+  document.getElementById('sc-intro').style.display='none';
+  document.getElementById('sc-res').style.display='none';
+  document.getElementById('sc-quiz').style.display='block';
+  render();
+}
+
+function render(){
+  done=false;tLeft=25;
+  const q=QS[cQ];
+  const pct=(cQ/QS.length)*100;
+  document.getElementById('prog').style.width=pct+'%';
+  document.getElementById('qcnt').textContent=`Pregunta ${cQ+1} de ${QS.length}`;
+  const st=document.getElementById('qstag');
+  st.className='stag '+(q.tag==='tb'?'tb':'tf');
+  st.textContent=q.sec;
+  document.getElementById('qtxt').textContent=q.q;
+  const nb=document.getElementById('notebox');
+  if(q.note){nb.style.display='block';nb.textContent=q.note;}else{nb.style.display='none';}
+  const grid=document.getElementById('ogrid');
+  grid.innerHTML='';
+  q.opts.forEach((o,i)=>{
+    const b=document.createElement('button');
+    b.className='obtn '+CLS[i];
+    b.innerHTML=`<span class="oico">${ICOS[i]}</span>${o}`;
+    b.onclick=()=>pick(i);
+    grid.appendChild(b);
+  });
+  const fw=document.getElementById('fbwrap');
+  fw.className='fbwrap';
+  document.getElementById('fbtip').className='fbtip';
+  document.getElementById('btnx').style.display='none';
+  const tc=document.getElementById('tcir');
+  tc.textContent=25;tc.className='tcir';
+  clearInterval(tInt);
+  t0=Date.now();
+  tInt=setInterval(()=>{
+    tLeft--;
+    tc.textContent=tLeft;
+    if(tLeft<=8)tc.className='tcir urg';
+    if(tLeft<=0){clearInterval(tInt);timeout();}
+  },1000);
+}
+
+function pick(ch){
+  if(done)return;
+  done=true;clearInterval(tInt);
+  const el=Math.round((Date.now()-t0)/1000);
+  tUsed+=el;
+  const q=QS[cQ];
+  const ok=ch===q.ans;
+  if(ok)score++;
+  ans.push({q:cQ,ch,ok});
+  const btns=document.getElementById('ogrid').querySelectorAll('button');
+  btns.forEach((b,i)=>{
+    b.disabled=true;
+    if(i===q.ans)b.classList.add('correct');
+    else if(i===ch)b.classList.add('wrong');
+    else b.classList.add('reveal');
+  });
+  showFeedback(ok,q,ch);
+}
+
+function timeout(){
+  if(done)return;
+  done=true;tUsed+=25;
+  const q=QS[cQ];
+  ans.push({q:cQ,ch:-1,ok:false});
+  const btns=document.getElementById('ogrid').querySelectorAll('button');
+  btns.forEach((b,i)=>{b.disabled=true;if(i===q.ans)b.classList.add('correct');else b.classList.add('reveal');});
+  showFeedback(false,q,-1,true);
+}
+
+function showFeedback(ok,q,ch,timeout=false){
+  const fw=document.getElementById('fbwrap');
+  const fh=document.getElementById('fbhead');
+  fw.className='fbwrap show';
+  if(ok){
+    fh.className='fbhead ok';
+    document.getElementById('fbico').textContent='✅';
+    document.getElementById('fbmsg').textContent='¡Correcto! Muy bien.';
+    document.getElementById('fbtip').className='fbtip';
+  } else {
+    fh.className='fbhead fail';
+    document.getElementById('fbico').textContent=timeout?'⏰':'❌';
+    const chosen=ch>=0?`Elegiste: "${q.opts[ch]}". `:'';
+    document.getElementById('fbmsg').textContent=(timeout?'¡Tiempo! ':chosen)+`Respuesta correcta: "${q.opts[q.ans]}"`;
+    document.getElementById('fbtiptxt').textContent=q.tip;
+    document.getElementById('fbtip').className='fbtip show';
+  }
+  document.getElementById('fbexp').textContent=q.exp;
+  document.getElementById('btnx').style.display='block';
+}
+
+function nextQ(){
+  cQ++;
+  if(cQ>=QS.length)showRes();else render();
+}
+
+function showRes(){
+  document.getElementById('sc-quiz').style.display='none';
+  document.getElementById('sc-res').style.display='block';
+  document.getElementById('prog').style.width='100%';
+  const pct=Math.round((score/QS.length)*100);
+  let badge='🏆',lbl='';
+  if(pct>=90){badge='🥇';lbl='¡Excelente! Dominas el software';}
+  else if(pct>=75){badge='🥈';lbl='¡Muy bien! Sólido conocimiento';}
+  else if(pct>=60){badge='🥉';lbl='Aprobado. Repasa algunos temas';}
+  else{badge='📚';lbl='Revisa el material del curso y vuelve a intentarlo';}
+  document.getElementById('rbadge').textContent=badge;
+  document.getElementById('rscore').textContent=`${score}/${QS.length}`;
+  document.getElementById('rlbl').textContent=lbl;
+  setTimeout(()=>{document.getElementById('rbarf').style.width=pct+'%';},100);
+  document.getElementById('rc1').textContent=score;
+  document.getElementById('rc2').textContent=QS.length-score;
+  document.getElementById('rc3').textContent=pct+'%';
+  document.getElementById('rc4').textContent=tUsed+'s';
+  const rev=document.getElementById('revwrap');
+  rev.innerHTML='<div class="revtit">📋 Revisión de respuestas</div>';
+  ans.forEach(ua=>{
+    const q=QS[ua.q];
+    const el=document.createElement('div');
+    el.className='ritem '+(ua.ok?'ok':'fail');
+    let inner=`<div class="rq">${ua.q+1}. ${q.q.substring(0,65)}…</div>
+      <div class="ra">${ua.ok?'✅':ua.ch>=0?'❌':' ⏰'} ${ua.ch>=0?q.opts[ua.ch]:'Sin respuesta'}
+      ${!ua.ok?`<br><span class="rcorr">✔ Correcta: ${q.opts[q.ans]}</span>`:''}
+      </div>`;
+    if(!ua.ok){
+      inner+=`<div class="rtip-inline"><strong>💡 Tip:</strong> ${q.tip.substring(0,120)}…</div>`;
+    }
+    el.innerHTML=inner;
+    rev.appendChild(el);
+  });
+}
+
+function restart(){
+  document.getElementById('sc-res').style.display='none';
+  document.getElementById('sc-intro').style.display='block';
+  document.getElementById('prog').style.width='0%';
+}
+</script>
