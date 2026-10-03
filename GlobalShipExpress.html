@@ -98,7 +98,7 @@ footer{color:var(--muted);font-size:.85rem;border-top:1px solid var(--line);padd
 <header>
   <span class="eyebrow">Inteligencia Artificial · AU-20-101 · Semana 4</span>
   <h1>Actividad 4. Rutas internacionales en Prolog</h1>
-  <p class="lede">En clase resolvemos juntos el problema clásico del mono y el plátano. Después aplicas las mismas ideas a un caso real: GlobalShip Express, un operador logístico que necesita encontrar rutas de envío desde la Ciudad de México hacia cinco destinos.</p>
+  <p class="lede">En clase resolvemos juntos el problema clásico del mono y el plátano. Después aplicas las mismas ideas a un caso real: GlobalShip Express, un operador logístico que necesita encontrar rutas de envío desde la Ciudad de México hacia cinco destinos. Una tercera parte, sin puntos adicionales, cierra el resto del temario de la semana (grafos A, CSP y teoría de juegos) con el mismo caso.</p>
   <dl class="ficha">
     <div><dt>Valor</dt><dd>10 puntos</dd></div>
     <div><dt>Modalidad</dt><dd>Individual</dd></div>
@@ -110,6 +110,7 @@ footer{color:var(--muted);font-size:.85rem;border-top:1px solid var(--line);padd
   <nav class="parts" aria-label="Partes de la actividad">
     <a href="#calentamiento"><span>Parte 1</span>Calentamiento en clase · sin puntos</a>
     <a href="#globalship"><span>Parte 2</span>GlobalShip Express · 10 puntos</a>
+    <a href="#parte3"><span>Parte 3</span>Grafos A, CSP y juegos · sin puntos</a>
   </nav>
 </header>
 
@@ -332,6 +333,7 @@ platano_en(ventana).</pre></div>
     <article><span class="tag">Unidad II · 2.3.1</span><h3>Búsqueda en anchura</h3><p><code>rutas_bfs/4</code> explora por niveles y entrega todas las rutas sin ciclos, primero las de menos tramos.</p></article>
     <article><span class="tag">Unidad II · 2.3</span><h3>Criterios de selección</h3><p>La ruta con menos tramos no siempre es la más barata ni la más rápida. Tu programa compara costo y tiempo.</p></article>
     <article><span class="tag">Prolog</span><h3>Hechos, reglas y consultas</h3><p>La red son hechos, las conexiones y los recorridos son reglas, y Prolog prueba cada camino con backtracking.</p></article>
+    <article><span class="tag">Unidad II · 2.3.4 / 2.4 / 2.5</span><h3>Grafos A, CSP y teoría de juegos</h3><p>En la Parte 3 extiendes el mismo caso a descomposición de metas (AND), asignación de días con restricciones y una partida resuelta con minimax.</p></article>
   </div>
 </section>
 
@@ -767,6 +769,110 @@ Firma: ____________________   Fecha: __________</pre></div>
   <p class="warn">Cada envío depende de tu matrícula. Un programa con datos o hash que no corresponden a tu matrícula, o dos reportes con explicaciones iguales, se califican con 0 para todos los involucrados.</p>
 </section>
 
+<!-- ============================ PARTE 3 ============================ -->
+<section id="parte3">
+  <span class="eyebrow">Parte 3 · Refuerzo en la asesoría · sin puntos adicionales</span>
+  <h2>Lo que falta del programa: grafos A, CSP y teoría de juegos</h2>
+  <p>GlobalShip Express ya puso en práctica 2.3.3 (grafos O): buscar <strong>una</strong> ruta con BFS. Esta parte cierra el resto del temario oficial de la Semana 4 — 2.3.4, 2.4 y 2.5 — usando el mismo caso. Se revisa en la asesoría presencial del sábado; <strong>no suma puntos</strong> a la rúbrica de 10 puntos de la Parte 2.</p>
+
+  <h3>3.1 · Grafos A (AND-OR) — 2.3.4</h3>
+  <p>En un grafo O basta con encontrar <strong>una</strong> ruta entre varias alternativas (relación O). En un grafo A, el objetivo se <strong>descompone</strong> en subobjetivos que deben cumplirse <strong>todos</strong> para resolver el problema (relación Y). Imagina que tu envío tuviera una escala obligatoria: primero pasar por un centro de consolidación y después por una revisión aduanal, antes de llegar al destino final. Ya no es "encontrar una ruta": son tres búsquedas independientes que deben tener éxito las tres.</p>
+  <div class="room" aria-label="Arbol AND-OR de un envio con escala obligatoria">
+<pre style="margin:0;font-family:var(--f-mono);font-size:.82rem;line-height:1.6;white-space:pre">            Enviar paquete a destino final
+                        (Y / AND)
+         ┌──────────────┼──────────────┐
+   Llegar al centro   Llegar de centro   Llegar de aduana
+   de consolidacion   a aduana           a destino final
+   (grafo O: BFS)     (grafo O: BFS)     (grafo O: BFS)</pre>
+  </div>
+  <p class="note">En Prolog, cada rama "grafo O" ya la resuelves con <code>rutas_bfs/4</code>. La relación Y (AND) del grafo A se expresa con la <strong>coma</strong> de Prolog entre las tres llamadas: <code>rutas_bfs(Origen, Centro, R1, _), rutas_bfs(Centro, Aduana, R2, _), rutas_bfs(Aduana, Destino, R3, _)</code> — la coma <em>es</em> el operador AND: las tres búsquedas deben tener éxito para que el envío completo exista.</p>
+
+  <h3>3.2 · Satisfacción de restricciones (CSP) — 2.4</h3>
+  <p>Aquí ya no se busca un camino entre ciudades: se busca <strong>asignar un día de despacho</strong> a tres envíos hacia tu destino, sin violar ninguna restricción.</p>
+  <div class="tbl"><table>
+    <thead><tr><th>Componente del CSP</th><th>En este problema</th></tr></thead>
+    <tbody>
+      <tr><td>Variables</td><td>Día de despacho de los envíos A, B y C</td></tr>
+      <tr><td>Dominio</td><td><code>{lunes, martes, miércoles, jueves, viernes}</code></td></tr>
+      <tr><td>Restricción 1 (trámite)</td><td>Si tu destino requiere trámite aduanal especial (China o Brasil), el día debe ser martes o jueves</td></tr>
+      <tr><td>Restricción 2 (capacidad)</td><td>A y B no pueden despacharse el mismo día</td></tr>
+      <tr><td>Restricción 3 (precedencia)</td><td>C debe despacharse en un día posterior a A</td></tr>
+    </tbody>
+  </table></div>
+  <div class="codebox"><div class="codebar"><span>Bloque CSP · agrégalo después del Bloque 3</span><button class="copy" data-target="gcsp">Copiar</button></div><pre id="gcsp">% =====================================================================
+% BLOQUE CSP: PLAN DE DESPACHO (2.4 Satisfaccion de restricciones)
+%   (requiere_tramite_especial/1 ya viene definido en el BLOQUE 3)
+% =====================================================================
+dia(lunes). dia(martes). dia(miercoles). dia(jueves). dia(viernes).
+indice_dia(lunes,1). indice_dia(martes,2). indice_dia(miercoles,3). indice_dia(jueves,4). indice_dia(viernes,5).
+
+dia_valido(Destino, Dia) :-
+    dia(Dia),
+    ( requiere_tramite_especial(Destino) -&gt; member(Dia, [martes, jueves]) ; true ).
+
+% plan_despacho(+Destino, -DiaA, -DiaB, -DiaC)
+plan_despacho(Destino, DiaA, DiaB, DiaC) :-
+    dia_valido(Destino, DiaA),
+    dia_valido(Destino, DiaB),
+    DiaA \== DiaB,
+    dia_valido(Destino, DiaC),
+    indice_dia(DiaA, IA), indice_dia(DiaC, IC), IC &gt; IA.
+
+todos_los_planes(Destino, Planes) :-
+    findall(p(DiaA, DiaB, DiaC), plan_despacho(Destino, DiaA, DiaB, DiaC), Planes).</pre></div>
+  <div class="gen">
+    <h3>Tu CSP</h3>
+    <div class="result" aria-live="polite">
+      <div><span>Tu destino</span><strong id="cspDest">china_shanghai</strong></div>
+      <div><span>¿Requiere trámite?</span><strong id="cspTramite">sí</strong></div>
+      <div><span>Consulta</span><strong id="cspConsulta">todos_los_planes(china_shanghai, P)</strong></div>
+    </div>
+    <p class="note" id="cspNota">Carga el Bloque CSP junto con tu archivo y ejecuta la consulta. En tu reporte, explica por qué ese destino tiene ese número de planes válidos (relaciónalo con la Restricción 1).</p>
+  </div>
+  <p class="note">Ejemplo resuelto, con la matrícula de ejemplo <code>U2403057N0114</code> (destino <code>usa_miami</code>, sin trámite especial): <code>?- todos_los_planes(usa_miami, P), length(P, N).</code> devuelve <code>N = 40</code>, con <code>P = [p(lunes, martes, martes), p(lunes, martes, miercoles), p(lunes, martes, jueves), p(lunes, martes, viernes), p(lunes, miercoles, martes), p(lunes, miercoles, miercoles), ...]</code> (40 planes en total — sin la Restricción 1, cualquier día es válido para los tres envíos). Para un destino con trámite, como <code>china_shanghai</code>, la lista se reduce a un único plan: <code>P = [p(martes, jueves, jueves)]</code>.</p>
+
+  <h3>3.3 · Teoría de juegos — 2.5</h3>
+  <p>Dos jugadores retiran, por turno, 1 o 2 fichas de una fila. <strong>Pierde quien tenga que retirar la última ficha.</strong> Es un juego de suma cero y de información perfecta — ambos jugadores ven todas las fichas en todo momento —, ideal para introducir <strong>minimax</strong> sin tablero: el jugador en turno "gana" si existe al menos un movimiento que deje al rival en una posición perdedora, y "pierde" si todos sus movimientos dejan al rival en una posición ganadora.</p>
+  <div class="codebox"><div class="codebar"><span>Bloque minimax · agrégalo al final de tu archivo</span><button class="copy" data-target="gmini">Copiar</button></div><pre id="gmini">% =====================================================================
+% BLOQUE MINIMAX: JUEGO DE LAS FICHAS (2.5 Teoria de juegos)
+% Regla: pierde quien retira la ULTIMA ficha.
+% =====================================================================
+gana(Fichas) :-
+    Fichas &gt;= 1,
+    member(R, [1,2]), R =&lt; Fichas, R &lt; Fichas,
+    Sig is Fichas - R,
+    \+ gana(Sig).
+
+% mejor_jugada(+Fichas, -Retiro): retiro que fuerza la victoria, si existe
+mejor_jugada(Fichas, Retiro) :-
+    member(Retiro, [1,2]), Retiro =&lt; Fichas, Retiro &lt; Fichas,
+    Sig is Fichas - Retiro,
+    \+ gana(Sig), !.
+mejor_jugada(Fichas, 1) :- Fichas &gt;= 1.
+
+analizar(Fichas) :-
+    ( gana(Fichas) -&gt; V = ganar ; V = perder ),
+    format('Con ~w fichas, quien tiene el turno: ~w~n', [Fichas, V]),
+    mejor_jugada(Fichas, R),
+    format('Jugada recomendada: retirar ~w~n', [R]).</pre></div>
+  <div class="gen">
+    <h3>Tu partida</h3>
+    <div class="result" aria-live="polite">
+      <div><span>Tus fichas iniciales</span><strong id="miniN">7</strong></div>
+      <div><span>¿Quién gana jugando óptimo?</span><strong id="miniV">el que pierde</strong></div>
+      <div><span>Jugada recomendada (1er turno)</span><strong id="miniR">retirar 1</strong></div>
+    </div>
+    <p class="note">Comprueba a mano, con un árbol como el de la sección 3.1 de tu material de clase, que la jugada que te da la página es correcta. En tu reporte, ejecuta <code>?- analizar(<span id="miniN2">7</span>).</code> y explica, con tus propias palabras, por qué esa es la jugada óptima.</p>
+  </div>
+  <p class="note">Ejemplo resuelto, con la matrícula de ejemplo <code>U2403057N0114</code> (7 fichas iniciales): <code>?- analizar(7).</code> imprime<br><code>Con 7 fichas, quien tiene el turno: perder</code><br><code>Jugada recomendada: retirar 1</code><br>(con 7 fichas, cualquier jugada del primer turno deja al rival en una posición ganadora; retirar 1 solo retrasa la derrota).</p>
+  <div class="tbl"><table>
+    <thead><tr><th>Fichas iniciales</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th><th>9</th><th>10</th></tr></thead>
+    <tbody><tr><td>¿Gana quien empieza?</td><td>No</td><td>Sí</td><td>Sí</td><td>No</td><td>Sí</td><td>Sí</td><td>No</td><td>Sí</td><td>Sí</td><td>No</td></tr></tbody>
+  </table></div>
+  <p class="note">Patrón: quien empieza <strong>pierde</strong> cuando el número de fichas es múltiplo de 3 más 1 (4, 7, 10, …) — en cualquier otro caso, tiene una jugada que fuerza la victoria.</p>
+</section>
+
+
 <section id="fuentes" class="refs">
   <span class="eyebrow">Bibliografía sugerida</span>
   <p>Bratko, I. (2012). <em>Prolog programming for artificial intelligence</em> (4.ª ed.). Pearson Education.</p>
@@ -809,6 +915,21 @@ Firma: ____________________   Fecha: __________</pre></div>
       "?- recorrer_ruta([mexico_cdmx, usa_miami, brasil_saopaulo], Costo, Dias).\n\n"+
       "% 4. Tu reto\n?- mi_reto.\n\n"+
       "% 5. Reporte completo\n?- generar_reporte.";
+    var requiereTramite=(dest==='china_shanghai'||dest==='brasil_saopaulo');
+    var fichasIniciales=5+(suma%5);
+    var nMod=fichasIniciales%3, ganaPrimero=(nMod!==1);
+    var jugadaOptima=ganaPrimero?(nMod===0?'retirar 2':'retirar 1'):'retirar 1 (no fuerza la victoria; solo retrasa la derrota)';
+    if($('cspDest')){
+      $('cspDest').textContent=dest;
+      $('cspTramite').textContent=requiereTramite?'sí (martes o jueves)':'no (cualquier día)';
+      $('cspConsulta').textContent='todos_los_planes('+dest+', P)';
+    }
+    if($('miniN')){
+      $('miniN').textContent=fichasIniciales;
+      $('miniV').textContent=ganaPrimero?'quien empieza':'el que responde';
+      $('miniR').textContent=jugadaOptima;
+      $('miniN2').textContent=fichasIniciales;
+    }
   }
   ['ap','nom','mat'].forEach(function(id){$(id).addEventListener('input',update)});
   document.querySelectorAll('button.copy').forEach(function(b){
