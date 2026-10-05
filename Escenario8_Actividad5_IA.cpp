@@ -1,274 +1,236 @@
-// ESCENARIO 8: Recursos Humanos - Prediccion de Ausentismo Laboral
-// Archivo: Escenario8_Actividad5_IA.cpp
+// ESCENARIO 8: RECURSOS HUMANOS - PREDICCION DE AUSENTISMO
+// Actividad 5 - Clasificacion Bayesiana Ingenua - Universidad SABES 2026
+// C++ (Cxxdroid). Estandar C++11 o superior.
+// Columnas: distancia_km, antiguedad_meses, hijos, nivel_estres, clase
+// Clases: 0 = NORMAL, 1 = ALTO
 
 #include <iostream>
 #include <vector>
-#include <cmath>
 #include <map>
-#include <algorithm>
-#include <random>
-#include <iomanip>
+#include <cmath>
 #include <string>
-
+#include <sstream>
+#include <iomanip>
 using namespace std;
 
 class NaiveBayes {
-private:
+public:
     map<int, vector<vector<double>>> clases;
-    map<int, vector<pair<double, double>>> estadisticas;
-    
-    double calcularMedia(const vector<double>& datos) {
+    map<int, vector<pair<double, double>>> estadisticas;  // (media, desviacion) por variable
+    map<int, double> priors;
+
+    double calcularMedia(const vector<double>& numeros) {
         double suma = 0;
-        for (double val : datos) {
-            suma += val;
-        }
-        return suma / datos.size();
+        for (double x : numeros) suma += x;
+        return suma / numeros.size();
     }
-    
-    double calcularDesviacion(const vector<double>& datos) {
-        double media = calcularMedia(datos);
-        double sumaCuadrados = 0;
-        for (double val : datos) {
-            sumaCuadrados += pow(val - media, 2);
-        }
-        double varianza = sumaCuadrados / datos.size();
+
+    double calcularDesviacion(const vector<double>& numeros) {
+        double media = calcularMedia(numeros);
+        double varianza = 0;
+        for (double x : numeros) varianza += pow(x - media, 2);
+        varianza /= numeros.size();
         return varianza > 0 ? sqrt(varianza) : 0.0001;
     }
-    
+
     double probabilidadGaussiana(double x, double media, double desviacion) {
         double exponente = exp(-pow(x - media, 2) / (2 * pow(desviacion, 2)));
         return (1 / (sqrt(2 * M_PI) * desviacion)) * exponente;
     }
-    
-public:
+
     void entrenar(const vector<vector<double>>& X, const vector<int>& y) {
-        for (size_t i = 0; i < X.size(); i++) {
-            clases[y[i]].push_back(X[i]);
-        }
-        
-        for (auto& entry : clases) {
-            int clase = entry.first;
-            vector<vector<double>>& valores = entry.second;
-            vector<pair<double, double>> stats;
-            
-            int numCaracteristicas = valores[0].size();
-            for (int j = 0; j < numCaracteristicas; j++) {
+        for (size_t i = 0; i < X.size(); i++) clases[y[i]].push_back(X[i]);
+        for (auto& par : clases) {
+            const auto& valores = par.second;
+            priors[par.first] = (double) valores.size() / X.size();
+            for (size_t j = 0; j < valores[0].size(); j++) {
                 vector<double> columna;
-                for (auto& fila : valores) {
-                    columna.push_back(fila[j]);
-                }
-                double media = calcularMedia(columna);
-                double desviacion = calcularDesviacion(columna);
-                stats.push_back({media, desviacion});
+                for (const auto& fila : valores) columna.push_back(fila[j]);
+                estadisticas[par.first].push_back(make_pair(calcularMedia(columna), calcularDesviacion(columna)));
             }
-            estadisticas[clase] = stats;
         }
     }
-    
+
     map<int, double> predecirProba(const vector<double>& x) {
-        map<int, double> probabilidades;
-        
-        for (auto& entry : estadisticas) {
-            int clase = entry.first;
-            vector<pair<double, double>>& stats = entry.second;
-            double prob = 1.0;
-            
-            for (size_t i = 0; i < x.size(); i++) {
-                double media = stats[i].first;
-                double desviacion = stats[i].second;
-                prob *= probabilidadGaussiana(x[i], media, desviacion);
-            }
-            probabilidades[clase] = prob;
-        }
-        
+        map<int, double> prob;
         double total = 0;
-        for (auto& p : probabilidades) {
-            total += p.second;
+        for (auto& par : estadisticas) {
+            double p = priors[par.first];
+            for (size_t j = 0; j < x.size(); j++)
+                p *= probabilidadGaussiana(x[j], par.second[j].first, par.second[j].second);
+            prob[par.first] = p;
+            total += p;
         }
-        if (total > 0) {
-            for (auto& p : probabilidades) {
-                probabilidades[p.first] = p.second / total;
-            }
-        }
-        
-        return probabilidades;
+        if (total > 0) for (auto& par : prob) par.second /= total;
+        return prob;
     }
-    
+
     int predecir(const vector<double>& x) {
-        map<int, double> probabilidades = predecirProba(x);
-        int mejorClase = -1;
-        double mejorProb = -1;
-        
-        for (auto& entry : probabilidades) {
-            if (entry.second > mejorProb) {
-                mejorProb = entry.second;
-                mejorClase = entry.first;
-            }
-        }
-        
-        return mejorClase;
+        map<int, double> prob = predecirProba(x);
+        int mejor = -1;
+        double maximo = -1;
+        for (auto& par : prob) if (par.second > maximo) { maximo = par.second; mejor = par.first; }
+        return mejor;
     }
 };
 
+// Funciones de apoyo para imprimir
+string centrar(const string& s, int ancho) {
+    int izq = (ancho - (int) s.size()) / 2;
+    int der = ancho - (int) s.size() - izq;
+    return string(max(0, izq), ' ') + s + string(max(0, der), ' ');
+}
+string miles(long n) {
+    string s = to_string(n), r;
+    int cont = 0;
+    for (int i = (int) s.size() - 1; i >= 0; i--) {
+        r = s[i] + r;
+        if (++cont % 3 == 0 && i > 0) r = "," + r;
+    }
+    return r;
+}
+
 int main() {
-    // Dataset: Ausentismo Laboral
-    // Columnas: distancia_trabajo_km, antiguedad_meses, hijos, nivel_estres(1-10), ausentismo_alto
+    // Dataset (40 registros): distancia_km, antiguedad_meses, hijos, nivel_estres, clase
     vector<vector<double>> datos = {
-        {5, 48, 0, 3, 0}, {35, 12, 3, 8, 1}, {8, 60, 1, 4, 0},
-        {42, 18, 4, 9, 1}, {6, 72, 1, 3, 0}, {28, 24, 2, 7, 1},
-        {7, 55, 0, 2, 0}, {38, 15, 3, 8, 1}, {9, 68, 1, 4, 0},
-        {45, 20, 4, 10, 1}, {5, 50, 0, 3, 0}, {32, 22, 3, 7, 1},
-        {8, 65, 1, 3, 0}, {40, 16, 3, 9, 1}, {6, 58, 0, 2, 0},
-        {30, 19, 2, 6, 1}, {7, 62, 1, 4, 0}, {36, 14, 3, 8, 1},
-        {9, 70, 1, 3, 0}, {33, 25, 2, 7, 1}, {5, 52, 0, 3, 0},
-        {44, 17, 4, 9, 1}, {8, 64, 1, 4, 0}, {29, 21, 2, 6, 1},
-        {6, 56, 0, 2, 0}, {41, 13, 3, 10, 1}, {7, 66, 1, 3, 0},
-        {34, 23, 3, 8, 1}, {9, 74, 1, 4, 0}, {37, 19, 3, 7, 1}
+        {7.0, 78.0, 2.0, 7.0, 0}, {44.0, 20.0, 4.0, 8.0, 1}, {37.0, 8.0, 2.0, 4.0, 1},
+        {37.0, 13.0, 5.0, 8.0, 1}, {5.0, 74.0, 1.0, 1.0, 0}, {50.0, 23.0, 3.0, 9.0, 1},
+        {21.0, 27.0, 2.0, 4.0, 1}, {7.0, 69.0, 1.0, 4.0, 0}, {11.0, 35.0, 2.0, 2.0, 0},
+        {25.0, 26.0, 2.0, 1.0, 1}, {13.0, 74.0, 4.0, 7.0, 0}, {7.0, 83.0, 1.0, 5.0, 0},
+        {24.0, 82.0, 2.0, 4.0, 0}, {14.0, 23.0, 3.0, 2.0, 0}, {52.0, 29.0, 2.0, 3.0, 1},
+        {44.0, 23.0, 2.0, 5.0, 1}, {61.0, 21.0, 4.0, 7.0, 1}, {22.0, 69.0, 1.0, 3.0, 0},
+        {49.0, 14.0, 1.0, 9.0, 1}, {12.0, 54.0, 1.0, 3.0, 0}, {21.0, 46.0, 1.0, 5.0, 0},
+        {15.0, 64.0, 2.0, 5.0, 0}, {5.0, 79.0, 1.0, 6.0, 0}, {16.0, 70.0, 2.0, 3.0, 0},
+        {2.0, 63.0, 2.0, 9.0, 0}, {46.0, 18.0, 3.0, 10.0, 1}, {14.0, 91.0, 1.0, 5.0, 0},
+        {27.0, 63.0, 2.0, 5.0, 0}, {12.0, 59.0, 0.0, 3.0, 0}, {8.0, 98.0, 0.0, 9.0, 0},
+        {4.0, 86.0, 1.0, 3.0, 0}, {35.0, 22.0, 2.0, 9.0, 1}, {58.0, 9.0, 4.0, 8.0, 1},
+        {26.0, 42.0, 2.0, 9.0, 1}, {54.0, 17.0, 2.0, 9.0, 1}, {16.0, 45.0, 0.0, 3.0, 0},
+        {6.0, 36.0, 2.0, 2.0, 0}, {26.0, 54.0, 1.0, 6.0, 0}, {4.0, 38.0, 4.0, 5.0, 1},
+        {1.0, 53.0, 0.0, 4.0, 0}
     };
-    
-    cout << "======================================================================" << endl;
+    vector<string> nombres = {"NORMAL", "ALTO"};
+    int k = (int) nombres.size();
+
+    string linea = "======================================================================";
+    cout << linea << endl;
     cout << "ESCENARIO 8: RECURSOS HUMANOS - PREDICCION DE AUSENTISMO" << endl;
-    cout << "======================================================================" << endl;
+    cout << linea << endl;
     cout << "\nDescripcion del problema:" << endl;
     cout << "El departamento de RRHH necesita identificar empleados con alto riesgo" << endl;
     cout << "de ausentismo para implementar estrategias de retencion y bienestar." << endl;
-    cout << "\nFactores organizacionales evaluados:" << endl;
+    cout << "\nVariables analizadas:" << endl;
     cout << "- Distancia del hogar al trabajo (km)" << endl;
     cout << "- Antiguedad en la empresa (meses)" << endl;
     cout << "- Numero de hijos" << endl;
-    cout << "- Nivel de estres percibido (escala 1-10)" << endl;
-    cout << "\nClasificacion:" << endl;
-    cout << "0 = Ausentismo NORMAL (< 5 dias/año)" << endl;
-    cout << "1 = Ausentismo ALTO (>= 5 dias/año)" << endl;
-    
-    // Mezclar datos
-    random_device rd;
-    mt19937 g(42);
-    shuffle(datos.begin(), datos.end(), g);
-    
-    // Dividir en entrenamiento y prueba
-    int split = (int)(datos.size() * 0.7);
+    cout << "- Nivel de estres percibido (1-10)" << endl;
+    cout << "\nClases:" << endl;
+    for (int n = 0; n < k; n++) cout << "  " << n << " = " << nombres[n] << endl;
+
+    // Division FIJA: primeros 70% para entrenar, ultimos 30% para probar
+    size_t split = (size_t) (datos.size() * 0.7);
     vector<vector<double>> X_train, X_test;
     vector<int> y_train, y_test;
-    
-    for (int i = 0; i < split; i++) {
-        X_train.push_back({datos[i][0], datos[i][1], datos[i][2], datos[i][3]});
-        y_train.push_back((int)datos[i][4]);
+    for (size_t i = 0; i < datos.size(); i++) {
+        vector<double> x(datos[i].begin(), datos[i].begin() + 4);
+        if (i < split) { X_train.push_back(x); y_train.push_back((int) datos[i][4]); }
+        else { X_test.push_back(x); y_test.push_back((int) datos[i][4]); }
     }
-    
-    for (size_t i = split; i < datos.size(); i++) {
-        X_test.push_back({datos[i][0], datos[i][1], datos[i][2], datos[i][3]});
-        y_test.push_back((int)datos[i][4]);
-    }
-    
-    // Entrenar modelo
+
     NaiveBayes nb;
     nb.entrenar(X_train, y_train);
-    
-    // Evaluar
+
     int correctos = 0;
-    int matriz[2][2] = {{0, 0}, {0, 0}};
-    
+    vector<vector<int>> matriz(k, vector<int>(k, 0));
     for (size_t i = 0; i < X_test.size(); i++) {
         int pred = nb.predecir(X_test[i]);
-        int real = y_test[i];
-        matriz[real][pred]++;
-        if (pred == real) {
-            correctos++;
-        }
+        if (pred == y_test[i]) correctos++;
+        matriz[y_test[i]][pred]++;
     }
-    
-    double accuracy = (correctos * 100.0) / X_test.size();
-    
-    cout << "\n======================================================================" << endl;
-    cout << "RESULTADOS DEL ANALISIS" << endl;
-    cout << "======================================================================" << endl;
+    double accuracy = 100.0 * correctos / X_test.size();
+
     cout << fixed << setprecision(2);
+    cout << "\n" << linea << "\nRESULTADOS DEL ANALISIS\n" << linea << endl;
+    cout << "Registros de entrenamiento: " << X_train.size() << "   Registros de prueba: " << X_test.size() << endl;
     cout << "Accuracy: " << accuracy << "%" << endl;
-    
-    cout << "\nMatriz de Confusion:" << endl;
-    cout << "                    Pred: NORMAL  Pred: ALTO" << endl;
-    cout << "Real: NORMAL              " << setw(3) << matriz[0][0] 
-         << "        " << setw(3) << matriz[0][1] << endl;
-    cout << "Real: ALTO                " << setw(3) << matriz[1][0] 
-         << "        " << setw(3) << matriz[1][1] << endl;
-    
-    // Costo del ausentismo
-    int costo_dia_ausente = 350;
-    int dias_promedio_alto = 8;
-    int empleados_riesgo = 0;
-    for (size_t i = 0; i < X_test.size(); i++) {
-        if (nb.predecir(X_test[i]) == 1) {
-            empleados_riesgo++;
-        }
+    cout << "Casos correctamente clasificados: " << correctos << "/" << X_test.size() << endl;
+
+    cout << "\nMatriz de Confusion (filas = real, columnas = prediccion):" << endl;
+    cout << "                      Pred: NORMAL        Pred: ALTO          " << endl;
+    for (int r = 0; r < k; r++) {
+        cout << "Real: " << left << setw(16) << nombres[r] << right;
+        for (int p = 0; p < k; p++) cout << centrar(to_string(matriz[r][p]), 20);
+        cout << endl;
     }
-    
-    int costo_anual_estimado = empleados_riesgo * dias_promedio_alto * costo_dia_ausente;
-    
-    cout << "\nImpacto Economico Estimado:" << endl;
-    cout << "Empleados en riesgo alto: " << empleados_riesgo << endl;
-    cout << "Costo anual proyectado por ausentismo: $" << costo_anual_estimado << endl;
-    
-    // Perfil de empleados
-    vector<vector<double>> empleados_evaluacion = {
-        {7, 65, 1, 3},
-        {38, 16, 3, 9},
-        {15, 36, 2, 5}
+
+    cout << "\n" << linea << "\nMETRICAS POR CLASE\n" << linea << endl;
+    for (int c = 0; c < k; c++) {
+        int vp = matriz[c][c], predC = 0, realC = 0;
+        for (int r = 0; r < k; r++) { predC += matriz[r][c]; realC += matriz[c][r]; }
+        double precision = predC > 0 ? (double) vp / predC : 0;
+        double recall = realC > 0 ? (double) vp / realC : 0;
+        double f1 = (precision + recall) > 0 ? 2 * precision * recall / (precision + recall) : 0;
+        cout << "Clase: " << nombres[c] << " (" << c << ")" << endl;
+        cout << "  Precision: " << precision * 100 << "%" << endl;
+        cout << "  Recall:    " << recall * 100 << "%" << endl;
+        cout << "  F1-Score:  " << f1 * 100 << "%" << endl;
+    }
+
+    // Analisis de costos de los errores (clase 1 = ALTO es el evento que queremos detectar)
+    long costoFN = 9000;  // MXN - horas extra y produccion perdida
+    long costoFP = 1000;  // MXN - programa de bienestar innecesario
+    long fn = matriz[1][0];
+    long fp = matriz[0][1];
+    long costoTotal = fn * costoFN + fp * costoFP;
+    cout << "\nAnalisis de Costos:" << endl;
+    cout << "Falsos Negativos (empleados con ausentismo alto no detectados): " << fn << " x $" << miles(costoFN) << " = $" << miles(fn * costoFN) << endl;
+    cout << "Falsos Positivos (empleados marcados en riesgo sin serlo): " << fp << " x $" << miles(costoFP) << " = $" << miles(fp * costoFP) << endl;
+    cout << "Costo Total de los errores: $" << miles(costoTotal) << endl;
+
+    // ===================================================================
+    // PREDICCIONES CON NUEVOS DATOS
+    // >>> MODIFICA AQUI: cambia los numeros para crear tus 3 casos <<<
+    // Orden: distancia_km, antiguedad_meses, hijos, nivel_estres
+    // ===================================================================
+    vector<vector<double>> nuevosCasos = {
+        {12.0, 64.0, 1.0, 4.0},
+        {40.0, 22.0, 3.0, 7.0},
+        {26.0, 43.0, 2.0, 6.0}
     };
     vector<string> descripciones = {
-        "Empleado A - Perfil estable",
-        "Empleado B - Alto riesgo",
-        "Empleado C - Riesgo moderado"
+        "Empleado A - perfil estable",
+        "Empleado B - alto riesgo",
+        "Empleado C - riesgo moderado"
     };
-    
-    cout << "\n======================================================================" << endl;
-    cout << "PERFIL DE EMPLEADOS EVALUADOS" << endl;
-    cout << "======================================================================" << endl;
-    
-    for (size_t i = 0; i < empleados_evaluacion.size(); i++) {
-        vector<double> datos_emp = empleados_evaluacion[i];
-        string descripcion = descripciones[i];
-        int resultado = nb.predecir(datos_emp);
-        map<int, double> prob = nb.predecirProba(datos_emp);
-        
-        cout << "\n" << descripcion << ":" << endl;
-        cout << "  Distancia al trabajo: " << (int)datos_emp[0] << " km" << endl;
-        cout << "  Antiguedad: " << (int)datos_emp[1] << " meses (" << (int)(datos_emp[1]/12) << " años)" << endl;
-        cout << "  Hijos: " << (int)datos_emp[2] << endl;
-        cout << "  Nivel de estres: " << (int)datos_emp[3] << "/10" << endl;
-        cout << "  Prediccion: " << (resultado == 1 ? "⚠️ RIESGO ALTO DE AUSENTISMO" : "✓ AUSENTISMO NORMAL") << endl;
-        cout << "  Probabilidad NORMAL: " << setprecision(1) << prob[0] * 100 << "%" << endl;
-        cout << "  Probabilidad ALTO: " << prob[1] * 100 << "%" << endl;
-        
+    vector<string> variables = {"Distancia del hogar al trabajo (km)", "Antiguedad en la empresa (meses)", "Numero de hijos", "Nivel de estres percibido (1-10)"};
+    int decimales[4] = {0, 0, 0, 0};
+
+    cout << "\n" << linea << "\nEVALUACION DE NUEVOS CASOS\n" << linea << endl;
+    for (size_t i = 0; i < nuevosCasos.size(); i++) {
+        vector<double>& caso = nuevosCasos[i];
+        int resultado = nb.predecir(caso);
+        map<int, double> prob = nb.predecirProba(caso);
+        cout << "\n" << descripciones[i] << ":" << endl;
+        for (int j = 0; j < 4; j++) cout << "  " << variables[j] << ": " << setprecision(decimales[j]) << caso[j] << endl;
+        cout << "  Prediccion: " << nombres[resultado] << endl;
+        double suma = 0;
+        cout << setprecision(1);
+        for (int n = 0; n < k; n++) {
+            cout << "  Probabilidad " << nombres[n] << ": " << prob[n] * 100 << "%" << endl;
+            suma += prob[n];
+        }
+        if (suma == 0) cout << "  (Valores muy lejanos a los datos de entrenamiento: revisa tus numeros)" << endl;
         if (resultado == 1) {
-            cout << "  📋 ESTRATEGIAS DE RETENCION:" << endl;
-            if (datos_emp[0] > 25) {
-                cout << "     - Considerar home office parcial" << endl;
-                cout << "     - Apoyo con transporte" << endl;
-            }
-            if (datos_emp[1] < 24) {
-                cout << "     - Programa de integracion" << endl;
-                cout << "     - Mentor asignado" << endl;
-            }
-            if (datos_emp[2] >= 2) {
-                cout << "     - Horarios flexibles" << endl;
-                cout << "     - Guarderia o apoyo familiar" << endl;
-            }
-            if (datos_emp[3] >= 7) {
-                cout << "     - Programa de manejo de estres" << endl;
-                cout << "     - Evaluacion ergonomica" << endl;
-                cout << "     - Sesiones con psicologo organizacional" << endl;
-            }
+            cout << "  ACCIONES RECOMENDADAS:" << endl;
+            cout << "     - Entrevista con RRHH" << endl;
+            cout << "     - Evaluar horario flexible o transporte" << endl;
+            cout << "     - Programa de manejo de estres" << endl;
         }
     }
-    
-    cout << "\n======================================================================" << endl;
-    cout << "PREGUNTAS DE ANALISIS:" << endl;
-    cout << "======================================================================" << endl;
-    cout << "1. ¿Cual factor tiene mayor impacto en el ausentismo?" << endl;
-    cout << "2. ¿Que ROI tendrian las intervenciones vs. costo de ausentismo?" << endl;
-    cout << "3. ¿Como afecta el ausentismo a la productividad del equipo?" << endl;
-    cout << "4. ¿Que politicas de balance vida-trabajo recomendarias?" << endl;
-    
+
+    cout << "\n" << linea << "\nPREGUNTAS DE ANALISIS:\n" << linea << endl;
+    cout << "1. Cual factor tiene mayor impacto en el ausentismo?" << endl;
+    cout << "2. Que retorno tendrian las intervenciones vs. el costo del ausentismo?" << endl;
+    cout << "3. Que implicaciones eticas tiene usar datos personales como el numero de hijos?" << endl;
+    cout << "4. Que politicas de balance vida-trabajo recomendarias?" << endl;
     return 0;
 }

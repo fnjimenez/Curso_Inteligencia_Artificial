@@ -1,223 +1,236 @@
-// ESCENARIO 1: Control de Calidad en Manufactura
-// Archivo: Escenario1_Actividad5_IA.cpp
+// ESCENARIO 1: CONTROL DE CALIDAD EN MANUFACTURA
+// Actividad 5 - Clasificacion Bayesiana Ingenua - Universidad SABES 2026
+// C++ (Cxxdroid). Estandar C++11 o superior.
+// Columnas: diametro_mm, longitud_mm, peso_g, temperatura_C, clase
+// Clases: 0 = APTA, 1 = DEFECTUOSA
 
 #include <iostream>
 #include <vector>
-#include <cmath>
 #include <map>
-#include <algorithm>
-#include <random>
+#include <cmath>
+#include <string>
+#include <sstream>
 #include <iomanip>
-
 using namespace std;
 
 class NaiveBayes {
-private:
+public:
     map<int, vector<vector<double>>> clases;
-    map<int, vector<pair<double, double>>> estadisticas; // media, desviacion
-    
-    double calcularMedia(const vector<double>& datos) {
+    map<int, vector<pair<double, double>>> estadisticas;  // (media, desviacion) por variable
+    map<int, double> priors;
+
+    double calcularMedia(const vector<double>& numeros) {
         double suma = 0;
-        for (double val : datos) {
-            suma += val;
-        }
-        return suma / datos.size();
+        for (double x : numeros) suma += x;
+        return suma / numeros.size();
     }
-    
-    double calcularDesviacion(const vector<double>& datos) {
-        double media = calcularMedia(datos);
-        double sumaCuadrados = 0;
-        for (double val : datos) {
-            sumaCuadrados += pow(val - media, 2);
-        }
-        double varianza = sumaCuadrados / datos.size();
+
+    double calcularDesviacion(const vector<double>& numeros) {
+        double media = calcularMedia(numeros);
+        double varianza = 0;
+        for (double x : numeros) varianza += pow(x - media, 2);
+        varianza /= numeros.size();
         return varianza > 0 ? sqrt(varianza) : 0.0001;
     }
-    
+
     double probabilidadGaussiana(double x, double media, double desviacion) {
         double exponente = exp(-pow(x - media, 2) / (2 * pow(desviacion, 2)));
         return (1 / (sqrt(2 * M_PI) * desviacion)) * exponente;
     }
-    
-public:
+
     void entrenar(const vector<vector<double>>& X, const vector<int>& y) {
-        // Agrupar datos por clase
-        for (size_t i = 0; i < X.size(); i++) {
-            clases[y[i]].push_back(X[i]);
-        }
-        
-        // Calcular estadisticas por clase
-        for (auto& entry : clases) {
-            int clase = entry.first;
-            vector<vector<double>>& valores = entry.second;
-            vector<pair<double, double>> stats;
-            
-            int numCaracteristicas = valores[0].size();
-            for (int j = 0; j < numCaracteristicas; j++) {
+        for (size_t i = 0; i < X.size(); i++) clases[y[i]].push_back(X[i]);
+        for (auto& par : clases) {
+            const auto& valores = par.second;
+            priors[par.first] = (double) valores.size() / X.size();
+            for (size_t j = 0; j < valores[0].size(); j++) {
                 vector<double> columna;
-                for (auto& fila : valores) {
-                    columna.push_back(fila[j]);
-                }
-                double media = calcularMedia(columna);
-                double desviacion = calcularDesviacion(columna);
-                stats.push_back({media, desviacion});
+                for (const auto& fila : valores) columna.push_back(fila[j]);
+                estadisticas[par.first].push_back(make_pair(calcularMedia(columna), calcularDesviacion(columna)));
             }
-            estadisticas[clase] = stats;
         }
     }
-    
+
     map<int, double> predecirProba(const vector<double>& x) {
-        map<int, double> probabilidades;
-        
-        for (auto& entry : estadisticas) {
-            int clase = entry.first;
-            vector<pair<double, double>>& stats = entry.second;
-            double prob = 1.0;
-            
-            for (size_t i = 0; i < x.size(); i++) {
-                double media = stats[i].first;
-                double desviacion = stats[i].second;
-                prob *= probabilidadGaussiana(x[i], media, desviacion);
-            }
-            probabilidades[clase] = prob;
-        }
-        
-        // Normalizar probabilidades
+        map<int, double> prob;
         double total = 0;
-        for (auto& p : probabilidades) {
-            total += p.second;
+        for (auto& par : estadisticas) {
+            double p = priors[par.first];
+            for (size_t j = 0; j < x.size(); j++)
+                p *= probabilidadGaussiana(x[j], par.second[j].first, par.second[j].second);
+            prob[par.first] = p;
+            total += p;
         }
-        if (total > 0) {
-            for (auto& p : probabilidades) {
-                probabilidades[p.first] = p.second / total;
-            }
-        }
-        
-        return probabilidades;
+        if (total > 0) for (auto& par : prob) par.second /= total;
+        return prob;
     }
-    
+
     int predecir(const vector<double>& x) {
-        map<int, double> probabilidades = predecirProba(x);
-        int mejorClase = -1;
-        double mejorProb = -1;
-        
-        for (auto& entry : probabilidades) {
-            if (entry.second > mejorProb) {
-                mejorProb = entry.second;
-                mejorClase = entry.first;
-            }
-        }
-        
-        return mejorClase;
+        map<int, double> prob = predecirProba(x);
+        int mejor = -1;
+        double maximo = -1;
+        for (auto& par : prob) if (par.second > maximo) { maximo = par.second; mejor = par.first; }
+        return mejor;
     }
 };
 
+// Funciones de apoyo para imprimir
+string centrar(const string& s, int ancho) {
+    int izq = (ancho - (int) s.size()) / 2;
+    int der = ancho - (int) s.size() - izq;
+    return string(max(0, izq), ' ') + s + string(max(0, der), ' ');
+}
+string miles(long n) {
+    string s = to_string(n), r;
+    int cont = 0;
+    for (int i = (int) s.size() - 1; i >= 0; i--) {
+        r = s[i] + r;
+        if (++cont % 3 == 0 && i > 0) r = "," + r;
+    }
+    return r;
+}
+
 int main() {
-    // Dataset: Control de Calidad de Piezas
-    // Columnas: diametro(mm), longitud(mm), peso(g), temperatura(°C), calidad
+    // Dataset (40 registros): diametro_mm, longitud_mm, peso_g, temperatura_C, clase
     vector<vector<double>> datos = {
-        {10.2, 50.1, 45.2, 180, 1}, {10.1, 50.3, 45.5, 182, 1}, {10.3, 50.0, 45.1, 181, 1},
-        {9.8, 49.5, 44.0, 175, 0}, {10.0, 50.2, 45.3, 183, 1}, {9.9, 49.8, 44.8, 179, 1},
-        {11.5, 51.2, 47.0, 190, 0}, {10.2, 50.0, 45.0, 180, 1}, {10.1, 50.1, 45.2, 181, 1},
-        {9.7, 49.3, 43.5, 172, 0}, {10.3, 50.2, 45.4, 182, 1}, {10.0, 50.0, 45.0, 180, 1},
-        {11.8, 51.5, 47.5, 195, 0}, {10.2, 50.3, 45.6, 183, 1}, {9.6, 49.0, 43.0, 170, 0},
-        {10.1, 50.1, 45.1, 181, 1}, {10.4, 50.4, 45.7, 184, 1}, {9.5, 48.8, 42.5, 168, 0},
-        {10.0, 50.0, 45.0, 180, 1}, {10.3, 50.2, 45.3, 182, 1}, {12.0, 52.0, 48.0, 200, 0},
-        {10.2, 50.1, 45.2, 181, 1}, {9.9, 49.9, 44.9, 179, 1}, {10.1, 50.0, 45.1, 180, 1},
-        {11.2, 51.0, 46.5, 188, 0}, {10.0, 50.2, 45.2, 182, 1}, {10.3, 50.1, 45.4, 181, 1},
-        {9.8, 49.6, 44.2, 176, 0}, {10.2, 50.0, 45.0, 180, 1}, {10.1, 50.3, 45.5, 183, 1}
+        {10.9, 48.7, 45.9, 199.0, 1}, {10.2, 52.0, 47.7, 202.0, 1}, {10.0, 50.0, 45.3, 179.0, 0},
+        {10.1, 49.8, 45.3, 181.0, 0}, {10.0, 50.1, 45.2, 183.0, 0}, {9.9, 50.0, 44.8, 178.0, 0},
+        {10.2, 50.1, 45.3, 184.0, 0}, {10.2, 50.2, 44.7, 184.0, 0}, {10.0, 50.4, 43.1, 173.0, 1},
+        {10.3, 50.1, 45.1, 181.0, 0}, {10.1, 49.8, 45.4, 180.0, 0}, {9.8, 50.1, 45.2, 182.0, 0},
+        {10.1, 49.8, 45.4, 179.0, 0}, {9.9, 50.1, 45.7, 182.0, 1}, {10.2, 49.8, 46.0, 172.0, 1},
+        {10.4, 50.2, 45.0, 181.0, 0}, {9.3, 50.2, 45.0, 183.0, 1}, {9.7, 50.1, 45.4, 183.0, 0},
+        {9.9, 50.4, 45.3, 184.0, 0}, {9.8, 50.0, 44.8, 180.0, 0}, {10.5, 50.1, 45.2, 180.0, 0},
+        {9.5, 50.0, 44.4, 185.0, 1}, {9.6, 50.5, 49.2, 186.0, 1}, {10.2, 50.6, 44.8, 180.0, 0},
+        {10.5, 50.0, 44.8, 181.0, 0}, {10.1, 49.9, 45.3, 181.0, 0}, {9.8, 50.3, 45.3, 183.0, 0},
+        {9.7, 50.2, 45.2, 181.0, 0}, {9.3, 50.3, 45.4, 179.0, 1}, {10.7, 50.8, 45.8, 184.0, 1},
+        {10.3, 50.0, 45.4, 182.0, 0}, {9.8, 50.1, 45.2, 180.0, 0}, {9.9, 50.4, 45.3, 182.0, 0},
+        {9.7, 50.2, 45.4, 182.0, 0}, {11.6, 52.7, 44.3, 187.0, 1}, {10.0, 50.5, 45.1, 181.0, 0},
+        {10.2, 48.3, 45.4, 194.0, 1}, {10.4, 50.0, 45.6, 181.0, 0}, {9.3, 49.0, 41.1, 181.0, 1},
+        {11.2, 48.7, 46.4, 183.0, 1}
     };
-    
-    cout << "======================================================================" << endl;
+    vector<string> nombres = {"APTA", "DEFECTUOSA"};
+    int k = (int) nombres.size();
+
+    string linea = "======================================================================";
+    cout << linea << endl;
     cout << "ESCENARIO 1: CONTROL DE CALIDAD EN MANUFACTURA" << endl;
-    cout << "======================================================================" << endl;
+    cout << linea << endl;
     cout << "\nDescripcion del problema:" << endl;
     cout << "Una fabrica produce piezas metalicas y necesita clasificarlas como" << endl;
     cout << "APTAS o DEFECTUOSAS segun sus dimensiones y temperatura de fundicion." << endl;
-    cout << "\nCaracteristicas medidas:" << endl;
+    cout << "\nVariables analizadas:" << endl;
     cout << "- Diametro (mm)" << endl;
     cout << "- Longitud (mm)" << endl;
-    cout << "- Peso (gramos)" << endl;
-    cout << "- Temperatura de fundicion (°C)" << endl;
-    
-    // Mezclar datos
-    random_device rd;
-    mt19937 g(42);
-    shuffle(datos.begin(), datos.end(), g);
-    
-    // Dividir en entrenamiento y prueba
-    int split = (int)(datos.size() * 0.7);
+    cout << "- Peso (g)" << endl;
+    cout << "- Temperatura de fundicion (C)" << endl;
+    cout << "\nClases:" << endl;
+    for (int n = 0; n < k; n++) cout << "  " << n << " = " << nombres[n] << endl;
+
+    // Division FIJA: primeros 70% para entrenar, ultimos 30% para probar
+    size_t split = (size_t) (datos.size() * 0.7);
     vector<vector<double>> X_train, X_test;
     vector<int> y_train, y_test;
-    
-    for (int i = 0; i < split; i++) {
-        X_train.push_back({datos[i][0], datos[i][1], datos[i][2], datos[i][3]});
-        y_train.push_back((int)datos[i][4]);
+    for (size_t i = 0; i < datos.size(); i++) {
+        vector<double> x(datos[i].begin(), datos[i].begin() + 4);
+        if (i < split) { X_train.push_back(x); y_train.push_back((int) datos[i][4]); }
+        else { X_test.push_back(x); y_test.push_back((int) datos[i][4]); }
     }
-    
-    for (size_t i = split; i < datos.size(); i++) {
-        X_test.push_back({datos[i][0], datos[i][1], datos[i][2], datos[i][3]});
-        y_test.push_back((int)datos[i][4]);
-    }
-    
-    // Entrenar modelo
+
     NaiveBayes nb;
     nb.entrenar(X_train, y_train);
-    
-    // Evaluar
+
     int correctos = 0;
-    int matriz[2][2] = {{0, 0}, {0, 0}};
-    
+    vector<vector<int>> matriz(k, vector<int>(k, 0));
     for (size_t i = 0; i < X_test.size(); i++) {
         int pred = nb.predecir(X_test[i]);
-        int real = y_test[i];
-        matriz[real][pred]++;
-        if (pred == real) {
-            correctos++;
+        if (pred == y_test[i]) correctos++;
+        matriz[y_test[i]][pred]++;
+    }
+    double accuracy = 100.0 * correctos / X_test.size();
+
+    cout << fixed << setprecision(2);
+    cout << "\n" << linea << "\nRESULTADOS DEL ANALISIS\n" << linea << endl;
+    cout << "Registros de entrenamiento: " << X_train.size() << "   Registros de prueba: " << X_test.size() << endl;
+    cout << "Accuracy: " << accuracy << "%" << endl;
+    cout << "Casos correctamente clasificados: " << correctos << "/" << X_test.size() << endl;
+
+    cout << "\nMatriz de Confusion (filas = real, columnas = prediccion):" << endl;
+    cout << "                      Pred: APTA          Pred: DEFECTUOSA    " << endl;
+    for (int r = 0; r < k; r++) {
+        cout << "Real: " << left << setw(16) << nombres[r] << right;
+        for (int p = 0; p < k; p++) cout << centrar(to_string(matriz[r][p]), 20);
+        cout << endl;
+    }
+
+    cout << "\n" << linea << "\nMETRICAS POR CLASE\n" << linea << endl;
+    for (int c = 0; c < k; c++) {
+        int vp = matriz[c][c], predC = 0, realC = 0;
+        for (int r = 0; r < k; r++) { predC += matriz[r][c]; realC += matriz[c][r]; }
+        double precision = predC > 0 ? (double) vp / predC : 0;
+        double recall = realC > 0 ? (double) vp / realC : 0;
+        double f1 = (precision + recall) > 0 ? 2 * precision * recall / (precision + recall) : 0;
+        cout << "Clase: " << nombres[c] << " (" << c << ")" << endl;
+        cout << "  Precision: " << precision * 100 << "%" << endl;
+        cout << "  Recall:    " << recall * 100 << "%" << endl;
+        cout << "  F1-Score:  " << f1 * 100 << "%" << endl;
+    }
+
+    // Analisis de costos de los errores (clase 1 = DEFECTUOSA es el evento que queremos detectar)
+    long costoFN = 2500;  // MXN - reclamo y devolucion del cliente
+    long costoFP = 300;  // MXN - reproceso o desperdicio de una pieza buena
+    long fn = matriz[1][0];
+    long fp = matriz[0][1];
+    long costoTotal = fn * costoFN + fp * costoFP;
+    cout << "\nAnalisis de Costos:" << endl;
+    cout << "Falsos Negativos (piezas defectuosas que pasan al cliente): " << fn << " x $" << miles(costoFN) << " = $" << miles(fn * costoFN) << endl;
+    cout << "Falsos Positivos (piezas buenas rechazadas): " << fp << " x $" << miles(costoFP) << " = $" << miles(fp * costoFP) << endl;
+    cout << "Costo Total de los errores: $" << miles(costoTotal) << endl;
+
+    // ===================================================================
+    // PREDICCIONES CON NUEVOS DATOS
+    // >>> MODIFICA AQUI: cambia los numeros para crear tus 3 casos <<<
+    // Orden: diametro_mm, longitud_mm, peso_g, temperatura_C
+    // ===================================================================
+    vector<vector<double>> nuevosCasos = {
+        {10.2, 50.1, 45.2, 181.0},
+        {11.6, 51.4, 47.3, 193.0},
+        {10.6, 50.6, 45.9, 186.0}
+    };
+    vector<string> descripciones = {
+        "Pieza #A101 - lote normal",
+        "Pieza #A102 - lote sospechoso",
+        "Pieza #A103 - caso intermedio"
+    };
+    vector<string> variables = {"Diametro (mm)", "Longitud (mm)", "Peso (g)", "Temperatura de fundicion (C)"};
+    int decimales[4] = {1, 1, 1, 0};
+
+    cout << "\n" << linea << "\nEVALUACION DE NUEVOS CASOS\n" << linea << endl;
+    for (size_t i = 0; i < nuevosCasos.size(); i++) {
+        vector<double>& caso = nuevosCasos[i];
+        int resultado = nb.predecir(caso);
+        map<int, double> prob = nb.predecirProba(caso);
+        cout << "\n" << descripciones[i] << ":" << endl;
+        for (int j = 0; j < 4; j++) cout << "  " << variables[j] << ": " << setprecision(decimales[j]) << caso[j] << endl;
+        cout << "  Prediccion: " << nombres[resultado] << endl;
+        double suma = 0;
+        cout << setprecision(1);
+        for (int n = 0; n < k; n++) {
+            cout << "  Probabilidad " << nombres[n] << ": " << prob[n] * 100 << "%" << endl;
+            suma += prob[n];
+        }
+        if (suma == 0) cout << "  (Valores muy lejanos a los datos de entrenamiento: revisa tus numeros)" << endl;
+        if (resultado == 1) {
+            cout << "  ACCIONES RECOMENDADAS:" << endl;
+            cout << "     - Separar la pieza para inspeccion manual" << endl;
+            cout << "     - Revisar temperatura del horno" << endl;
+            cout << "     - Verificar calibracion del molde" << endl;
         }
     }
-    
-    double accuracy = (correctos * 100.0) / X_test.size();
-    
-    cout << "\n======================================================================" << endl;
-    cout << "RESULTADOS DEL ANALISIS" << endl;
-    cout << "======================================================================" << endl;
-    cout << "\nDatos de entrenamiento: " << X_train.size() << endl;
-    cout << "Datos de prueba: " << X_test.size() << endl;
-    cout << fixed << setprecision(2);
-    cout << "\nAccuracy: " << accuracy << "%" << endl;
-    cout << "Piezas correctamente clasificadas: " << correctos << "/" << X_test.size() << endl;
-    
-    cout << "\nMatriz de Confusion:" << endl;
-    cout << "                    Predicho DEFECTUOSA  Predicho APTA" << endl;
-    cout << "Real DEFECTUOSA            " << setw(3) << matriz[0][0] 
-         << "               " << setw(3) << matriz[0][1] << endl;
-    cout << "Real APTA                  " << setw(3) << matriz[1][0] 
-         << "               " << setw(3) << matriz[1][1] << endl;
-    
-    // Prediccion de nueva pieza
-    vector<double> nueva_pieza = {10.15, 50.05, 45.25, 181.5};
-    int resultado = nb.predecir(nueva_pieza);
-    map<int, double> probabilidades = nb.predecirProba(nueva_pieza);
-    
-    cout << "\n======================================================================" << endl;
-    cout << "PREDICCION DE NUEVA PIEZA" << endl;
-    cout << "======================================================================" << endl;
-    cout << "Diametro: " << nueva_pieza[0] << " mm" << endl;
-    cout << "Longitud: " << nueva_pieza[1] << " mm" << endl;
-    cout << "Peso: " << nueva_pieza[2] << " g" << endl;
-    cout << "Temperatura: " << nueva_pieza[3] << " °C" << endl;
-    cout << "\nClasificacion: " << (resultado == 1 ? "APTA ✓" : "DEFECTUOSA ✗") << endl;
-    cout << "Confianza DEFECTUOSA: " << probabilidades[0] * 100 << "%" << endl;
-    cout << "Confianza APTA: " << probabilidades[1] * 100 << "%" << endl;
-    
-    cout << "\n======================================================================" << endl;
-    cout << "PREGUNTAS DE ANALISIS PARA EL ALUMNO:" << endl;
-    cout << "======================================================================" << endl;
-    cout << "1. ¿Que tan confiable es el modelo con este accuracy?" << endl;
-    cout << "2. ¿Cual seria el costo de clasificar incorrectamente una pieza DEFECTUOSA como APTA?" << endl;
-    cout << "3. ¿Que caracteristica parece ser mas determinante para la clasificacion?" << endl;
-    cout << "4. ¿Como podrias mejorar el modelo con mas datos?" << endl;
-    
+
+    cout << "\n" << linea << "\nPREGUNTAS DE ANALISIS:\n" << linea << endl;
+    cout << "1. Que tan confiable es el modelo con este accuracy?" << endl;
+    cout << "2. Cual seria el costo de clasificar una pieza DEFECTUOSA como APTA?" << endl;
+    cout << "3. Que caracteristica parece ser mas determinante para la clasificacion?" << endl;
+    cout << "4. Como podrias mejorar el modelo con mas datos?" << endl;
     return 0;
 }

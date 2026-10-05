@@ -1,220 +1,236 @@
-// ESCENARIO 2: Prediccion de Abandono de Clientes (Churn)
-// Archivo: Escenario2_Actividad5_IA.cpp
+// ESCENARIO 2: PREDICCION DE ABANDONO DE CLIENTES (CHURN)
+// Actividad 5 - Clasificacion Bayesiana Ingenua - Universidad SABES 2026
+// C++ (Cxxdroid). Estandar C++11 o superior.
+// Columnas: meses_servicio, llamadas_soporte, gasto_mensual_usd, minutos_uso, clase
+// Clases: 0 = SE QUEDA, 1 = ABANDONA
 
 #include <iostream>
 #include <vector>
-#include <cmath>
 #include <map>
-#include <algorithm>
-#include <random>
+#include <cmath>
+#include <string>
+#include <sstream>
 #include <iomanip>
-
 using namespace std;
 
 class NaiveBayes {
-private:
+public:
     map<int, vector<vector<double>>> clases;
-    map<int, vector<pair<double, double>>> estadisticas; // media, desviacion
-    
-    double calcularMedia(const vector<double>& datos) {
+    map<int, vector<pair<double, double>>> estadisticas;  // (media, desviacion) por variable
+    map<int, double> priors;
+
+    double calcularMedia(const vector<double>& numeros) {
         double suma = 0;
-        for (double val : datos) {
-            suma += val;
-        }
-        return suma / datos.size();
+        for (double x : numeros) suma += x;
+        return suma / numeros.size();
     }
-    
-    double calcularDesviacion(const vector<double>& datos) {
-        double media = calcularMedia(datos);
-        double sumaCuadrados = 0;
-        for (double val : datos) {
-            sumaCuadrados += pow(val - media, 2);
-        }
-        double varianza = sumaCuadrados / datos.size();
+
+    double calcularDesviacion(const vector<double>& numeros) {
+        double media = calcularMedia(numeros);
+        double varianza = 0;
+        for (double x : numeros) varianza += pow(x - media, 2);
+        varianza /= numeros.size();
         return varianza > 0 ? sqrt(varianza) : 0.0001;
     }
-    
+
     double probabilidadGaussiana(double x, double media, double desviacion) {
         double exponente = exp(-pow(x - media, 2) / (2 * pow(desviacion, 2)));
         return (1 / (sqrt(2 * M_PI) * desviacion)) * exponente;
     }
-    
-public:
+
     void entrenar(const vector<vector<double>>& X, const vector<int>& y) {
-        // Agrupar datos por clase
-        for (size_t i = 0; i < X.size(); i++) {
-            clases[y[i]].push_back(X[i]);
-        }
-        
-        // Calcular estadisticas por clase
-        for (auto& entry : clases) {
-            int clase = entry.first;
-            vector<vector<double>>& valores = entry.second;
-            vector<pair<double, double>> stats;
-            
-            int numCaracteristicas = valores[0].size();
-            for (int j = 0; j < numCaracteristicas; j++) {
+        for (size_t i = 0; i < X.size(); i++) clases[y[i]].push_back(X[i]);
+        for (auto& par : clases) {
+            const auto& valores = par.second;
+            priors[par.first] = (double) valores.size() / X.size();
+            for (size_t j = 0; j < valores[0].size(); j++) {
                 vector<double> columna;
-                for (auto& fila : valores) {
-                    columna.push_back(fila[j]);
-                }
-                double media = calcularMedia(columna);
-                double desviacion = calcularDesviacion(columna);
-                stats.push_back({media, desviacion});
+                for (const auto& fila : valores) columna.push_back(fila[j]);
+                estadisticas[par.first].push_back(make_pair(calcularMedia(columna), calcularDesviacion(columna)));
             }
-            estadisticas[clase] = stats;
         }
     }
-    
+
     map<int, double> predecirProba(const vector<double>& x) {
-        map<int, double> probabilidades;
-        
-        for (auto& entry : estadisticas) {
-            int clase = entry.first;
-            vector<pair<double, double>>& stats = entry.second;
-            double prob = 1.0;
-            
-            for (size_t i = 0; i < x.size(); i++) {
-                double media = stats[i].first;
-                double desviacion = stats[i].second;
-                prob *= probabilidadGaussiana(x[i], media, desviacion);
-            }
-            probabilidades[clase] = prob;
-        }
-        
-        // Normalizar probabilidades
+        map<int, double> prob;
         double total = 0;
-        for (auto& p : probabilidades) {
-            total += p.second;
+        for (auto& par : estadisticas) {
+            double p = priors[par.first];
+            for (size_t j = 0; j < x.size(); j++)
+                p *= probabilidadGaussiana(x[j], par.second[j].first, par.second[j].second);
+            prob[par.first] = p;
+            total += p;
         }
-        if (total > 0) {
-            for (auto& p : probabilidades) {
-                probabilidades[p.first] = p.second / total;
-            }
-        }
-        
-        return probabilidades;
+        if (total > 0) for (auto& par : prob) par.second /= total;
+        return prob;
     }
-    
+
     int predecir(const vector<double>& x) {
-        map<int, double> probabilidades = predecirProba(x);
-        int mejorClase = -1;
-        double mejorProb = -1;
-        
-        for (auto& entry : probabilidades) {
-            if (entry.second > mejorProb) {
-                mejorProb = entry.second;
-                mejorClase = entry.first;
-            }
-        }
-        
-        return mejorClase;
+        map<int, double> prob = predecirProba(x);
+        int mejor = -1;
+        double maximo = -1;
+        for (auto& par : prob) if (par.second > maximo) { maximo = par.second; mejor = par.first; }
+        return mejor;
     }
 };
 
+// Funciones de apoyo para imprimir
+string centrar(const string& s, int ancho) {
+    int izq = (ancho - (int) s.size()) / 2;
+    int der = ancho - (int) s.size() - izq;
+    return string(max(0, izq), ' ') + s + string(max(0, der), ' ');
+}
+string miles(long n) {
+    string s = to_string(n), r;
+    int cont = 0;
+    for (int i = (int) s.size() - 1; i >= 0; i--) {
+        r = s[i] + r;
+        if (++cont % 3 == 0 && i > 0) r = "," + r;
+    }
+    return r;
+}
+
 int main() {
-    // Dataset: Abandono de Clientes
-    // Columnas: meses_servicio, llamadas_soporte, gasto_mensual, minutos_uso, abandono
+    // Dataset (40 registros): meses_servicio, llamadas_soporte, gasto_mensual_usd, minutos_uso, clase
     vector<vector<double>> datos = {
-        {24, 2, 65.5, 450, 0}, {12, 5, 45.2, 320, 1}, {36, 1, 78.3, 520, 0},
-        {6, 8, 35.0, 180, 1}, {48, 0, 85.6, 600, 0}, {18, 4, 52.1, 280, 1},
-        {30, 1, 72.4, 480, 0}, {9, 6, 38.5, 210, 1}, {42, 2, 80.2, 550, 0},
-        {15, 7, 42.3, 250, 1}, {27, 3, 68.7, 430, 0}, {8, 9, 33.8, 160, 1},
-        {33, 1, 75.5, 500, 0}, {14, 5, 48.9, 290, 1}, {40, 2, 82.1, 570, 0},
-        {11, 6, 40.2, 230, 1}, {25, 2, 66.8, 460, 0}, {7, 10, 32.5, 150, 1},
-        {35, 1, 77.9, 530, 0}, {13, 4, 46.7, 270, 1}, {29, 2, 70.3, 490, 0},
-        {10, 7, 37.6, 200, 1}, {44, 1, 83.4, 580, 0}, {16, 5, 50.5, 300, 1},
-        {31, 3, 73.2, 470, 0}, {19, 4, 54.8, 310, 1}, {38, 1, 79.6, 540, 0},
-        {17, 6, 51.3, 285, 1}, {26, 2, 67.9, 445, 0}, {20, 3, 56.4, 330, 1}
+        {16.0, 2.0, 95.2, 368.0, 0}, {14.0, 1.0, 74.7, 277.0, 0}, {7.0, 8.0, 22.6, 260.0, 1},
+        {26.0, 4.0, 41.7, 392.0, 0}, {7.0, 8.0, 39.6, 240.0, 1}, {8.0, 4.0, 46.1, 249.0, 1},
+        {2.0, 8.0, 49.4, 464.0, 1}, {36.0, 5.0, 94.2, 535.0, 0}, {26.0, 1.0, 80.3, 477.0, 0},
+        {33.0, 1.0, 61.9, 678.0, 0}, {40.0, 4.0, 63.2, 637.0, 0}, {35.0, 1.0, 63.2, 466.0, 0},
+        {13.0, 4.0, 29.0, 298.0, 1}, {37.0, 3.0, 78.4, 477.0, 0}, {24.0, 2.0, 88.2, 546.0, 0},
+        {48.0, 3.0, 53.3, 228.0, 1}, {34.0, 0.0, 82.2, 259.0, 0}, {23.0, 1.0, 65.4, 437.0, 0},
+        {23.0, 2.0, 69.4, 425.0, 0}, {30.0, 2.0, 79.9, 630.0, 0}, {2.0, 2.0, 24.4, 321.0, 1},
+        {40.0, 2.0, 79.8, 535.0, 0}, {13.0, 8.0, 34.9, 306.0, 1}, {15.0, 10.0, 29.0, 249.0, 1},
+        {26.0, 3.0, 83.0, 583.0, 0}, {2.0, 9.0, 57.6, 346.0, 1}, {13.0, 6.0, 32.5, 187.0, 1},
+        {35.0, 2.0, 67.8, 509.0, 0}, {18.0, 2.0, 61.9, 524.0, 0}, {27.0, 6.0, 54.1, 430.0, 0},
+        {5.0, 6.0, 46.3, 248.0, 1}, {16.0, 5.0, 62.4, 215.0, 1}, {15.0, 7.0, 32.7, 253.0, 1},
+        {47.0, 4.0, 88.1, 548.0, 0}, {16.0, 2.0, 69.7, 203.0, 1}, {16.0, 2.0, 75.5, 498.0, 0},
+        {30.0, 2.0, 50.3, 677.0, 0}, {35.0, 1.0, 88.3, 476.0, 0}, {40.0, 8.0, 54.8, 268.0, 1},
+        {17.0, 1.0, 66.9, 490.0, 0}
     };
-    
-    cout << "======================================================================" << endl;
+    vector<string> nombres = {"SE QUEDA", "ABANDONA"};
+    int k = (int) nombres.size();
+
+    string linea = "======================================================================";
+    cout << linea << endl;
     cout << "ESCENARIO 2: PREDICCION DE ABANDONO DE CLIENTES (CHURN)" << endl;
-    cout << "======================================================================" << endl;
+    cout << linea << endl;
     cout << "\nDescripcion del problema:" << endl;
     cout << "Una empresa de telecomunicaciones quiere predecir que clientes tienen" << endl;
     cout << "mayor riesgo de cancelar su servicio (abandono/churn)." << endl;
-    cout << "\nCaracteristicas analizadas:" << endl;
+    cout << "\nVariables analizadas:" << endl;
     cout << "- Meses de servicio con la empresa" << endl;
-    cout << "- Numero de llamadas al soporte tecnico" << endl;
+    cout << "- Llamadas al soporte tecnico" << endl;
     cout << "- Gasto mensual promedio (USD)" << endl;
     cout << "- Minutos de uso mensual" << endl;
-    
-    // Mezclar datos
-    random_device rd;
-    mt19937 g(42);
-    shuffle(datos.begin(), datos.end(), g);
-    
-    // Dividir en entrenamiento y prueba
-    int split = (int)(datos.size() * 0.7);
+    cout << "\nClases:" << endl;
+    for (int n = 0; n < k; n++) cout << "  " << n << " = " << nombres[n] << endl;
+
+    // Division FIJA: primeros 70% para entrenar, ultimos 30% para probar
+    size_t split = (size_t) (datos.size() * 0.7);
     vector<vector<double>> X_train, X_test;
     vector<int> y_train, y_test;
-    
-    for (int i = 0; i < split; i++) {
-        X_train.push_back({datos[i][0], datos[i][1], datos[i][2], datos[i][3]});
-        y_train.push_back((int)datos[i][4]);
+    for (size_t i = 0; i < datos.size(); i++) {
+        vector<double> x(datos[i].begin(), datos[i].begin() + 4);
+        if (i < split) { X_train.push_back(x); y_train.push_back((int) datos[i][4]); }
+        else { X_test.push_back(x); y_test.push_back((int) datos[i][4]); }
     }
-    
-    for (size_t i = split; i < datos.size(); i++) {
-        X_test.push_back({datos[i][0], datos[i][1], datos[i][2], datos[i][3]});
-        y_test.push_back((int)datos[i][4]);
-    }
-    
-    // Entrenar modelo
+
     NaiveBayes nb;
     nb.entrenar(X_train, y_train);
-    
-    // Evaluar
+
     int correctos = 0;
-    int matriz[2][2] = {{0, 0}, {0, 0}};
-    
+    vector<vector<int>> matriz(k, vector<int>(k, 0));
     for (size_t i = 0; i < X_test.size(); i++) {
         int pred = nb.predecir(X_test[i]);
-        int real = y_test[i];
-        matriz[real][pred]++;
-        if (pred == real) {
-            correctos++;
+        if (pred == y_test[i]) correctos++;
+        matriz[y_test[i]][pred]++;
+    }
+    double accuracy = 100.0 * correctos / X_test.size();
+
+    cout << fixed << setprecision(2);
+    cout << "\n" << linea << "\nRESULTADOS DEL ANALISIS\n" << linea << endl;
+    cout << "Registros de entrenamiento: " << X_train.size() << "   Registros de prueba: " << X_test.size() << endl;
+    cout << "Accuracy: " << accuracy << "%" << endl;
+    cout << "Casos correctamente clasificados: " << correctos << "/" << X_test.size() << endl;
+
+    cout << "\nMatriz de Confusion (filas = real, columnas = prediccion):" << endl;
+    cout << "                      Pred: SE QUEDA      Pred: ABANDONA      " << endl;
+    for (int r = 0; r < k; r++) {
+        cout << "Real: " << left << setw(16) << nombres[r] << right;
+        for (int p = 0; p < k; p++) cout << centrar(to_string(matriz[r][p]), 20);
+        cout << endl;
+    }
+
+    cout << "\n" << linea << "\nMETRICAS POR CLASE\n" << linea << endl;
+    for (int c = 0; c < k; c++) {
+        int vp = matriz[c][c], predC = 0, realC = 0;
+        for (int r = 0; r < k; r++) { predC += matriz[r][c]; realC += matriz[c][r]; }
+        double precision = predC > 0 ? (double) vp / predC : 0;
+        double recall = realC > 0 ? (double) vp / realC : 0;
+        double f1 = (precision + recall) > 0 ? 2 * precision * recall / (precision + recall) : 0;
+        cout << "Clase: " << nombres[c] << " (" << c << ")" << endl;
+        cout << "  Precision: " << precision * 100 << "%" << endl;
+        cout << "  Recall:    " << recall * 100 << "%" << endl;
+        cout << "  F1-Score:  " << f1 * 100 << "%" << endl;
+    }
+
+    // Analisis de costos de los errores (clase 1 = ABANDONA es el evento que queremos detectar)
+    long costoFN = 4000;  // MXN - ingreso anual perdido del cliente
+    long costoFP = 400;  // MXN - descuento de retencion innecesario
+    long fn = matriz[1][0];
+    long fp = matriz[0][1];
+    long costoTotal = fn * costoFN + fp * costoFP;
+    cout << "\nAnalisis de Costos:" << endl;
+    cout << "Falsos Negativos (clientes que abandonan sin ser detectados): " << fn << " x $" << miles(costoFN) << " = $" << miles(fn * costoFN) << endl;
+    cout << "Falsos Positivos (clientes leales marcados en riesgo): " << fp << " x $" << miles(costoFP) << " = $" << miles(fp * costoFP) << endl;
+    cout << "Costo Total de los errores: $" << miles(costoTotal) << endl;
+
+    // ===================================================================
+    // PREDICCIONES CON NUEVOS DATOS
+    // >>> MODIFICA AQUI: cambia los numeros para crear tus 3 casos <<<
+    // Orden: meses_servicio, llamadas_soporte, gasto_mensual_usd, minutos_uso
+    // ===================================================================
+    vector<vector<double>> nuevosCasos = {
+        {29.0, 2.0, 73.1, 495.0},
+        {14.0, 6.0, 42.8, 271.0},
+        {21.0, 4.0, 57.9, 383.0}
+    };
+    vector<string> descripciones = {
+        "Cliente A - antiguo y satisfecho",
+        "Cliente B - nuevo con muchas quejas",
+        "Cliente C - caso intermedio"
+    };
+    vector<string> variables = {"Meses de servicio con la empresa", "Llamadas al soporte tecnico", "Gasto mensual promedio (USD)", "Minutos de uso mensual"};
+    int decimales[4] = {0, 0, 1, 0};
+
+    cout << "\n" << linea << "\nEVALUACION DE NUEVOS CASOS\n" << linea << endl;
+    for (size_t i = 0; i < nuevosCasos.size(); i++) {
+        vector<double>& caso = nuevosCasos[i];
+        int resultado = nb.predecir(caso);
+        map<int, double> prob = nb.predecirProba(caso);
+        cout << "\n" << descripciones[i] << ":" << endl;
+        for (int j = 0; j < 4; j++) cout << "  " << variables[j] << ": " << setprecision(decimales[j]) << caso[j] << endl;
+        cout << "  Prediccion: " << nombres[resultado] << endl;
+        double suma = 0;
+        cout << setprecision(1);
+        for (int n = 0; n < k; n++) {
+            cout << "  Probabilidad " << nombres[n] << ": " << prob[n] * 100 << "%" << endl;
+            suma += prob[n];
+        }
+        if (suma == 0) cout << "  (Valores muy lejanos a los datos de entrenamiento: revisa tus numeros)" << endl;
+        if (resultado == 1) {
+            cout << "  ACCIONES RECOMENDADAS:" << endl;
+            cout << "     - Llamada de retencion personalizada" << endl;
+            cout << "     - Ofrecer plan con descuento" << endl;
+            cout << "     - Revisar historial de quejas" << endl;
         }
     }
-    
-    double accuracy = (correctos * 100.0) / X_test.size();
-    
-    cout << "\n======================================================================" << endl;
-    cout << "RESULTADOS DEL ANALISIS" << endl;
-    cout << "======================================================================" << endl;
-    cout << fixed << setprecision(2);
-    cout << "Accuracy: " << accuracy << "%" << endl;
-    
-    cout << "\nMatriz de Confusion:" << endl;
-    cout << "                    Pred: SE QUEDA  Pred: ABANDONA" << endl;
-    cout << "Real: SE QUEDA            " << setw(3) << matriz[0][0] 
-         << "            " << setw(3) << matriz[0][1] << endl;
-    cout << "Real: ABANDONA            " << setw(3) << matriz[1][0] 
-         << "            " << setw(3) << matriz[1][1] << endl;
-    
-    // Analisis de cliente nuevo
-    vector<double> nuevo_cliente = {22, 4, 58.5, 350};
-    int resultado = nb.predecir(nuevo_cliente);
-    map<int, double> prob = nb.predecirProba(nuevo_cliente);
-    
-    cout << "\n======================================================================" << endl;
-    cout << "ANALISIS DE CLIENTE NUEVO" << endl;
-    cout << "======================================================================" << endl;
-    cout << "Meses de servicio: " << (int)nuevo_cliente[0] << endl;
-    cout << "Llamadas a soporte: " << (int)nuevo_cliente[1] << endl;
-    cout << "Gasto mensual: $" << nuevo_cliente[2] << endl;
-    cout << "Minutos de uso: " << (int)nuevo_cliente[3] << endl;
-    cout << "\nPrediccion: " << (resultado == 1 ? "RIESGO DE ABANDONO ⚠️" : "SE MANTIENE ✓") << endl;
-    cout << "Probabilidad de quedarse: " << prob[0] * 100 << "%" << endl;
-    cout << "Probabilidad de abandonar: " << prob[1] * 100 << "%" << endl;
-    
-    cout << "\n======================================================================" << endl;
-    cout << "PREGUNTAS DE ANALISIS:" << endl;
-    cout << "======================================================================" << endl;
-    cout << "1. ¿Cual caracteristica es mas indicativa de abandono?" << endl;
-    cout << "2. ¿Que estrategias de retencion recomendarias para clientes en riesgo?" << endl;
-    cout << "3. ¿Cual es el costo de un falso negativo (predecir que se queda pero abandona)?" << endl;
-    cout << "4. ¿Como afecta el numero de llamadas a soporte en la decision del cliente?" << endl;
-    
+
+    cout << "\n" << linea << "\nPREGUNTAS DE ANALISIS:\n" << linea << endl;
+    cout << "1. Cual caracteristica es mas indicativa de abandono?" << endl;
+    cout << "2. Que estrategias de retencion recomendarias para clientes en riesgo?" << endl;
+    cout << "3. Cual es el costo de un falso negativo (predecir que se queda pero abandona)?" << endl;
+    cout << "4. Como afecta el numero de llamadas a soporte en la decision del cliente?" << endl;
     return 0;
 }

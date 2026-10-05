@@ -1,256 +1,236 @@
-// ESCENARIO 6: Logistica Internacional - Retrasos en Envios
-// Archivo: Escenario6_Actividad5_IA.cpp
+// ESCENARIO 6: LOGISTICA INTERNACIONAL - PREDICCION DE RETRASOS
+// Actividad 5 - Clasificacion Bayesiana Ingenua - Universidad SABES 2026
+// C++ (Cxxdroid). Estandar C++11 o superior.
+// Columnas: distancia_km, peso_kg, documentos_aduanales, dias_procesamiento, clase
+// Clases: 0 = A TIEMPO, 1 = RETRASO
 
 #include <iostream>
 #include <vector>
-#include <cmath>
 #include <map>
-#include <algorithm>
-#include <random>
-#include <iomanip>
+#include <cmath>
 #include <string>
-
+#include <sstream>
+#include <iomanip>
 using namespace std;
 
 class NaiveBayes {
-private:
+public:
     map<int, vector<vector<double>>> clases;
-    map<int, vector<pair<double, double>>> estadisticas;
-    
-    double calcularMedia(const vector<double>& datos) {
+    map<int, vector<pair<double, double>>> estadisticas;  // (media, desviacion) por variable
+    map<int, double> priors;
+
+    double calcularMedia(const vector<double>& numeros) {
         double suma = 0;
-        for (double val : datos) {
-            suma += val;
-        }
-        return suma / datos.size();
+        for (double x : numeros) suma += x;
+        return suma / numeros.size();
     }
-    
-    double calcularDesviacion(const vector<double>& datos) {
-        double media = calcularMedia(datos);
-        double sumaCuadrados = 0;
-        for (double val : datos) {
-            sumaCuadrados += pow(val - media, 2);
-        }
-        double varianza = sumaCuadrados / datos.size();
+
+    double calcularDesviacion(const vector<double>& numeros) {
+        double media = calcularMedia(numeros);
+        double varianza = 0;
+        for (double x : numeros) varianza += pow(x - media, 2);
+        varianza /= numeros.size();
         return varianza > 0 ? sqrt(varianza) : 0.0001;
     }
-    
+
     double probabilidadGaussiana(double x, double media, double desviacion) {
         double exponente = exp(-pow(x - media, 2) / (2 * pow(desviacion, 2)));
         return (1 / (sqrt(2 * M_PI) * desviacion)) * exponente;
     }
-    
-public:
+
     void entrenar(const vector<vector<double>>& X, const vector<int>& y) {
-        for (size_t i = 0; i < X.size(); i++) {
-            clases[y[i]].push_back(X[i]);
-        }
-        
-        for (auto& entry : clases) {
-            int clase = entry.first;
-            vector<vector<double>>& valores = entry.second;
-            vector<pair<double, double>> stats;
-            
-            int numCaracteristicas = valores[0].size();
-            for (int j = 0; j < numCaracteristicas; j++) {
+        for (size_t i = 0; i < X.size(); i++) clases[y[i]].push_back(X[i]);
+        for (auto& par : clases) {
+            const auto& valores = par.second;
+            priors[par.first] = (double) valores.size() / X.size();
+            for (size_t j = 0; j < valores[0].size(); j++) {
                 vector<double> columna;
-                for (auto& fila : valores) {
-                    columna.push_back(fila[j]);
-                }
-                double media = calcularMedia(columna);
-                double desviacion = calcularDesviacion(columna);
-                stats.push_back({media, desviacion});
+                for (const auto& fila : valores) columna.push_back(fila[j]);
+                estadisticas[par.first].push_back(make_pair(calcularMedia(columna), calcularDesviacion(columna)));
             }
-            estadisticas[clase] = stats;
         }
     }
-    
+
     map<int, double> predecirProba(const vector<double>& x) {
-        map<int, double> probabilidades;
-        
-        for (auto& entry : estadisticas) {
-            int clase = entry.first;
-            vector<pair<double, double>>& stats = entry.second;
-            double prob = 1.0;
-            
-            for (size_t i = 0; i < x.size(); i++) {
-                double media = stats[i].first;
-                double desviacion = stats[i].second;
-                prob *= probabilidadGaussiana(x[i], media, desviacion);
-            }
-            probabilidades[clase] = prob;
-        }
-        
+        map<int, double> prob;
         double total = 0;
-        for (auto& p : probabilidades) {
-            total += p.second;
+        for (auto& par : estadisticas) {
+            double p = priors[par.first];
+            for (size_t j = 0; j < x.size(); j++)
+                p *= probabilidadGaussiana(x[j], par.second[j].first, par.second[j].second);
+            prob[par.first] = p;
+            total += p;
         }
-        if (total > 0) {
-            for (auto& p : probabilidades) {
-                probabilidades[p.first] = p.second / total;
-            }
-        }
-        
-        return probabilidades;
+        if (total > 0) for (auto& par : prob) par.second /= total;
+        return prob;
     }
-    
+
     int predecir(const vector<double>& x) {
-        map<int, double> probabilidades = predecirProba(x);
-        int mejorClase = -1;
-        double mejorProb = -1;
-        
-        for (auto& entry : probabilidades) {
-            if (entry.second > mejorProb) {
-                mejorProb = entry.second;
-                mejorClase = entry.first;
-            }
-        }
-        
-        return mejorClase;
+        map<int, double> prob = predecirProba(x);
+        int mejor = -1;
+        double maximo = -1;
+        for (auto& par : prob) if (par.second > maximo) { maximo = par.second; mejor = par.first; }
+        return mejor;
     }
 };
 
+// Funciones de apoyo para imprimir
+string centrar(const string& s, int ancho) {
+    int izq = (ancho - (int) s.size()) / 2;
+    int der = ancho - (int) s.size() - izq;
+    return string(max(0, izq), ' ') + s + string(max(0, der), ' ');
+}
+string miles(long n) {
+    string s = to_string(n), r;
+    int cont = 0;
+    for (int i = (int) s.size() - 1; i >= 0; i--) {
+        r = s[i] + r;
+        if (++cont % 3 == 0 && i > 0) r = "," + r;
+    }
+    return r;
+}
+
 int main() {
-    // Dataset: Envios Internacionales
-    // Columnas: distancia_km, peso_kg, num_documentos_aduanales, dias_procesamiento, retraso
+    // Dataset (40 registros): distancia_km, peso_kg, documentos_aduanales, dias_procesamiento, clase
     vector<vector<double>> datos = {
-        {5200, 850, 3, 2, 0}, {12500, 2300, 8, 5, 1}, {3800, 450, 2, 1, 0},
-        {15000, 3200, 12, 7, 1}, {4100, 620, 2, 2, 0}, {8900, 1800, 6, 4, 1},
-        {3200, 380, 2, 1, 0}, {11200, 2100, 9, 6, 1}, {4800, 720, 3, 2, 0},
-        {13800, 2850, 11, 6, 1}, {3500, 410, 2, 1, 0}, {9500, 1950, 7, 5, 1},
-        {4500, 680, 3, 2, 0}, {14200, 3100, 13, 8, 1}, {3900, 520, 2, 2, 0},
-        {10800, 2200, 8, 5, 1}, {3300, 390, 2, 1, 0}, {12800, 2650, 10, 6, 1},
-        {4200, 590, 3, 2, 0}, {11800, 2400, 9, 5, 1}, {3600, 430, 2, 1, 0},
-        {13200, 2900, 11, 7, 1}, {4700, 710, 3, 2, 0}, {9200, 1850, 7, 4, 1},
-        {3400, 400, 2, 1, 0}, {14800, 3300, 14, 8, 1}, {4400, 640, 3, 2, 0},
-        {10200, 2050, 8, 5, 1}, {3700, 480, 2, 1, 0}, {12200, 2500, 10, 6, 1}
+        {7649.0, 2444.0, 10.0, 7.0, 1}, {2932.0, 4531.0, 3.0, 6.0, 1}, {16298.0, 2517.0, 8.0, 2.0, 1},
+        {3129.0, 256.0, 3.0, 1.0, 0}, {16273.0, 2103.0, 12.0, 6.0, 1}, {4829.0, 970.0, 3.0, 2.0, 0},
+        {5735.0, 515.0, 9.0, 2.0, 0}, {3325.0, 1231.0, 2.0, 2.0, 0}, {3801.0, 156.0, 7.0, 3.0, 0},
+        {7599.0, 2619.0, 7.0, 3.0, 1}, {6958.0, 451.0, 7.0, 5.0, 0}, {5325.0, 331.0, 2.0, 3.0, 0},
+        {9481.0, 950.0, 3.0, 1.0, 1}, {2908.0, 1026.0, 5.0, 3.0, 0}, {6803.0, 1546.0, 11.0, 8.0, 1},
+        {12948.0, 2365.0, 7.0, 6.0, 1}, {9340.0, 3293.0, 20.0, 5.0, 1}, {2954.0, 892.0, 9.0, 2.0, 0},
+        {1427.0, 1104.0, 2.0, 1.0, 0}, {18218.0, 2320.0, 16.0, 8.0, 1}, {6074.0, 1886.0, 3.0, 5.0, 0},
+        {2228.0, 1020.0, 4.0, 2.0, 0}, {5910.0, 1655.0, 3.0, 3.0, 0}, {5267.0, 1381.0, 7.0, 2.0, 0},
+        {1508.0, 366.0, 6.0, 2.0, 0}, {537.0, 805.0, 4.0, 3.0, 0}, {15127.0, 4459.0, 5.0, 7.0, 1},
+        {4311.0, 979.0, 8.0, 4.0, 0}, {4927.0, 500.0, 2.0, 3.0, 0}, {4224.0, 2526.0, 2.0, 1.0, 0},
+        {4326.0, 146.0, 3.0, 2.0, 0}, {10083.0, 224.0, 5.0, 2.0, 0}, {5149.0, 1783.0, 10.0, 3.0, 1},
+        {12353.0, 750.0, 7.0, 10.0, 1}, {3072.0, 477.0, 5.0, 4.0, 0}, {14079.0, 2020.0, 12.0, 6.0, 1},
+        {9041.0, 425.0, 3.0, 2.0, 0}, {17726.0, 4127.0, 7.0, 3.0, 1}, {7365.0, 628.0, 2.0, 4.0, 0},
+        {13319.0, 4912.0, 15.0, 7.0, 1}
     };
-    
-    cout << "======================================================================" << endl;
+    vector<string> nombres = {"A TIEMPO", "RETRASO"};
+    int k = (int) nombres.size();
+
+    string linea = "======================================================================";
+    cout << linea << endl;
     cout << "ESCENARIO 6: LOGISTICA INTERNACIONAL - PREDICCION DE RETRASOS" << endl;
-    cout << "======================================================================" << endl;
+    cout << linea << endl;
     cout << "\nDescripcion del problema:" << endl;
     cout << "Una empresa de logistica internacional necesita predecir que envios" << endl;
     cout << "tienen alto riesgo de retrasarse para tomar medidas preventivas." << endl;
-    cout << "\nFactores logisticos analizados:" << endl;
+    cout << "\nVariables analizadas:" << endl;
     cout << "- Distancia del envio (km)" << endl;
-    cout << "- Peso del paquete (kg)" << endl;
-    cout << "- Numero de documentos aduanales requeridos" << endl;
+    cout << "- Peso de la carga (kg)" << endl;
+    cout << "- Documentos aduanales requeridos" << endl;
     cout << "- Dias de procesamiento en aduana" << endl;
-    
-    // Mezclar datos
-    random_device rd;
-    mt19937 g(42);
-    shuffle(datos.begin(), datos.end(), g);
-    
-    // Dividir en entrenamiento y prueba
-    int split = (int)(datos.size() * 0.7);
+    cout << "\nClases:" << endl;
+    for (int n = 0; n < k; n++) cout << "  " << n << " = " << nombres[n] << endl;
+
+    // Division FIJA: primeros 70% para entrenar, ultimos 30% para probar
+    size_t split = (size_t) (datos.size() * 0.7);
     vector<vector<double>> X_train, X_test;
     vector<int> y_train, y_test;
-    
-    for (int i = 0; i < split; i++) {
-        X_train.push_back({datos[i][0], datos[i][1], datos[i][2], datos[i][3]});
-        y_train.push_back((int)datos[i][4]);
+    for (size_t i = 0; i < datos.size(); i++) {
+        vector<double> x(datos[i].begin(), datos[i].begin() + 4);
+        if (i < split) { X_train.push_back(x); y_train.push_back((int) datos[i][4]); }
+        else { X_test.push_back(x); y_test.push_back((int) datos[i][4]); }
     }
-    
-    for (size_t i = split; i < datos.size(); i++) {
-        X_test.push_back({datos[i][0], datos[i][1], datos[i][2], datos[i][3]});
-        y_test.push_back((int)datos[i][4]);
-    }
-    
-    // Entrenar modelo
+
     NaiveBayes nb;
     nb.entrenar(X_train, y_train);
-    
-    // Evaluar
+
     int correctos = 0;
-    int matriz[2][2] = {{0, 0}, {0, 0}};
-    
+    vector<vector<int>> matriz(k, vector<int>(k, 0));
     for (size_t i = 0; i < X_test.size(); i++) {
         int pred = nb.predecir(X_test[i]);
-        int real = y_test[i];
-        matriz[real][pred]++;
-        if (pred == real) {
-            correctos++;
-        }
+        if (pred == y_test[i]) correctos++;
+        matriz[y_test[i]][pred]++;
     }
-    
-    double accuracy = (correctos * 100.0) / X_test.size();
-    
-    cout << "\n======================================================================" << endl;
-    cout << "RESULTADOS DEL ANALISIS" << endl;
-    cout << "======================================================================" << endl;
+    double accuracy = 100.0 * correctos / X_test.size();
+
     cout << fixed << setprecision(2);
+    cout << "\n" << linea << "\nRESULTADOS DEL ANALISIS\n" << linea << endl;
+    cout << "Registros de entrenamiento: " << X_train.size() << "   Registros de prueba: " << X_test.size() << endl;
     cout << "Accuracy: " << accuracy << "%" << endl;
-    cout << "Envios correctamente clasificados: " << correctos << "/" << X_test.size() << endl;
-    
-    cout << "\nMatriz de Confusion:" << endl;
-    cout << "                    Pred: A TIEMPO  Pred: RETRASO" << endl;
-    cout << "Real: A TIEMPO            " << setw(3) << matriz[0][0] 
-         << "           " << setw(3) << matriz[0][1] << endl;
-    cout << "Real: RETRASO             " << setw(3) << matriz[1][0] 
-         << "           " << setw(3) << matriz[1][1] << endl;
-    
-    // Analisis de costo
-    int costo_falso_negativo = 5000;
-    int costo_falso_positivo = 500;
-    
-    int costo_total = (matriz[1][0] * costo_falso_negativo) + (matriz[0][1] * costo_falso_positivo);
-    
+    cout << "Casos correctamente clasificados: " << correctos << "/" << X_test.size() << endl;
+
+    cout << "\nMatriz de Confusion (filas = real, columnas = prediccion):" << endl;
+    cout << "                      Pred: A TIEMPO      Pred: RETRASO       " << endl;
+    for (int r = 0; r < k; r++) {
+        cout << "Real: " << left << setw(16) << nombres[r] << right;
+        for (int p = 0; p < k; p++) cout << centrar(to_string(matriz[r][p]), 20);
+        cout << endl;
+    }
+
+    cout << "\n" << linea << "\nMETRICAS POR CLASE\n" << linea << endl;
+    for (int c = 0; c < k; c++) {
+        int vp = matriz[c][c], predC = 0, realC = 0;
+        for (int r = 0; r < k; r++) { predC += matriz[r][c]; realC += matriz[c][r]; }
+        double precision = predC > 0 ? (double) vp / predC : 0;
+        double recall = realC > 0 ? (double) vp / realC : 0;
+        double f1 = (precision + recall) > 0 ? 2 * precision * recall / (precision + recall) : 0;
+        cout << "Clase: " << nombres[c] << " (" << c << ")" << endl;
+        cout << "  Precision: " << precision * 100 << "%" << endl;
+        cout << "  Recall:    " << recall * 100 << "%" << endl;
+        cout << "  F1-Score:  " << f1 * 100 << "%" << endl;
+    }
+
+    // Analisis de costos de los errores (clase 1 = RETRASO es el evento que queremos detectar)
+    long costoFN = 5000;  // MXN - penalizacion y compensacion al cliente
+    long costoFP = 500;  // MXN - medidas preventivas innecesarias
+    long fn = matriz[1][0];
+    long fp = matriz[0][1];
+    long costoTotal = fn * costoFN + fp * costoFP;
     cout << "\nAnalisis de Costos:" << endl;
-    cout << "Falsos Negativos (retrasos no detectados): " << matriz[1][0] 
-         << " x $" << costo_falso_negativo << " = $" << (matriz[1][0] * costo_falso_negativo) << endl;
-    cout << "Falsos Positivos (alarmas falsas): " << matriz[0][1] 
-         << " x $" << costo_falso_positivo << " = $" << (matriz[0][1] * costo_falso_positivo) << endl;
-    cout << "Costo Total: $" << costo_total << endl;
-    
-    // Evaluacion de nuevos envios
-    vector<vector<double>> nuevos_envios = {
-        {4500, 650, 3, 2},
-        {13500, 2800, 11, 7},
-        {7200, 1200, 5, 3}
+    cout << "Falsos Negativos (retrasos no previstos): " << fn << " x $" << miles(costoFN) << " = $" << miles(fn * costoFN) << endl;
+    cout << "Falsos Positivos (alarmas falsas): " << fp << " x $" << miles(costoFP) << " = $" << miles(fp * costoFP) << endl;
+    cout << "Costo Total de los errores: $" << miles(costoTotal) << endl;
+
+    // ===================================================================
+    // PREDICCIONES CON NUEVOS DATOS
+    // >>> MODIFICA AQUI: cambia los numeros para crear tus 3 casos <<<
+    // Orden: distancia_km, peso_kg, documentos_aduanales, dias_procesamiento
+    // ===================================================================
+    vector<vector<double>> nuevosCasos = {
+        {4553.0, 831.0, 4.0, 3.0},
+        {11581.0, 2671.0, 10.0, 6.0},
+        {8067.0, 1751.0, 7.0, 4.0}
     };
     vector<string> descripciones = {
-        "Envio Nacional - Standard",
-        "Envio Internacional - Complejo",
-        "Envio Regional - Moderado"
+        "Envio Nacional - estandar",
+        "Envio Internacional - complejo",
+        "Envio Regional - moderado"
     };
-    
-    cout << "\n======================================================================" << endl;
-    cout << "EVALUACION DE ENVIOS PENDIENTES" << endl;
-    cout << "======================================================================" << endl;
-    
-    for (size_t i = 0; i < nuevos_envios.size(); i++) {
-        vector<double> datos_envio = nuevos_envios[i];
-        string descripcion = descripciones[i];
-        int resultado = nb.predecir(datos_envio);
-        map<int, double> prob = nb.predecirProba(datos_envio);
-        
-        cout << "\n" << descripcion << ":" << endl;
-        cout << "  Distancia: " << (int)datos_envio[0] << " km" << endl;
-        cout << "  Peso: " << (int)datos_envio[1] << " kg" << endl;
-        cout << "  Documentos aduanales: " << (int)datos_envio[2] << endl;
-        cout << "  Dias procesamiento: " << (int)datos_envio[3] << endl;
-        cout << "  Prediccion: " << (resultado == 1 ? "🚨 RIESGO DE RETRASO" : "✓ ENTREGA A TIEMPO") << endl;
-        cout << "  Confianza A TIEMPO: " << setprecision(1) << prob[0] * 100 << "%" << endl;
-        cout << "  Confianza RETRASO: " << prob[1] * 100 << "%" << endl;
-        
+    vector<string> variables = {"Distancia del envio (km)", "Peso de la carga (kg)", "Documentos aduanales requeridos", "Dias de procesamiento en aduana"};
+    int decimales[4] = {0, 0, 0, 0};
+
+    cout << "\n" << linea << "\nEVALUACION DE NUEVOS CASOS\n" << linea << endl;
+    for (size_t i = 0; i < nuevosCasos.size(); i++) {
+        vector<double>& caso = nuevosCasos[i];
+        int resultado = nb.predecir(caso);
+        map<int, double> prob = nb.predecirProba(caso);
+        cout << "\n" << descripciones[i] << ":" << endl;
+        for (int j = 0; j < 4; j++) cout << "  " << variables[j] << ": " << setprecision(decimales[j]) << caso[j] << endl;
+        cout << "  Prediccion: " << nombres[resultado] << endl;
+        double suma = 0;
+        cout << setprecision(1);
+        for (int n = 0; n < k; n++) {
+            cout << "  Probabilidad " << nombres[n] << ": " << prob[n] * 100 << "%" << endl;
+            suma += prob[n];
+        }
+        if (suma == 0) cout << "  (Valores muy lejanos a los datos de entrenamiento: revisa tus numeros)" << endl;
         if (resultado == 1) {
-            cout << "  📋 ACCIONES RECOMENDADAS:" << endl;
+            cout << "  ACCIONES RECOMENDADAS:" << endl;
             cout << "     - Acelerar tramites aduanales" << endl;
-            cout << "     - Notificar cliente sobre posible retraso" << endl;
-            cout << "     - Asignar courier premium" << endl;
-            cout << "     - Revisar ruta alternativa" << endl;
+            cout << "     - Notificar al cliente sobre posible retraso" << endl;
+            cout << "     - Asignar courier premium o ruta alterna" << endl;
         }
     }
-    
-    cout << "\n======================================================================" << endl;
-    cout << "PREGUNTAS DE ANALISIS:" << endl;
-    cout << "======================================================================" << endl;
-    cout << "1. ¿Cual factor logistico impacta mas en los retrasos?" << endl;
-    cout << "2. ¿Como optimizarias la relacion costo-beneficio del modelo?" << endl;
-    cout << "3. ¿Que KPIs logisticos adicionales deberian considerarse?" << endl;
-    cout << "4. ¿Como afectan las regulaciones aduanales al modelo predictivo?" << endl;
-    
+
+    cout << "\n" << linea << "\nPREGUNTAS DE ANALISIS:\n" << linea << endl;
+    cout << "1. Cual factor logistico impacta mas en los retrasos?" << endl;
+    cout << "2. Como optimizarias la relacion costo-beneficio del modelo?" << endl;
+    cout << "3. Que KPIs logisticos adicionales deberian considerarse?" << endl;
+    cout << "4. Como afectan las regulaciones aduanales al modelo predictivo?" << endl;
     return 0;
 }

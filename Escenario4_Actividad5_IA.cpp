@@ -1,239 +1,236 @@
-// ESCENARIO 4: Deteccion de Fraude en Transacciones
-// Archivo: Escenario4_Actividad5_IA.cpp
+// ESCENARIO 4: DETECCION DE FRAUDE EN TRANSACCIONES BANCARIAS
+// Actividad 5 - Clasificacion Bayesiana Ingenua - Universidad SABES 2026
+// C++ (Cxxdroid). Estandar C++11 o superior.
+// Columnas: monto_usd, hora, distancia_km, intentos_fallidos, clase
+// Clases: 0 = LEGITIMA, 1 = FRAUDE
 
 #include <iostream>
 #include <vector>
-#include <cmath>
 #include <map>
-#include <algorithm>
-#include <random>
+#include <cmath>
+#include <string>
+#include <sstream>
 #include <iomanip>
-
 using namespace std;
 
 class NaiveBayes {
-private:
+public:
     map<int, vector<vector<double>>> clases;
-    map<int, vector<pair<double, double>>> estadisticas;
-    
-    double calcularMedia(const vector<double>& datos) {
+    map<int, vector<pair<double, double>>> estadisticas;  // (media, desviacion) por variable
+    map<int, double> priors;
+
+    double calcularMedia(const vector<double>& numeros) {
         double suma = 0;
-        for (double val : datos) {
-            suma += val;
-        }
-        return suma / datos.size();
+        for (double x : numeros) suma += x;
+        return suma / numeros.size();
     }
-    
-    double calcularDesviacion(const vector<double>& datos) {
-        double media = calcularMedia(datos);
-        double sumaCuadrados = 0;
-        for (double val : datos) {
-            sumaCuadrados += pow(val - media, 2);
-        }
-        double varianza = sumaCuadrados / datos.size();
+
+    double calcularDesviacion(const vector<double>& numeros) {
+        double media = calcularMedia(numeros);
+        double varianza = 0;
+        for (double x : numeros) varianza += pow(x - media, 2);
+        varianza /= numeros.size();
         return varianza > 0 ? sqrt(varianza) : 0.0001;
     }
-    
+
     double probabilidadGaussiana(double x, double media, double desviacion) {
         double exponente = exp(-pow(x - media, 2) / (2 * pow(desviacion, 2)));
         return (1 / (sqrt(2 * M_PI) * desviacion)) * exponente;
     }
-    
-public:
+
     void entrenar(const vector<vector<double>>& X, const vector<int>& y) {
-        for (size_t i = 0; i < X.size(); i++) {
-            clases[y[i]].push_back(X[i]);
-        }
-        
-        for (auto& entry : clases) {
-            int clase = entry.first;
-            vector<vector<double>>& valores = entry.second;
-            vector<pair<double, double>> stats;
-            
-            int numCaracteristicas = valores[0].size();
-            for (int j = 0; j < numCaracteristicas; j++) {
+        for (size_t i = 0; i < X.size(); i++) clases[y[i]].push_back(X[i]);
+        for (auto& par : clases) {
+            const auto& valores = par.second;
+            priors[par.first] = (double) valores.size() / X.size();
+            for (size_t j = 0; j < valores[0].size(); j++) {
                 vector<double> columna;
-                for (auto& fila : valores) {
-                    columna.push_back(fila[j]);
-                }
-                double media = calcularMedia(columna);
-                double desviacion = calcularDesviacion(columna);
-                stats.push_back({media, desviacion});
+                for (const auto& fila : valores) columna.push_back(fila[j]);
+                estadisticas[par.first].push_back(make_pair(calcularMedia(columna), calcularDesviacion(columna)));
             }
-            estadisticas[clase] = stats;
         }
     }
-    
+
     map<int, double> predecirProba(const vector<double>& x) {
-        map<int, double> probabilidades;
-        
-        for (auto& entry : estadisticas) {
-            int clase = entry.first;
-            vector<pair<double, double>>& stats = entry.second;
-            double prob = 1.0;
-            
-            for (size_t i = 0; i < x.size(); i++) {
-                double media = stats[i].first;
-                double desviacion = stats[i].second;
-                prob *= probabilidadGaussiana(x[i], media, desviacion);
-            }
-            probabilidades[clase] = prob;
-        }
-        
+        map<int, double> prob;
         double total = 0;
-        for (auto& p : probabilidades) {
-            total += p.second;
+        for (auto& par : estadisticas) {
+            double p = priors[par.first];
+            for (size_t j = 0; j < x.size(); j++)
+                p *= probabilidadGaussiana(x[j], par.second[j].first, par.second[j].second);
+            prob[par.first] = p;
+            total += p;
         }
-        if (total > 0) {
-            for (auto& p : probabilidades) {
-                probabilidades[p.first] = p.second / total;
-            }
-        }
-        
-        return probabilidades;
+        if (total > 0) for (auto& par : prob) par.second /= total;
+        return prob;
     }
-    
+
     int predecir(const vector<double>& x) {
-        map<int, double> probabilidades = predecirProba(x);
-        int mejorClase = -1;
-        double mejorProb = -1;
-        
-        for (auto& entry : probabilidades) {
-            if (entry.second > mejorProb) {
-                mejorProb = entry.second;
-                mejorClase = entry.first;
-            }
-        }
-        
-        return mejorClase;
+        map<int, double> prob = predecirProba(x);
+        int mejor = -1;
+        double maximo = -1;
+        for (auto& par : prob) if (par.second > maximo) { maximo = par.second; mejor = par.first; }
+        return mejor;
     }
 };
 
+// Funciones de apoyo para imprimir
+string centrar(const string& s, int ancho) {
+    int izq = (ancho - (int) s.size()) / 2;
+    int der = ancho - (int) s.size() - izq;
+    return string(max(0, izq), ' ') + s + string(max(0, der), ' ');
+}
+string miles(long n) {
+    string s = to_string(n), r;
+    int cont = 0;
+    for (int i = (int) s.size() - 1; i >= 0; i--) {
+        r = s[i] + r;
+        if (++cont % 3 == 0 && i > 0) r = "," + r;
+    }
+    return r;
+}
+
 int main() {
-    // Dataset: Deteccion de Fraude
-    // Columnas: monto, hora, distancia_ubicacion_usual, intentos_previos, fraude
+    // Dataset (40 registros): monto_usd, hora, distancia_km, intentos_fallidos, clase
     vector<vector<double>> datos = {
-        {45.50, 14, 2.5, 0, 0}, {1250.00, 3, 850, 1, 1}, {89.99, 18, 5.2, 0, 0},
-        {2500.00, 2, 1200, 2, 1}, {32.75, 12, 1.8, 0, 0}, {150.00, 20, 8.5, 0, 0},
-        {3200.00, 4, 2500, 3, 1}, {67.80, 16, 3.2, 0, 0}, {1800.00, 1, 950, 1, 1},
-        {25.50, 10, 0.5, 0, 0}, {950.00, 5, 650, 1, 1}, {110.25, 19, 12.0, 0, 0},
-        {2100.00, 3, 1500, 2, 1}, {78.90, 15, 4.5, 0, 0}, {1500.00, 2, 800, 1, 1},
-        {55.00, 13, 6.8, 0, 0}, {2800.00, 4, 1800, 2, 1}, {42.30, 11, 2.1, 0, 0},
-        {1100.00, 1, 700, 1, 1}, {95.75, 17, 9.2, 0, 0}, {3500.00, 5, 3000, 3, 1},
-        {38.60, 14, 1.5, 0, 0}, {1650.00, 2, 900, 1, 1}, {72.40, 16, 5.8, 0, 0},
-        {2200.00, 3, 1300, 2, 1}, {48.90, 12, 3.5, 0, 0}, {1350.00, 4, 750, 1, 1},
-        {81.20, 18, 7.5, 0, 0}, {2900.00, 1, 2100, 2, 1}, {59.50, 15, 4.2, 0, 0}
+        {1112.54, 8.0, 127.0, 1.0, 0}, {201.65, 11.0, 517.0, 1.0, 0}, {479.32, 21.0, 408.6, 0.0, 0},
+        {4388.2, 3.0, 2199.5, 2.0, 1}, {1302.47, 6.0, 287.6, 2.0, 1}, {114.3, 13.0, 2620.4, 2.0, 1},
+        {3545.27, 14.0, 1835.2, 3.0, 1}, {1185.95, 9.0, 1017.1, 2.0, 0}, {1455.14, 6.0, 920.8, 0.0, 0},
+        {3168.67, 6.0, 1672.4, 2.0, 1}, {472.84, 3.0, 419.4, 0.0, 1}, {2557.53, 5.0, 1767.1, 2.0, 1},
+        {4185.43, 12.0, 1436.5, 1.0, 1}, {5.22, 15.0, 295.4, 1.0, 0}, {121.72, 17.0, 639.8, 0.0, 0},
+        {506.43, 12.0, 126.9, 1.0, 0}, {968.55, 20.0, 349.3, 1.0, 0}, {62.05, 12.0, 235.3, 0.0, 0},
+        {82.24, 10.0, 315.8, 0.0, 0}, {440.34, 20.0, 348.6, 1.0, 0}, {696.24, 11.0, 341.9, 0.0, 0},
+        {894.11, 6.0, 721.6, 0.0, 0}, {393.03, 13.0, 334.3, 0.0, 0}, {3779.73, 5.0, 1011.8, 0.0, 1},
+        {533.97, 13.0, 819.4, 0.0, 0}, {1009.15, 20.0, 241.5, 0.0, 0}, {534.29, 19.0, 251.7, 0.0, 0},
+        {628.96, 12.0, 661.4, 1.0, 0}, {753.8, 8.0, 1287.7, 2.0, 1}, {1564.23, 5.0, 37.6, 0.0, 1},
+        {1440.44, 18.0, 347.3, 1.0, 0}, {2779.16, 4.0, 2873.4, 2.0, 1}, {3634.87, 8.0, 1050.6, 1.0, 1},
+        {1076.07, 17.0, 30.6, 1.0, 0}, {1767.73, 6.0, 1981.8, 3.0, 1}, {1077.89, 4.0, 1902.1, 1.0, 1},
+        {2201.37, 19.0, 247.9, 0.0, 1}, {1633.37, 3.0, 635.2, 0.0, 0}, {743.7, 7.0, 643.8, 1.0, 0},
+        {422.37, 17.0, 247.5, 0.0, 0}
     };
-    
-    cout << "======================================================================" << endl;
+    vector<string> nombres = {"LEGITIMA", "FRAUDE"};
+    int k = (int) nombres.size();
+
+    string linea = "======================================================================";
+    cout << linea << endl;
     cout << "ESCENARIO 4: DETECCION DE FRAUDE EN TRANSACCIONES BANCARIAS" << endl;
-    cout << "======================================================================" << endl;
+    cout << linea << endl;
     cout << "\nDescripcion del problema:" << endl;
     cout << "Un banco necesita identificar transacciones potencialmente fraudulentas" << endl;
     cout << "en tiempo real para proteger a sus clientes." << endl;
-    cout << "\nIndicadores de riesgo analizados:" << endl;
+    cout << "\nVariables analizadas:" << endl;
     cout << "- Monto de la transaccion (USD)" << endl;
     cout << "- Hora del dia (0-23)" << endl;
-    cout << "- Distancia de ubicacion usual (km)" << endl;
+    cout << "- Distancia de la ubicacion usual (km)" << endl;
     cout << "- Intentos previos fallidos" << endl;
-    
-    // Mezclar datos
-    random_device rd;
-    mt19937 g(42);
-    shuffle(datos.begin(), datos.end(), g);
-    
-    // Dividir en entrenamiento y prueba
-    int split = (int)(datos.size() * 0.7);
+    cout << "\nClases:" << endl;
+    for (int n = 0; n < k; n++) cout << "  " << n << " = " << nombres[n] << endl;
+
+    // Division FIJA: primeros 70% para entrenar, ultimos 30% para probar
+    size_t split = (size_t) (datos.size() * 0.7);
     vector<vector<double>> X_train, X_test;
     vector<int> y_train, y_test;
-    
-    for (int i = 0; i < split; i++) {
-        X_train.push_back({datos[i][0], datos[i][1], datos[i][2], datos[i][3]});
-        y_train.push_back((int)datos[i][4]);
+    for (size_t i = 0; i < datos.size(); i++) {
+        vector<double> x(datos[i].begin(), datos[i].begin() + 4);
+        if (i < split) { X_train.push_back(x); y_train.push_back((int) datos[i][4]); }
+        else { X_test.push_back(x); y_test.push_back((int) datos[i][4]); }
     }
-    
-    for (size_t i = split; i < datos.size(); i++) {
-        X_test.push_back({datos[i][0], datos[i][1], datos[i][2], datos[i][3]});
-        y_test.push_back((int)datos[i][4]);
-    }
-    
-    // Entrenar modelo
+
     NaiveBayes nb;
     nb.entrenar(X_train, y_train);
-    
-    // Evaluar
+
     int correctos = 0;
-    int matriz[2][2] = {{0, 0}, {0, 0}};
-    
+    vector<vector<int>> matriz(k, vector<int>(k, 0));
     for (size_t i = 0; i < X_test.size(); i++) {
         int pred = nb.predecir(X_test[i]);
-        int real = y_test[i];
-        matriz[real][pred]++;
-        if (pred == real) {
-            correctos++;
+        if (pred == y_test[i]) correctos++;
+        matriz[y_test[i]][pred]++;
+    }
+    double accuracy = 100.0 * correctos / X_test.size();
+
+    cout << fixed << setprecision(2);
+    cout << "\n" << linea << "\nRESULTADOS DEL ANALISIS\n" << linea << endl;
+    cout << "Registros de entrenamiento: " << X_train.size() << "   Registros de prueba: " << X_test.size() << endl;
+    cout << "Accuracy: " << accuracy << "%" << endl;
+    cout << "Casos correctamente clasificados: " << correctos << "/" << X_test.size() << endl;
+
+    cout << "\nMatriz de Confusion (filas = real, columnas = prediccion):" << endl;
+    cout << "                      Pred: LEGITIMA      Pred: FRAUDE        " << endl;
+    for (int r = 0; r < k; r++) {
+        cout << "Real: " << left << setw(16) << nombres[r] << right;
+        for (int p = 0; p < k; p++) cout << centrar(to_string(matriz[r][p]), 20);
+        cout << endl;
+    }
+
+    cout << "\n" << linea << "\nMETRICAS POR CLASE\n" << linea << endl;
+    for (int c = 0; c < k; c++) {
+        int vp = matriz[c][c], predC = 0, realC = 0;
+        for (int r = 0; r < k; r++) { predC += matriz[r][c]; realC += matriz[c][r]; }
+        double precision = predC > 0 ? (double) vp / predC : 0;
+        double recall = realC > 0 ? (double) vp / realC : 0;
+        double f1 = (precision + recall) > 0 ? 2 * precision * recall / (precision + recall) : 0;
+        cout << "Clase: " << nombres[c] << " (" << c << ")" << endl;
+        cout << "  Precision: " << precision * 100 << "%" << endl;
+        cout << "  Recall:    " << recall * 100 << "%" << endl;
+        cout << "  F1-Score:  " << f1 * 100 << "%" << endl;
+    }
+
+    // Analisis de costos de los errores (clase 1 = FRAUDE es el evento que queremos detectar)
+    long costoFN = 15000;  // MXN - monto robado que el banco reembolsa
+    long costoFP = 250;  // MXN - llamada de verificacion y molestia del cliente
+    long fn = matriz[1][0];
+    long fp = matriz[0][1];
+    long costoTotal = fn * costoFN + fp * costoFP;
+    cout << "\nAnalisis de Costos:" << endl;
+    cout << "Falsos Negativos (fraudes aprobados): " << fn << " x $" << miles(costoFN) << " = $" << miles(fn * costoFN) << endl;
+    cout << "Falsos Positivos (transacciones legitimas bloqueadas): " << fp << " x $" << miles(costoFP) << " = $" << miles(fp * costoFP) << endl;
+    cout << "Costo Total de los errores: $" << miles(costoTotal) << endl;
+
+    // ===================================================================
+    // PREDICCIONES CON NUEVOS DATOS
+    // >>> MODIFICA AQUI: cambia los numeros para crear tus 3 casos <<<
+    // Orden: monto_usd, hora, distancia_km, intentos_fallidos
+    // ===================================================================
+    vector<vector<double>> nuevosCasos = {
+        {692.79, 13.0, 440.7, 0.0},
+        {2330.84, 8.0, 1414.4, 1.0},
+        {1511.81, 10.0, 927.6, 1.0}
+    };
+    vector<string> descripciones = {
+        "Compra en supermercado - tarde",
+        "Compra de madrugada en otro pais",
+        "Compra mediana - caso intermedio"
+    };
+    vector<string> variables = {"Monto de la transaccion (USD)", "Hora del dia (0-23)", "Distancia de la ubicacion usual (km)", "Intentos previos fallidos"};
+    int decimales[4] = {2, 0, 1, 0};
+
+    cout << "\n" << linea << "\nEVALUACION DE NUEVOS CASOS\n" << linea << endl;
+    for (size_t i = 0; i < nuevosCasos.size(); i++) {
+        vector<double>& caso = nuevosCasos[i];
+        int resultado = nb.predecir(caso);
+        map<int, double> prob = nb.predecirProba(caso);
+        cout << "\n" << descripciones[i] << ":" << endl;
+        for (int j = 0; j < 4; j++) cout << "  " << variables[j] << ": " << setprecision(decimales[j]) << caso[j] << endl;
+        cout << "  Prediccion: " << nombres[resultado] << endl;
+        double suma = 0;
+        cout << setprecision(1);
+        for (int n = 0; n < k; n++) {
+            cout << "  Probabilidad " << nombres[n] << ": " << prob[n] * 100 << "%" << endl;
+            suma += prob[n];
+        }
+        if (suma == 0) cout << "  (Valores muy lejanos a los datos de entrenamiento: revisa tus numeros)" << endl;
+        if (resultado == 1) {
+            cout << "  ACCIONES RECOMENDADAS:" << endl;
+            cout << "     - Bloquear la transaccion" << endl;
+            cout << "     - Enviar SMS de verificacion al cliente" << endl;
+            cout << "     - Revisar movimientos recientes" << endl;
         }
     }
-    
-    double accuracy = (correctos * 100.0) / X_test.size();
-    
-    cout << "\n======================================================================" << endl;
-    cout << "RESULTADOS DEL ANALISIS" << endl;
-    cout << "======================================================================" << endl;
-    cout << fixed << setprecision(2);
-    cout << "Accuracy: " << accuracy << "%" << endl;
-    
-    cout << "\nMatriz de Confusion:" << endl;
-    cout << "                    Pred: LEGITIMA  Pred: FRAUDE" << endl;
-    cout << "Real: LEGITIMA            " << setw(3) << matriz[0][0] 
-         << "           " << setw(3) << matriz[0][1] << endl;
-    cout << "Real: FRAUDE              " << setw(3) << matriz[1][0] 
-         << "           " << setw(3) << matriz[1][1] << endl;
-    
-    // Analisis financiero
-    int fallas_no_detectadas = matriz[1][0];
-    int alertas_falsas = matriz[0][1];
-    
-    int costo_fraude_no_detectado = 15000;
-    int costo_alerta_falsa = 50;
-    
-    int costo_fallas_perdidas = fallas_no_detectadas * costo_fraude_no_detectado;
-    int costo_alertas_falsas_total = alertas_falsas * costo_alerta_falsa;
-    int ahorro_fraudes_detectados = matriz[1][1] * costo_fraude_no_detectado;
-    
-    cout << "\nAnalisis Financiero:" << endl;
-    cout << "Costo por fraudes NO detectados: $" << costo_fallas_perdidas << endl;
-    cout << "Costo por alertas falsas: $" << costo_alertas_falsas_total << endl;
-    cout << "Ahorro por fraudes detectados: $" << ahorro_fraudes_detectados << endl;
-    
-    // Analisis de transaccion sospechosa
-    vector<double> nueva_transaccion = {1800.00, 3, 1100, 1};
-    int resultado = nb.predecir(nueva_transaccion);
-    map<int, double> prob = nb.predecirProba(nueva_transaccion);
-    
-    cout << "\n======================================================================" << endl;
-    cout << "ANALISIS DE TRANSACCION EN TIEMPO REAL" << endl;
-    cout << "======================================================================" << endl;
-    cout << "Monto: $" << nueva_transaccion[0] << endl;
-    cout << "Hora: " << setfill('0') << setw(2) << (int)nueva_transaccion[1] << ":00 hrs" << setfill(' ') << endl;
-    cout << "Distancia de ubicacion usual: " << nueva_transaccion[2] << " km" << endl;
-    cout << "Intentos previos fallidos: " << (int)nueva_transaccion[3] << endl;
-    cout << "\nVeredicto: " << (resultado == 1 ? "🚨 FRAUDE DETECTADO" : "✓ TRANSACCION LEGITIMA") << endl;
-    cout << "Probabilidad LEGITIMA: " << prob[0] * 100 << "%" << endl;
-    cout << "Probabilidad FRAUDE: " << prob[1] * 100 << "%" << endl;
-    
-    if (resultado == 1) {
-        cout << "\n⚠️ ACCION RECOMENDADA: Bloquear transaccion y contactar al cliente" << endl;
-    } else {
-        cout << "\n✓ ACCION: Aprobar transaccion" << endl;
-    }
-    
-    cout << "\n======================================================================" << endl;
-    cout << "PREGUNTAS DE ANALISIS:" << endl;
-    cout << "======================================================================" << endl;
-    cout << "1. ¿Cual es el costo de un falso positivo (bloquear transaccion legitima)?" << endl;
-    cout << "2. ¿Cual es el costo de un falso negativo (aprobar fraude)?" << endl;
-    cout << "3. ¿Que patron caracteriza mejor las transacciones fraudulentas?" << endl;
-    cout << "4. ¿Como balancear seguridad vs. experiencia del cliente?" << endl;
-    
+
+    cout << "\n" << linea << "\nPREGUNTAS DE ANALISIS:\n" << linea << endl;
+    cout << "1. Cual es el costo de un falso positivo (bloquear una transaccion legitima)?" << endl;
+    cout << "2. Cual es el costo de un falso negativo (aprobar un fraude)?" << endl;
+    cout << "3. Que patron caracteriza mejor las transacciones fraudulentas?" << endl;
+    cout << "4. Como balancear seguridad vs. experiencia del cliente?" << endl;
     return 0;
 }
