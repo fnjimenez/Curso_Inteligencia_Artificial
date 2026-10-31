@@ -1,5 +1,5 @@
 <h1 id="inteligencia-artificial-—-contenido-temático-de-la-sesión-7-semana-7">Inteligencia Artificial — Contenido temático de la Sesión 7 (Semana 7)</h1>
-<p><strong>Tema (programa oficial AU-20-101 V0.2, Unidad IV):</strong> 4.1 Reglas de producción (4.1.1 Sintaxis de las reglas de producción); 4.2 Semántica de las reglas de producción (4.2.1 Conocimiento causal; 4.2.2 Conocimiento de diagnóstico) <strong>Fecha:</strong> 20 al 27 de octubre de 2026 (sesión presencial: sábado 24 de octubre) <strong>Actividad de la semana:</strong> ninguna con ponderación. La Actividad 6 venció el 20 de octubre; la <strong>Actividad 7</strong> (sistema de producción en Prolog, 10 pts) abrió el 27 de octubre y cierra el <strong>4 de noviembre a las 06:59</strong>; para no arriesgar, entrégala a más tardar la <strong>noche del 3 de noviembre</strong>. <strong>Propósito de la sesión:</strong> Que el estudiante aprenda a escribir <strong>reglas de producción</strong> correctas y a distinguir el conocimiento <strong>causal</strong> del de <strong>diagnóstico</strong>, como base para diseñar en la Semana 8 la arquitectura de un sistema de producción.</p>
+<p><strong>Tema (programa oficial AU-20-101 V0.2, Unidad IV):</strong> 4.1 Reglas de producción (4.1.1 Sintaxis de las reglas de producción); 4.2 Semántica de las reglas de producción (4.2.1 Conocimiento causal; 4.2.2 Conocimiento de diagnóstico) <strong>Fecha:</strong> 20 al 27 de octubre de 2026 (sesión presencial: sábado 24 de octubre) <strong>Actividad de la semana:</strong> ninguna con ponderación. La Actividad 6 venció el 20 de octubre; la <strong>Actividad 7</strong> (sistema de producción de un operador logístico en El Buen Fin, 10 pts) abrió el 27 de octubre y cierra el <strong>4 de noviembre a las 06:59</strong>; para no arriesgar, entrégala a más tardar la <strong>noche del 3 de noviembre</strong>. <strong>Propósito de la sesión:</strong> Que el estudiante aprenda a escribir <strong>reglas de producción</strong> correctas y a distinguir el conocimiento <strong>causal</strong> del de <strong>diagnóstico</strong>, como base para diseñar en la Semana 8 la arquitectura de un sistema de producción.</p>
 <blockquote>
 <p>Nota de uso: los ejemplos son de <strong>logística y operaciones de almacén</strong> para las tres carreras del grupo (Logística, Ingeniería Industrial y TI).</p>
 </blockquote>
@@ -174,13 +174,13 @@
 <p><strong>Plenaria:</strong> dos equipos presentan sus reglas y el grupo detecta contradicciones.</p>
 <hr>
 <h2 id="adelanto-reglas-de-clasificación-el-caso-de-los-peces">9. Adelanto: reglas de clasificación (el caso de los peces)</h2>
-<p>No todas las reglas toman decisiones; muchas <strong>clasifican</strong>. La Actividad 7 usa un sistema de este tipo: a partir de las características observadas de un pez (boca, dientes, color, región…) se deduce su <strong>orden</strong>, su <strong>familia</strong> y su <strong>raza</strong>.</p>
+<p>No todas las reglas toman decisiones; muchas <strong>clasifican</strong>. En la Semana 8 usaremos como <strong>ejemplo de clase</strong> un sistema de este tipo: a partir de las características observadas de un pez (boca, dientes, color, región…) se deduce su <strong>orden</strong>, su <strong>familia</strong> y su <strong>raza</strong>.</p>
 <p>Ejemplo con dos reglas en español:</p>
 <ul>
 <li>R1: SI la boca es pequeña Y los dientes son puntiagudos Y vive en ríos del mundo ENTONCES el orden es <em>Ciprinodontiformes</em>.</li>
 <li>R3: SI el orden es <em>Ciprinodontiformes</em> Y es de América del Sur Y es hembra ENTONCES la familia es <em>Poecílidos</em>.</li>
 </ul>
-<p>Observa que la conclusión de R1 <strong>se vuelve condición</strong> de R3: así se forman <strong>cadenas de inferencia</strong>. Es el mismo principio de la sección 6 (pedidos), aplicado a otro dominio. En la Semana 8 se explica completo el caso y su traducción a <strong>Prolog</strong>.</p>
+<p>Observa que la conclusión de R1 <strong>se vuelve condición</strong> de R3: así se forman <strong>cadenas de inferencia</strong>. Es el mismo principio de la sección 6 (pedidos), aplicado a otro dominio. En la Semana 8 se explica completo el caso y su traducción a <strong>Prolog</strong>; con esa base se construye la <strong>Actividad 7</strong>: un sistema de producción para un <strong>operador logístico en El Buen Fin</strong>, con hechos del pedido (urgencia, valor, inventario, capacidad de la flota, riesgo) y unas 25 reglas que deciden el modo de transporte, el origen del surtido, seguros, escolta y alertas.</p>
 <blockquote>
 <p>Para ir adelantando: lee el recurso de la plataforma (<strong>Capítulo 4, página 190</strong>) e identifica qué datos son <strong>hechos</strong> y cuáles son <strong>conclusiones</strong>.</p>
 </blockquote>
@@ -191,7 +191,8 @@
 <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled=""> Tu conjunto de 10 reglas con identificador.</li>
 <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled=""> La lista de hechos que necesita tu sistema.</li>
 <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled=""> Lectura del Capítulo 4, página 190 (recurso de la Actividad 7) y tus dudas sobre las reglas R1 a R10.</li>
-<li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled=""> SWI-Prolog instalado en tu equipo (<a href="https://www.swi-prolog.org/">https://www.swi-prolog.org/</a>) o acceso a SWISH en línea.</li>
+<li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled=""> Cuenta de Google para usar Google Colab (la Actividad 7 se programa en Python).</li>
+<li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled=""> Opcional, para seguir el ejemplo de clase: SWI-Prolog (<a href="https://www.swi-prolog.org/">https://www.swi-prolog.org/</a>) o SWISH en línea.</li>
 </ul>
 <hr>
 <h2 id="referencias-formato-apa">11. Referencias (formato APA)</h2>
