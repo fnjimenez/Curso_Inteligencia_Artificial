@@ -1,7 +1,7 @@
 <h1 id="inteligencia-artificial-—-contenido-temático-de-la-sesión-8-semana-8">Inteligencia Artificial — Contenido temático de la Sesión 8 (Semana 8)</h1>
-<p><strong>Tema (programa oficial AU-20-101 V0.2, Unidad IV):</strong> 4.3 Arquitectura de un sistema de producción (4.3.1 Hechos; 4.3.2 Base de conocimientos; 4.3.3 Mecanismos de control); 4.4 Ciclo de vida de un sistema de producción <strong>Fecha:</strong> 27 de octubre al 3 de noviembre de 2026 (sesión presencial: sábado 31 de octubre) <strong>Actividad 7 oficial:</strong> Diseño de la arquitectura de producción: modelar en <strong>Prolog</strong> el sistema de reglas R1 a R10 del recurso de plataforma (Capítulo 4, p. 190) y entregar el archivo de Prolog más un <strong>reporte de la experiencia</strong> (<strong>10 puntos</strong>). Abrió el 27 de octubre (00:07) y cierra el <strong>miércoles 4 de noviembre a las 06:59</strong>; entrega recomendada: a más tardar la noche del <strong>3 de noviembre</strong>. <strong>Propósito de la sesión:</strong> Que el estudiante comprenda los componentes de un sistema de producción, el funcionamiento de su motor de inferencia y su ciclo de vida, y <strong>diseñe en el aula la arquitectura</strong> de un sistema para un problema propio, que entregará en la Actividad 7.</p>
+<p><strong>Tema (programa oficial AU-20-101 V0.2, Unidad IV):</strong> 4.3 Arquitectura de un sistema de producción (4.3.1 Hechos; 4.3.2 Base de conocimientos; 4.3.3 Mecanismos de control); 4.4 Ciclo de vida de un sistema de producción <strong>Fecha:</strong> 27 de octubre al 3 de noviembre de 2026 (sesión presencial: sábado 31 de octubre) <strong>Actividad 7 oficial:</strong> Diseño de la arquitectura de producción: construir un sistema de producción (hechos, reglas y motor de inferencia) para un <strong>operador logístico en El Buen Fin</strong>, en Python/Google Colab, y entregar el código más un <strong>reporte de la experiencia</strong> (<strong>10 puntos</strong>). Abrió el 27 de octubre (00:07) y cierra el <strong>miércoles 4 de noviembre a las 06:59</strong>; entrega recomendada: a más tardar la noche del <strong>3 de noviembre</strong>. <strong>Propósito de la sesión:</strong> Que el estudiante comprenda los componentes de un sistema de producción, el funcionamiento de su motor de inferencia y su ciclo de vida, y <strong>diseñe en el aula la arquitectura</strong> de un sistema para un problema propio, que entregará en la Actividad 7.</p>
 <blockquote>
-<p><strong>Esta sesión continúa la Sesión 7:</strong> allí se escribieron las reglas; hoy se organiza el sistema completo que las usa y se <strong>explica paso a paso el caso de la Actividad 7</strong> (clasificación de peces en Prolog).</p>
+<p><strong>Esta sesión continúa la Sesión 7:</strong> allí se escribieron las reglas; hoy se organiza el sistema completo que las usa y se <strong>explica paso a paso el caso de la Actividad 7</strong> (operador logístico en El Buen Fin), apoyado en el caso de clase de los peces.</p>
 </blockquote>
 <hr>
 <h2 id="índice">Índice</h2>
@@ -43,27 +43,27 @@
 </li>
 <li>
 <ol start="7">
-<li>Caso de la Actividad 7: clasificación de peces en Prolog</li>
+<li>Caso de clase: clasificación de peces en Prolog</li>
 </ol>
 </li>
 <li>
 <ol start="8">
-<li>Errores comunes a evitar</li>
+<li>Actividad 7 (entregable): operador logístico en El Buen Fin (Python)</li>
 </ol>
 </li>
 <li>
 <ol start="9">
-<li>Ejercicio integrador: diseño de la arquitectura</li>
+<li>Errores comunes a evitar</li>
 </ol>
 </li>
 <li>
 <ol start="10">
-<li>Cierre de la sesión y checklist de la Actividad 7</li>
+<li>Ejercicio integrador: diseño de la arquitectura</li>
 </ol>
 </li>
 <li>
 <ol start="11">
-<li>Anexo: versión práctica, operador logístico en El Buen Fin (Python)</li>
+<li>Cierre de la sesión y checklist de la Actividad 7</li>
 </ol>
 </li>
 <li>
@@ -147,9 +147,9 @@
 <li><strong>Salida:</strong> muelle asignado y explicación de la regla aplicada.</li>
 </ul>
 <hr>
-<h2 id="caso-de-la-actividad-7-clasificación-de-peces-con-reglas-de-producción-en-prolog">7. Caso de la Actividad 7: clasificación de peces con reglas de producción en Prolog</h2>
+<h2 id="caso-de-clase-clasificación-de-peces-con-reglas-de-producción-en-prolog">7. Caso de clase: clasificación de peces con reglas de producción en Prolog</h2>
 <h3 id="el-problema">7.1 El problema</h3>
-<p>El recurso de plataforma (Capítulo 4, p. 190) presenta <strong>diez reglas (R1 a R10)</strong> con las que un especialista clasifica peces. Hay que modelarlas como un <strong>sistema de producción en Prolog</strong>. Resumen de las reglas:</p>
+<p>El recurso de plataforma (Capítulo 4, p. 190) presenta <strong>diez reglas (R1 a R10)</strong> con las que un especialista clasifica peces. En clase las modelamos como un <strong>sistema de producción en Prolog</strong>, para ver con un ejemplo completo cómo se separan hechos, reglas y motor. <strong>Este caso es la referencia de clase; el entregable es el de la sección 8.</strong> Resumen de las reglas:</p>
 <ul>
 <li>R1: boca pequeña, dientes puntiagudos y vive en ríos de muchas partes del mundo → orden <strong>Ciprinodontiformes</strong>.</li>
 <li>R2: orden Ciprinodontiformes, América del Sur, <strong>macho con gonopodio</strong> → familia <strong>Poecílidos</strong> (la hembra es 3 cm más grande que el macho).</li>
@@ -181,7 +181,7 @@
 <li>R9 → orden Cíclidos → R10 → raza.</li>
 </ul>
 <h3 id="paso-2-decisiones-de-modelado">7.3 Paso 2: decisiones de modelado</h3>
-<p>Toda traducción a Prolog exige decidir y <strong>documentar</strong> estos puntos (y tu reporte debe mencionarlos):</p>
+<p>Toda traducción a Prolog exige decidir y <strong>documentar</strong> estos puntos:</p>
 <ol>
 <li><strong>Un predicado por propiedad.</strong> <code>boca(Pez, pequena)</code>, <code>color(Pez, rojo)</code>. En Prolog se escribe sin acentos ni espacios en los átomos (<code>pequena</code>, <code>america_del_sur</code>).</li>
 <li><strong>Las condiciones se escriben como cuerpo de la regla</strong>, separadas por coma (la coma es el <strong>Y</strong> lógico).</li>
@@ -191,7 +191,7 @@
 <li><strong>Identificar las reglas por nombre:</strong> se usa <code>regla(r1, P)</code> para poder <strong>mostrar qué reglas se activaron</strong> (explicación).</li>
 </ol>
 <h3 id="paso-3-el-programa-completo-archivo-peces.pl">7.4 Paso 3: el programa completo (archivo <code>peces.pl</code>)</h3>
-<p>Guárdalo con extensión <code>.pl</code>. Ya fue probado en SWI-Prolog.</p>
+<p>Se guarda con extensión <code>.pl</code>. Ya fue probado en SWI-Prolog.</p>
 <pre class=" language-prolog"><code class="prism  language-prolog"><span class="token operator">:-</span> <span class="token function">encoding</span><span class="token punctuation">(</span>utf8<span class="token punctuation">)</span><span class="token operator">.</span>
 <span class="token comment">% =====================================================================</span>
 <span class="token comment">% Sistema de producción basado en reglas: clasificación de peces</span>
@@ -332,66 +332,23 @@ demo <span class="token operator">:-</span> <span class="token function">forall<
 <p><strong>Resolución de conflictos:</strong> en este caso no hay conflicto porque las reglas se excluyen entre sí; cuando varias reglas aplican, Prolog las prueba <strong>en el orden en que están escritas</strong> y <code>forall</code> las recorre todas.</p>
 <h3 id="paso-5-crear-tus-propios-peces-de-prueba">7.7 Paso 5: crear tus propios peces de prueba</h3>
 <p>Agrega hechos nuevos y vuelve a consultar. Ejemplo: un pez con canales laberínticos, tamaño medio, dientes puntiagudos, azul con rayas rojas de Asia debe salir como luchador de Siam (es <code>pez2</code>). Prueba también <strong>casos que fallen</strong> (por ejemplo, un pez sin <code>cola</code> redondeada no es Cíclido) para mostrar que el sistema <strong>no clasifica de más</strong>.</p>
-<h3 id="estructura-sugerida-del-reporte-de-la-experiencia">7.8 Estructura sugerida del reporte de la experiencia</h3>
-<p>La plataforma pide entregar el archivo de Prolog <strong>y</strong> un reporte. Una estructura que cumple la rúbrica:</p>
-<ol>
-<li><strong>Portada</strong> (universidad, Centro Universitario San Felipe, materia, actividad, nombre, grupo, fecha).</li>
-<li><strong>Introducción:</strong> qué es un sistema de producción y por qué Prolog sirve para modelarlo.</li>
-<li><strong>Análisis del problema:</strong> hechos, reglas, conclusiones intermedias y finales; mapa de dependencias.</li>
-<li><strong>Modelado en Prolog:</strong> decisiones de la sección 7.3, con fragmentos del código.</li>
-<li><strong>Pruebas:</strong> captura de pantalla o texto de las consultas y resultados para los cinco peces y al menos un caso propio.</li>
-<li><strong>Experiencia:</strong> qué fue fácil o difícil, qué errores tuviste y cómo los resolviste, qué aprendiste.</li>
-<li><strong>Conclusión.</strong></li>
-<li><strong>Bibliografía</strong> en formato APA.</li>
-</ol>
-<h3 id="rúbrica-de-la-actividad-10-puntos">7.9 Rúbrica de la actividad (10 puntos)</h3>
+<h3 id="de-los-peces-a-la-actividad">7.8 De los peces a la actividad</h3>
+<p>Compara lo que acabamos de ver con la actividad entregable (sección 8):</p>
 <ul>
-<li><strong>Pertinencia (4 puntos):</strong> el modelo corresponde al problema planteado y las reglas R1 a R10 están representadas con fidelidad.</li>
-<li><strong>Cognitivo (4 puntos):</strong> se muestra comprensión de hechos, reglas e inferencia, y se justifican las decisiones de modelado.</li>
-<li><strong>Requisitos de entrega (2 puntos):</strong> archivo de Prolog y documento entregados en tiempo y forma, con portada y bibliografía; archivo nombrado <strong>ActividadN_iniciales</strong> (para esta actividad, <strong>Actividad7_XXX</strong>), de preferencia en <strong>PDF</strong>.</li>
-</ul>
-<h3 id="y-la-versión-práctica">7.10 Y la versión práctica</h3>
-<p>Este caso es la <strong>actividad original</strong> de la plataforma. Como refuerzo, el Anexo (sección 11) explica una <strong>versión práctica</strong> de logística: un sistema experto para un operador logístico en El Buen Fin, hecho en Python/Colab con la misma arquitectura (hechos, reglas, motor). Úsala para practicar; <strong>entrega lo que pida la consigna de plataforma</strong>.</p>
-<hr>
-<h2 id="errores-comunes-a-evitar">8. Errores comunes a evitar</h2>
-<ul>
-<li>Mezclar hechos y reglas en el mismo componente.</li>
-<li>No definir los valores permitidos de los hechos.</li>
-<li>Olvidar el criterio de resolución de conflictos.</li>
-<li>Diagramas con componentes sin explicar qué hace cada uno.</li>
-<li>Entregar reglas sin probar con casos.</li>
+<li><strong>Peces (clase):</strong> el motor es <strong>Prolog</strong> (encadenamiento hacia atrás); el problema es de <strong>clasificación</strong>; la salida es una raza.</li>
+<li><strong>Buen Fin (actividad):</strong> el motor lo <strong>escribes tú en Python</strong> (encadenamiento hacia adelante); el problema es de <strong>decisión</strong>; la salida es un plan de despacho con su explicación.</li>
+<li><strong>En común:</strong> hechos, base de reglas, motor de inferencia, conclusiones que se vuelven condiciones de otras reglas y trazabilidad de qué regla se usó.</li>
 </ul>
 <hr>
-<h2 id="ejercicio-integrador-diseño-de-la-arquitectura">9. Ejercicio integrador: diseño de la arquitectura</h2>
-<p><strong>Individual o en parejas, 60 minutos:</strong></p>
-<ol>
-<li>Parte del conjunto de reglas de la Sesión 7 y amplíalo a 12 o 15 reglas.</li>
-<li>Lista los <strong>hechos</strong> (nombre, tipo, valores permitidos).</li>
-<li>Dibuja el <strong>diagrama de arquitectura</strong> (hechos, base de conocimientos, motor, interfaz).</li>
-<li>Elige el <strong>tipo de encadenamiento</strong> y justifícalo.</li>
-<li>Define el <strong>criterio de resolución de conflictos</strong>.</li>
-<li>Prueba el sistema con <strong>dos casos</strong> y escribe el paso a paso del razonamiento.</li>
-</ol>
-<hr>
-<h2 id="cierre-de-la-sesión-y-checklist-de-la-actividad-7">10. Cierre de la sesión y checklist de la Actividad 7</h2>
-<p><strong>Actividad 7 (10 puntos, cierra el 4 de noviembre a las 06:59; entrega recomendada a más tardar la noche del 3).</strong> Sigue la consigna y la rúbrica de plataforma. Tu entrega incluye:</p>
-<ul>
-<li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled=""> Archivo <code>.pl</code> con hechos, las diez reglas R1 a R10 y conclusiones, que <strong>carga sin errores</strong> en SWI-Prolog.</li>
-<li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled=""> Pruebas con los cinco peces de ejemplo y al menos un caso propio.</li>
-<li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled=""> Reporte con portada, introducción, análisis del problema, modelado, pruebas, experiencia, conclusión y bibliografía APA.</li>
-<li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled=""> Decisiones de modelado explicadas (ríos, región, negación en R8).</li>
-<li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled=""> Documento nombrado <strong>Actividad7_iniciales</strong>, de preferencia en PDF, junto con el archivo de Prolog.</li>
-</ul>
-<p><strong>Tarea para la Semana 9:</strong> revisa los recursos de robótica (5.1 conceptos, clasificación y aplicaciones).</p>
-<hr>
-<h2 id="anexo-versión-práctica-sistema-experto-de-un-operador-logístico-en-el-buen-fin-python">11. Anexo: versión práctica, sistema experto de un operador logístico en El Buen Fin (Python)</h2>
-<h3 id="el-problema-y-la-herramienta">11.1 El problema y la herramienta</h3>
+<h2 id="actividad-7-entregable-sistema-experto-de-un-operador-logístico-en-el-buen-fin">8. Actividad 7 (entregable): sistema experto de un operador logístico en El Buen Fin</h2>
+<h3 id="el-problema-y-la-herramienta">8.1 El problema y la herramienta</h3>
 <ul>
 <li><strong>Problema:</strong> un operador logístico debe decidir, durante El Buen Fin, <strong>cómo despachar cada pedido</strong>: modo de transporte, de dónde surtirlo, seguro, escolta y alertas.</li>
+<li><strong>Relación con la clase:</strong> es el mismo esquema que el caso de los peces (sección 7), pero aplicado a una decisión real de logística.</li>
 <li><strong>Esquema:</strong> hechos → reglas → motor de inferencia → decisión con explicación (traza).</li>
 <li><strong>Herramienta:</strong> <strong>Python en Google Colab</strong>, con un <strong>motor propio de encadenamiento hacia adelante</strong>. Al construirlo tú, ves cómo funciona un motor de inferencia por dentro.</li>
 </ul>
-<h3 id="los-cinco-grupos-de-hechos">11.2 Los cinco grupos de hechos</h3>
+<h3 id="los-cinco-grupos-de-hechos">8.2 Los cinco grupos de hechos</h3>
 <ul>
 <li><strong>Embarque:</strong> cliente (Prime o regular), horas de entrega prometidas, valor, si es HAZMAT, si es refrigerado, distancia.</li>
 <li><strong>Inventario:</strong> cantidad pedida, stock local, stock regional, punto de reorden.</li>
@@ -399,7 +356,7 @@ demo <span class="token operator">:-</span> <span class="token function">forall<
 <li><strong>Contexto:</strong> Buen Fin activo, clima adverso, riesgo de la ruta.</li>
 <li><strong>Hechos derivados:</strong> los que las reglas agregan (urgencia, alto valor, modo, origen…). Otras reglas los usan después: así se forma la <strong>cadena de inferencia</strong>.</li>
 </ul>
-<h3 id="las-25-reglas-por-grupo">11.3 Las 25 reglas, por grupo</h3>
+<h3 id="las-25-reglas-por-grupo">8.3 Las 25 reglas, por grupo</h3>
 <ul>
 <li><strong>Urgencia y valor (R01 a R04):</strong> Buen Fin con entrega de 24 h o menos, o Prime con 48 h o menos, da urgencia alta; paquete de $5,000 o más es de alto valor.</li>
 <li><strong>Riesgo y cumplimiento (R05 a R09):</strong> HAZMAT exige documentos especiales y <strong>prohíbe el transporte aéreo</strong>; alto valor lleva seguro y, en ruta riesgosa, escolta; lo refrigerado va en unidad con cadena de frío.</li>
@@ -409,7 +366,7 @@ demo <span class="token operator">:-</span> <span class="token function">forall<
 <li><strong>Alertas y optimización (R21 a R25):</strong> alerta crítica si hay urgencia sin inventario, aviso por retraso climático, consolidación de cargas ligeras, ampliación de la ventana de recolección.</li>
 </ul>
 <p><strong>Cadenas que debes identificar:</strong> R05 → R06 → R19 (HAZMAT cambia el modo de transporte); R04 → R07 y R08 (alto valor genera seguro y escolta); R01 → R17 (urgencia define el modo).</p>
-<h3 id="el-código-completo-google-colab">11.4 El código completo (Google Colab)</h3>
+<h3 id="el-código-completo-google-colab">8.4 El código completo (Google Colab)</h3>
 <p>Se pega en una sola celda de Colab y se ejecuta. Ya fue probado.</p>
 <pre class=" language-python"><code class="prism  language-python"><span class="token comment"># -*- coding: utf-8 -*-</span>
 <span class="token triple-quoted-string string">"""
@@ -543,14 +500,14 @@ BASE <span class="token operator">=</span> <span class="token builtin">dict</spa
             <span class="token string">"distancia_km"</span><span class="token punctuation">:</span> <span class="token number">1500</span><span class="token punctuation">,</span> <span class="token string">"valor"</span><span class="token punctuation">:</span> <span class="token number">2500</span><span class="token punctuation">}</span><span class="token punctuation">)</span>
 
 </code></pre>
-<h3 id="resultados-esperados">11.5 Resultados esperados</h3>
+<h3 id="resultados-esperados">8.5 Resultados esperados</h3>
 <ul>
 <li><strong>Escenario 1, operación normal:</strong> reglas R10, R03, R20, R15, R24. Decisión: urgencia normal, camión consolidado, surtido desde CEDIS local, flota propia, consolidar.</li>
 <li><strong>Escenario 2, El Buen Fin con urgencia alta</strong> (cliente Prime, 24 h, $6,000, 900 km, ruta de riesgo alto, flota al 95 %, stock local de 1): se disparan 11 reglas. Decisión: urgencia alta, <strong>transporte aéreo</strong>, transferencia desde CEDIS regional, transportista externo, seguro adicional, escolta, orden de compra y ventana de recolección ampliada.</li>
 <li><strong>Escenario 3, HAZMAT internacional</strong> (1,500 km, 24 h): R01, R05, R06, R19, R10, R15. Decisión: urgencia alta, pero como el aéreo está prohibido, <strong>camión exprés con doble operador</strong> y documentos HAZMAT.</li>
 </ul>
 <p>El escenario 3 muestra por qué importa el encadenamiento: R06 agrega el hecho <code>aereo_permitido = False</code> y eso hace que R19 sustituya a R17.</p>
-<h3 id="cómo-funciona-el-motor">11.6 Cómo funciona el motor</h3>
+<h3 id="cómo-funciona-el-motor">8.6 Cómo funciona el motor</h3>
 <ol>
 <li>Carga los hechos del pedido.</li>
 <li>Recorre las reglas <strong>en orden de prioridad</strong> (resolución de conflictos).</li>
@@ -559,19 +516,51 @@ BASE <span class="token operator">=</span> <span class="token builtin">dict</spa
 <li>Se detiene cuando una pasada completa ya no produce cambios.</li>
 <li>Devuelve las decisiones y la <strong>traza</strong> (qué regla produjo qué).</li>
 </ol>
-<h3 id="lo-que-tú-debes-agregar">11.7 Lo que tú debes agregar</h3>
+<h3 id="lo-que-tú-debes-agregar">8.7 Lo que tú debes agregar</h3>
 <ul>
 <li><strong>Un escenario propio</strong> (por ejemplo, pedido refrigerado con clima adverso, o producto sin stock en toda la región).</li>
 <li><strong>Tres reglas nuevas</strong> con identificador, descripción y prioridad, de una región o empresa que conozcas.</li>
 <li><strong>Una prueba de conflicto:</strong> dos reglas que se contradigan, y cómo lo resuelves.</li>
 </ul>
-<h3 id="estructura-del-reporte">11.8 Estructura del reporte</h3>
+<h3 id="estructura-del-reporte">8.8 Estructura del reporte</h3>
 <p>Sigue el formato de reporte de la actividad: portada (Universidad SABES, Centro Universitario San Felipe, materia, actividad, alumno, matrícula, fecha, docente), introducción, arquitectura (hechos, reglas, motor, diagrama), desarrollo con ejemplos de hecho y de regla, escenarios probados, análisis cognitivo (comprensión, coherencia lógica, justificación), conclusiones, bibliografía APA y anexos (código, resultados, métricas).</p>
-<h3 id="qué-se-entrega-y-cómo-se-califica">11.9 Qué se entrega y cómo se califica</h3>
-<p>Los criterios, si se asigna esta versión, son: <strong>pertinencia (4), cognitivo (4) y requisitos de entrega (2)</strong>. El archivo se nombra <strong>Actividad7_iniciales</strong>, de preferencia en PDF; el código va como anexo o se entrega el cuaderno de Colab, junto con el reporte de la experiencia.</p>
+<h3 id="qué-se-entrega-y-cómo-se-califica">8.9 Qué se entrega y cómo se califica</h3>
+<p>Los criterios son: <strong>pertinencia (4), cognitivo (4) y requisitos de entrega (2)</strong>. El archivo se nombra <strong>Actividad7_iniciales</strong>, de preferencia en PDF; el código va como anexo o se entrega el cuaderno de Colab, junto con el reporte de la experiencia.</p>
 <blockquote>
-<p>Esta versión es de práctica (retoma la actividad del cuatrimestre anterior). Si tu docente la asigna, los criterios son los de arriba; si no, <strong>entrega lo que pida la consigna de plataforma</strong> (caso de los peces, sección 7).</p>
+<p>Si la consigna publicada en plataforma pide otro formato o herramienta, <strong>sigue la consigna de plataforma</strong>: la estructura de hechos, reglas y motor aplica igual.</p>
 </blockquote>
+<hr>
+<h2 id="errores-comunes-a-evitar">9. Errores comunes a evitar</h2>
+<ul>
+<li>Mezclar hechos y reglas en el mismo componente.</li>
+<li>No definir los valores permitidos de los hechos.</li>
+<li>Olvidar el criterio de resolución de conflictos.</li>
+<li>Diagramas con componentes sin explicar qué hace cada uno.</li>
+<li>Entregar reglas sin probar con casos.</li>
+</ul>
+<hr>
+<h2 id="ejercicio-integrador-diseño-de-la-arquitectura">10. Ejercicio integrador: diseño de la arquitectura</h2>
+<p><strong>Individual o en parejas, 60 minutos:</strong></p>
+<ol>
+<li>Parte del conjunto de reglas de la Sesión 7 y amplíalo a 12 o 15 reglas.</li>
+<li>Lista los <strong>hechos</strong> (nombre, tipo, valores permitidos).</li>
+<li>Dibuja el <strong>diagrama de arquitectura</strong> (hechos, base de conocimientos, motor, interfaz).</li>
+<li>Elige el <strong>tipo de encadenamiento</strong> y justifícalo.</li>
+<li>Define el <strong>criterio de resolución de conflictos</strong>.</li>
+<li>Prueba el sistema con <strong>dos casos</strong> y escribe el paso a paso del razonamiento.</li>
+</ol>
+<hr>
+<h2 id="cierre-de-la-sesión-y-checklist-de-la-actividad-7">11. Cierre de la sesión y checklist de la Actividad 7</h2>
+<p><strong>Actividad 7 (10 puntos, cierra el 4 de noviembre a las 06:59; entrega recomendada a más tardar la noche del 3).</strong> Sigue la consigna y la rúbrica de plataforma. Tu entrega incluye:</p>
+<ul>
+<li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled=""> Reporte con portada, introducción, arquitectura (hechos, reglas, motor y diagrama), desarrollo, escenarios, análisis cognitivo, conclusiones y bibliografía APA (usa la plantilla).</li>
+<li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled=""> Código (cuaderno de Colab o archivo <code>.py</code>) que <strong>se ejecuta sin errores</strong>.</li>
+<li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled=""> Los tres escenarios base y al menos <strong>un escenario propio</strong>.</li>
+<li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled=""> Al menos <strong>tres reglas nuevas</strong> y una prueba de conflicto entre reglas.</li>
+<li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled=""> Reporte de la experiencia: qué fue difícil, qué errores resolviste, qué aprendiste.</li>
+<li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled=""> Documento nombrado <strong>Actividad7_iniciales</strong>, de preferencia en PDF.</li>
+</ul>
+<p><strong>Tarea para la Semana 9:</strong> revisa los recursos de robótica (5.1 conceptos, clasificación y aplicaciones).</p>
 <hr>
 <h2 id="referencias-formato-apa">12. Referencias (formato APA)</h2>
 <p>Berzal, F. (2019). <em>Redes neuronales &amp; deep learning: Volumen 1. Entrenamiento de redes neuronales artificiales</em> (1.ª ed.). Independently published.</p>
