@@ -198,7 +198,4 @@
 <p>Berzal, F. (2019). <em>Redes neuronales &amp; deep learning: Volumen 1. Entrenamiento de redes neuronales artificiales</em> (1.ª ed.). Independently published.</p>
 <p>Jackson, P. (1998). <em>Introduction to expert systems</em> (3rd ed.). Addison-Wesley.</p>
 <p>Russell, S., &amp; Norvig, P. (2021). <em>Artificial intelligence: A modern approach</em> (4th ed.). Pearson.</p>
-<blockquote>
-<p>Written with <a href="https://stackedit.io/">StackEdit</a>.</p>
-</blockquote>
 
